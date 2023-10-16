@@ -1,0 +1,49 @@
+.fneip {
+  display: flex;
+}
+.fneip input {
+  width: 100%;
+}
+.fneip button {
+  padding: 10px;
+}
+#btn_login {
+  width: 60%;
+  margin-right: 5px;
+}
+.btn_signup {
+  width: 100% !important;
+}
+#a_signup {
+  width: 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#btn_signup {
+  background-color: inherit !important;
+  outline: none !important;
+  border: none !important;
+  color: white !important;
+}
+.fu49zk {
+  width: 100%;
+  text-align: center;
+}
+.firoiz {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* border: 1px solid red; */
+}
+#totalHeight {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  /* border: 1px solid red; */
+}
+.fopaei {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+}

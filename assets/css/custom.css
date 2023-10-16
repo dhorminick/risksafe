@@ -1,0 +1,187 @@
+:root {
+  --card-border: #e4e6fc;
+  --custom-primary: #6777ef;
+  --color6777ef: #69f;
+}
+@font-face {
+  font-family: "font";
+  src: url("../fonts/custom/Signika-Light.ttf");
+}
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  /* font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif; */
+  font-weight: 700;
+}
+* {
+  font-family: "font";
+}
+.alert.alert-primary.alert-dismissible {
+  padding: 10px 10px !important;
+  color: white;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+}
+button.close.close-alert span {
+  color: white !important;
+  opacity: 1 !important;
+  margin-top: 5px;
+}
+button.close.close-alert {
+  color: white !important;
+  opacity: 1 !important;
+}
+a:hover {
+  text-decoration: none;
+}
+.content-section-a-a .card-headers {
+  padding: 10px !important;
+  font-size: 17px;
+  color: white;
+}
+
+.content-section-a-a .card-footers a {
+  padding: 10px !important;
+  color: white;
+  border-radius: 5px;
+}
+.content-section-a-a .card-footers {
+  width: 100%;
+  text-align: right;
+  background-color: var(--card-border);
+  padding: 7px;
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse;
+}
+.content-section-a-a .card-bodys {
+  padding: 10px;
+  border: 1px solid var(--card-border);
+}
+.content-section-a-a {
+  padding: 50px 0px 30px 0px;
+}
+form.lead .col-lg-12,
+form.lead .col-lg-6 {
+  padding: 0px !important;
+}
+
+form.lead .col-lg-6 + .col-lg-6 {
+  padding-left: 10px !important;
+}
+.content-section-a-a .col-lg-4.col-12.r .card-headers,
+.content-section-a-a .col-lg-4.col-12.r .card-footers a {
+  background-color: red;
+}
+
+.content-section-a-a .col-lg-4.col-12.b .card-headers,
+.content-section-a-a .col-lg-4.col-12.b .card-footers a {
+  background-color: blue;
+}
+
+.content-section-a-a .col-lg-4.col-12.y .card-headers,
+.content-section-a-a .col-lg-4.col-12.y .card-footers a {
+  background-color: rgb(209, 209, 9);
+}
+
+.intro-breadcrumbs a {
+  color: white;
+  text-decoration: none;
+  cursor: default;
+}
+.intro-breadcrumbs a + a::before {
+  content: "/";
+  margin: 0px 5px;
+}
+.intro-breadcrumbs a.links {
+  color: var(--color6777ef);
+  border-bottom: 1px solid var(--color6777ef);
+  padding-bottom: 1px;
+  cursor: pointer;
+}
+.bb {
+  border-bottom: 1px solid var(--color6777ef);
+  padding-bottom: 1px;
+  cursor: pointer;
+}
+.form-group.col-lg-6.col-12.n- {
+  padding: 0px 0px 0px 10px !important;
+}
+.section-heading.about {
+  width: 100%;
+  text-align: center;
+  font-size: 30px;
+}
+.pp0 {
+  padding: 0px !important;
+}
+@media (max-width: 767px) {
+  /* .navbar-right li + li::before {
+    content: "/";
+    margin: 0px 5px;
+  } */
+  .hide-sm {
+    display: none;
+  }
+}
+@media (max-width: 767px) {
+  .intro-header-about {
+    margin-top: 70px;
+    min-height: 150px !important;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .form-group.col-lg-6.col-12.n- {
+    padding: 0px !important;
+  }
+  .intro-message h2 {
+    font-size: 30px;
+  }
+  .section-heading.about {
+    font-size: 23px;
+  }
+  .page-content {
+    font-size: 15px;
+  }
+}
+.footer-main {
+  text-align: center;
+  text-transform: none !important;
+  font-weight: bold;
+}
+.intro-header.about {
+  background: url(../img/intro-bg-about.png) no-repeat center center;
+}
+.intro-header.custom {
+  /* width: 100% !important; */
+  background-size: cover !important;
+  padding-bottom: 50px;
+  max-height: 400px;
+  min-height: 300px;
+  text-align: center;
+  color: #f8f8f8;
+  margin: -19px -30px 20px -30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.intro-header.resources {
+  background: url(../img/intro-bg-resources.jpg) no-repeat center center;
+}
+.intro-header.pricing {
+  background: url(../img/intro-bg-resources.jpg) no-repeat center center;
+}
+.intro-header.help {
+  background: url(../img/intro-bg-resources.jpg) no-repeat center center;
+}
+.intro-header.contact {
+  background: url(../img/intro-bg-contact.png) no-repeat center center;
+}
