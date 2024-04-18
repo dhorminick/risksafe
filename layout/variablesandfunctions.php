@@ -2,9 +2,25 @@
 $adminEmail = 'etiketochukwu@gmail.com';
 $reportEmail = 'etiketochukwu@gmail.com';
 $paymentMail = 'payments@sellit.com';
-$signUpSender = 'noreply@sellit.com';
+$signUpSender = 'info@portfolio.name.ng';
+$resetPassSender = 'info@portfolio.name.ng';
+$resetPassHelp = 'support@risksafe.co';
+$signUpHelp = 'support@risksafe.co';
 $incorrectDetailsMail = 'error@sellit.com';
-$signUpSender = 'jay@risksafe.co';
+$adminemailaddr = 'jay@risksafe.co';
+$siteEndTitle = 'RiskSafe - Risk Assessment';
+$website__ = 'https://portfolio.name.ng/';
+$site__ = 'https://portfolio.name.ng';
+$siteMainLocation = 'Address, City, State, Country.';
+
+$page_fb = 'https://facebook.com/risksafe';
+    $page_ig = 'https://instagram.com/risksafe';
+    $page_x = 'https://twitter.com/risksafe';
+    $page_ln = 'https://linkedin.com/risksafe';
+    $page_wt = 'https://whatsapp.com/';
+    $page_yt = 'https://youtube.com/';
+    
+// $signUpSender = 'jay@risksafe.co';
 
 function secure_random_string($length) { 
     $random_string = ''; 
@@ -17,7 +33,36 @@ function secure_random_string($length) {
     return $random_string;
 }
 
-
+function count_Data($con, $table, $var, $res){
+        $query="SELECT * FROM $table WHERE $var = '$res'";
+        $result=$con->query($query);
+		if ($result->num_rows > 0) {
+			return $result->num_rows;
+		} else {
+			return '0';	
+		}
+    }
+    
+    function count_Data_M($con, $table, $var, $res, $and, $id){
+        $query="SELECT * FROM $table WHERE $var = '$res' AND $and = '$id'";
+        $result=$con->query($query);
+		if ($result->num_rows > 0) {
+			return $result->num_rows;
+		} else {
+			return '0';	
+		}
+    }
+    
+    function count_Notif($con, $table, $var, $res, $s_var, $s_res){
+        $query="SELECT * FROM $table WHERE $var = '$res' AND $s_var = '$s_res'";
+        $result=$con->query($query);
+		if ($result->num_rows > 0) {
+			return $result->num_rows;
+		} else {
+			return '0';	
+		}
+    }
+    
 function weirdlyEncode($data){
   $data = md5(crc32(md5(crc32(md5(crc32(md5($data)))))));
   return $data;
@@ -37,25 +82,6 @@ function dataExists($data, $returnError, $returnArray, $errorCountArray){
       // $errorCountArray = true;
   }
 }
-
-// if (isset($_SESSION["email"]) != '' || isset($_SESSION["email"]) != null) {
-//   $userEmail = $_SESSION['email'];
-// } else {
-//   $userEmail = 'etiketochukwu@gmail.com';
-// }
-
-// if (isset($_SESSION["phone"]) != '' || isset($_SESSION["phone"]) != null) {
-//   $userPhone = $_SESSION['phone'];
-// } else {
-//   $userPhone = '09076876557';
-// }
-
-// if (isset($_SESSION["id"]) != '' || isset($_SESSION["id"]) != null) {
-//   $userId = $_SESSION['id'];
-// } else {
-//   $userId = 'user103908274902';
-// }
-
 
 function errorExists($data, $errorCounter){
   if ($data == null || $data == '' || !$data) {
@@ -92,7 +118,19 @@ function timeAgo ($oldTime, $newTime) {
 		$timeCalc = intval($timeCalc/60) . " minute ago";
 	}else if ($timeCalc > 0){
 		$timeCalc .= " seconds ago";
+	}else if ($timeCalc == 0){
+		$timeCalc = "0 seconds ago";
 	}
 	return $timeCalc;
+}
+
+function in_array_custom($needle, $haystack, $strict = true){
+  foreach ($haystack as $items){
+      if (($strict ? $items === $needle : $items == $needle) || (is_array($items) && in_array_custom($needle, $items, $strict))){
+          return true;
+      }
+  }
+  
+  return false;
 }
 ?>

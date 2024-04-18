@@ -1,3 +1,16 @@
+<?php
+    session_start();
+    $file_dir = '../../';
+    if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
+        $signedIn = true;
+    } else {
+        header('Location: '.$file_dir.'login?r=/reports/risk-reports');
+    }
+    $message = [];
+    include '../../layout/db.php';
+    include '../../layout/admin_config.php';
+    include '../ajax/reports.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

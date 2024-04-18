@@ -1,41 +1,105 @@
 <?php
+    session_start();
     $file_dir = '../../';
+    if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
+        $signedIn = true;
+    } else {
+        header('Location: '.$file_dir.'login?r=/assessments/all');
+        exit();
+    }
     $message = [];
     include '../../layout/db.php';
     include '../../layout/admin_config.php';
-    include '../../layout/variablesandfunctions.php';
+    include '../ajax/assessment.php';
 
-    include_once('../rs/model/assessment.php');
+    switch ($role) {
+        case 'user':
+            $whois = 'Your Admin';
+            break;
+        
+        case 'admin':
+            $whois = 'RiskSafe <a href="/contact-us?issue=missing-assessment" class="bb">Tech Support</a>';
+            break;
+        
+        default:
+            $whois = 'error';
+            break;
+    }
+    
+    if (isset($_POST['delete-data'])){
+        $type = sanitizePlus($_POST['data-type']);
+        $id = sanitizePlus($_POST['data-id']);
 
-if (isset($_REQUEST["response"]) and $_REQUEST["response"] == "true") {
-  if ($_REQUEST["action"] == "editdetail") $msg = "Risk updated sucessfully.";
-  if ($_REQUEST["action"] == "adddetail") $msg = "Risk added sucessfully. You may continue with your risk assessment.";
-}
-
-if (isset($_REQUEST["response"]) and $_REQUEST["response"] == "err") {
-  $msg = "An error occured, please try again.";
-}
-
-if (isset($_REQUEST["response"]) and $_REQUEST["response"] == "err") {
-  $msg = "An error occured, please try again.";
-}
-
-    $assess = new assessment();
-    $assess->deleteTmpFields();
-
+        if (!$id || $id == null || $id == '' || !$type || $type == null || $type == '') {
+            array_push($message, 'Error While Deleting Data: Missing Parameters!!');
+        } else {
+            $query="DELETE FROM as_details WHERE ri_id = '$id' AND c_id = '$company_id'";
+            $dataDeleted = $con->query($query);
+                    
+            if ($dataDeleted) {
+                array_push($message, 'Risk Deleted Successfully!!');
+            }else{
+                array_push($message, 'Error 502: Error Deleting Assessment!!');
+            }
+        }
+        
+    }
+    
     if (isset($_GET['id']) && isset($_GET['id']) !== "") {
+
         $ass_Id = sanitizePlus($_GET['id']);
         $toDisplay = true;
-        $assessment = $assess->getAssessment($ass_Id);
+        #confirm assessment
+        $CheckIfAssessmentExist = "SELECT * FROM as_assessment LEFT JOIN as_types ON as_assessment.as_type  = as_types.idtype WHERE as_id = '$ass_Id'";
+        $AssessmentExist = $con->query($CheckIfAssessmentExist);
+        if ($AssessmentExist->num_rows > 0) {	
+            $ass_exist = true;	
+			$assessment_details = $AssessmentExist->fetch_assoc();
+			$assess_id = $ass_Id;
+            
+            $user = $assessment_details['as_user'];
+            $type = $assessment_details['as_type'];
+            $team = $assessment_details['as_team'];
+            $task = $assessment_details['as_task'];
+            $descript = $assessment_details['as_descript'];
+            $number = $assessment_details['as_number'];
+            $owner = $assessment_details['as_owner'];
+            $next = $assessment_details['as_next'];
+            $assessor = $assessment_details['as_assessor'];
+            $approval = $assessment_details['as_approval'];
+            $completed = $assessment_details['as_completed'];
+            $date = $assessment_details['as_date'];
+            
+            $editLink = "edit-assessment?id=".$ass_Id;
 
-        if (isset($_GET['action']) && isset($_GET['action']) == "editdetail") {
-        $edit = true;
-        $id = sanitizePlus($_GET['assessment']);
-        $datainfo = $assess->getAssessmentDet($id);
-        } else {
-        $id = -1;
-        $edit = false;
-        }
+            $query="SELECT * FROM as_types WHERE idtype = '$type'";
+            $result = $con->query($query);
+            if ($row = $result->fetch_assoc()) {
+                $type = $row["ty_name"];
+            }else{
+                $type = 'Error';
+            }
+
+            switch ($approval) {
+
+                case 1:
+                    $approval = 'In progress';
+                    break;
+
+                case 2:
+                    $approval = 'Approved';
+                    break;
+
+                case 3:
+                    $approval = 'Closed';
+                    break;
+            }
+
+            $totalrisks = rowCountTotal($con, "as_details", "as_assessment", $ass_Id, "as_details_has_value", "true");
+            
+		} else {
+			$ass_exist = false;	
+		}
 
     } else {
         $toDisplay = false;
@@ -49,9 +113,11 @@ if (isset($_REQUEST["response"]) and $_REQUEST["response"] == "err") {
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-  <title>Assessment Details | </title>
+  <title>Assessment Details | <?php echo $siteEndTitle; ?></title>
   <?php require '../../layout/general_css.php' ?>
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/footer.custom.css">
+  <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/admin.custom.css">
+  <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/bundles/prism/prism.css">
 </head>
 
 <body>
@@ -66,154 +132,332 @@ if (isset($_REQUEST["response"]) and $_REQUEST["response"] == "err") {
             <section class="section">
             <div class="section-body">
                 <?php if ($toDisplay == true) { ?>
+                <?php if ($ass_exist == true) { ?>
                 <div class="card">
-                    <form role="form" id="form" action="../rs/controller/assessment.php">
-                        <?php include '../../layout/alert.php'; ?>
-                        <div class="form-group">
-                            <button type="button" class="btn btn-md btn-primary pull-right" id="btn_viewdet">Switch to Assessment Details</button>
-                        </div>
-                        <div class="card-header">
-                            <h3 class="subtitle">Risk Identification</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="form-group">
-                                <label>Risk</label>
-                                <div id="risk_div"></div>
-    
+                    <div class="card-header">
+                        <h3 class="subtitle d-inline">Assessment Details:</h3>
+                        <a class="btn btn-primary btn-icon icon-left header-a" href="<?php echo $editLink; ?>"><i class="fas fa-pen"></i> Edit</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="row section-rows customs">
+                            <div class="user-description col-12 col-lg-7">
+                                <label>Assessment Type :</label>
+                                <div class="description-text"><?php echo $type; ?></div>
                             </div>
-                            <div class="form-group">
-                                <label>Risk Sub Category</label>
-                                <div id="hazard_div"></div>
-    
+                            <div class="user-description col-12 col-lg-4">
+                                <label>Issued On :</label>
+                                <div class="description-text"><?php echo $date; ?></div>
                             </div>
-                            <div class="form-group">
-                                <label>Risk Description</label>
-                                <textarea name="descript" rows="4" class="form-control" placeholder="Enter risk description..." required><?php if ($edit) echo $datainfo["as_descript"]; ?></textarea>
-    
+                            <hr>
+                            <div class="user-description col-12">
+                                <label>Assessment Team :</label>
+                                <div class="description-text"><?php echo $team; ?></div>
                             </div>
-                        </div>
-                        
-                        <div class="card-header">
-                            <h3 class="subtitle">Risk Evaluation
-                                <a href="#" data-tooltip="Select likelyhood of the risk and risk consequence. Risk rating will be calculated automatically.">
-                                    <img src="../img/help_ico.gif" class="help-ico">
-                                </a>
-                            </h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="form-group">
-                                <label>Likelihood</label>
-                                <?php
-                                if ($edit) {
-                                    echo $assess->listLikelihood($datainfo["as_like"]);
-                                } else {
-                                    echo $assess->listLikelihood(-1);
-                                }
-    
-                                ?>
+                            <div class="user-description col-12">
+                                <label>Assessment Task :</label>
+                                <div class="description-text"><?php echo $task; ?></div>
                             </div>
-                            <div class="form-group">
-                                <label>Consequence</label>
-                                <?php
-                                if ($edit) {
-                                    echo $assess->listConsequence($datainfo["as_consequence"]);
-                                } else {
-                                    echo $assess->listConsequence(-1);
-                                }
-                                ?>
+                            <div class="user-description col-12">
+                                <label>Assessment Description :</label>
+                                <div class="description-text"><?php echo $descript; ?></div>
                             </div>
-                            <div class="form-group">
-                                <label>Risk Rating</label>
-                                <div id="rating"></div>
+                            <div class="user-description col-12">
+                                <label>Process Owner :</label>
+                                <div class="description-text"><?php echo $owner; ?></div>
+                            </div>
+                            <div class="user-description col-12 col-lg-7">
+                                <label>Assessor :</label>
+                                <div class="description-text"><?php echo $assessor; ?></div>
+                            </div>
+                            <div class="user-description col-12 col-lg-4">
+                                <label>Assessment Approval :</label>
+                                <div class="description-text"><?php echo $approval; ?></div>
                             </div>
                         </div>
-                        
-                        
-                        <div class="card-header"><h3 class="subtitle">Control actions</h3></div>
-                        <div class="card-body">
-                            <div class="form-group">
-                                <label>Controls in place<a href="#" data-tooltip="You add controls to your risk by selecting existing control from your controls library or you can create your own custom control by typing it into the text field below and clicking on '+Add' button."><img src="../img/help_ico.gif" / class="help-ico"></a></label>
-                                <select name="existing_ct" id="existing_ct" class="form-control" required>
-                                    <option value="-1" selected>Select and add an existing control</option>
-                                    <?php
-                                    echo $assess->listControl($_SESSION["userid"]);
-                                    ?>
-                                </select>
+                    </div>
+
+                    <div class="card-header">
+                        <h3 class="subtitle d-inline">Covered Risks:</h3>
+                        <a class="btn btn-primary btn-icon icon-left header-a" href="add-risks?id=<?php echo $ass_Id; ?>"><i class="fas fa-plus"></i> Add Risks</a>
+                    </div>
+                    <div class="card-body">
+                        <?php
+                            $list_one = listAssessment($ass_Id, 0, 20, $con);
+                            $details_count = $list_one;
+                            if($list_one !== false){
+                            if(count($details_count) <= 1){$details[] = $list_one;}else{$details = $list_one;}
+                            
+                        ?>
+                        <?php if($on_mobile == false) { ?>
+                        <?php if ($details === 'a:0:{}') { #empty data?> 
+                        <div style="width:100%;min-height:400px;display:flex;justify-content:center;align-items:center;">
+                            <div style="text-align: center;"> 
+                                <h3>Empty Data!!</h3>
+                                No Risk Covered For This Assessment Yet,
+                                <p><a href="add-risks?id=<?php echo $ass_Id; ?>" class="btn btn-primary btn-icon icon-left mt-2"><i class="fas fa-plus"></i> Add Risks</a></p>
                             </div>
-                            <div class="form-group">
-                                <div style="display: flex;">
-                                    <input style="width:90%;margin-right:10px;" name="control[]" id="control" type="text" class="form-control" placeholder="Enter custom control description...">
-                                    <button style="width:10%;" type="button" class="btn btn-sm btn-primary" id="btn_addcontrol">+ Add</button>
+                        </div>
+                        <?php }else{ $arrcount = count($details); ?>
+                        <table class="table table-striped table-bordered table-hover" id="table">
+                            <tr>
+                                <th>S/N</th>
+                                <th>Risk</th>
+                                <th>Risk Hazard</th>
+                                <th>...</th>
+                            </tr>
+                        <?php 
+                            $i = 0;
+                            foreach ($list_one as $item) { $i++;
+                            $viewLink = 'risks?id='.$item["ri_id"].'" data-toggle="tooltip" title="View Risk" data-placement="right"';
+                            $editLink = 'edit-risks?id='.$item["ri_id"].'" data-toggle="tooltip" title="Edit Risk" data-placement="right"';
+                            $deleteLink = 'javascript:void(0);" class="delete action-icons btn btn-danger btn-action mr-1" data-toggle="modal" data-target="#deleteModal" data-type="risks" data-id="'.$item["ri_id"];
+                        ?>
+                        <tr>
+                            <td><?php echo $i; ?></td>
+                            <td><?php echo ucwords(getRisks($item['as_risk'], $con)); ?></td>
+                            <td><?php echo ucwords(getHazards($item['as_hazard'], $con)); ?></td>
+                            <td>
+                                <a href="<?php echo $viewLink; ?>" class="action-icons btn btn-primary btn-action mr-1"><i class="fas fa-eye"></i></a>
+                                <a href="<?php echo $editLink; ?>" class="action-icons btn btn-info btn-action mr-1"><i class="fas fa-edit"></i></a>
+                                <a href="<?php echo $deleteLink; ?>"><i class="fas fa-trash-alt"></i></a>
+                            </td>
+                        </tr>
+                        <?php }} if ($details !== 'a:0:{}') { echo '</table>'; } #closing tag for table ?>
+                        <?php }}else{ #empty data ?>
+                            <div style="width:100%;min-height:400px;display:flex;justify-content:center;align-items:center;">
+                               <div style="text-align: center;"> 
+                                    <h3>Empty Data!!</h3>
+                                    No Risk Covered For This Assessment Yet,
+                                    <p><a href="add-risks?id=<?php echo $ass_Id; ?>" class="btn btn-primary btn-icon icon-left mt-2"><i class="fas fa-plus"></i> Add Risks</a></p>
                                 </div>
-                                <div class="custom-controls"></div>
                             </div>
-                            <div class="clearfix" id="controls">
-                                &nbsp;
-                            </div>
-                            <div class="form-group">
-                                <label>Control Effectiveness</label>
-                                <textarea name="effectiveness" rows="4" class="form-control" placeholder="Enter control effectiveness..." required><?php if ($edit) echo $datainfo["as_effect"]; ?></textarea>
-    
-                            </div>
-                            <div class="form-group">
-                                <label>Action Type</label>
-                                <?php
-                                if ($edit) {
-                                    echo $assess->listActions($datainfo["as_action"]);
-                                } else {
-                                    echo $assess->listActions(-1);
-                                }
-    
-                                ?>
-    
-                            </div>
-                        </div>
+                        <?php } ?>
                         
+                        <?php if($on_mobile == true) { ?>
+                        <?php if($details == []){ ?>
+                        <div style="width:100%;min-height:400px;display:flex;justify-content:center;align-items:center;">
+                               <div style="text-align: center;"> 
+                                    <h3>Empty Data!!</h3>
+                                    No Risk Covered For This Assessment Yet,
+                                    <p><a href="add-risks?id=<?php echo $ass_Id; ?>" class="btn btn-primary btn-icon icon-left mt-2"><i class="fas fa-plus"></i> Add Risks</a></p>
+                                </div>
+                            </div>
+                        <?php }else{ ?>
+                        <table class="risk-desc">
+                            <?php 
+                                $i=0; foreach ($list_one as $item) { $i++; 
+                                $viewLink = 'risks?id='.$item["ri_id"].'" data-toggle="tooltip" title="View Risk" data-placement="right"';
+                                $editLink = 'edit-risks?id='.$item["ri_id"].'" data-toggle="tooltip" title="Edit Risk" data-placement="right"';
+                                $deleteLink = 'javascript:void(0);" class="delete action-icons btn btn-danger btn-action mr-1" data-toggle="modal" data-target="#deleteModal" data-type="risks" data-id="'.$item["ri_id"];
+                            ?>
+                            <tr>
+                                <th>S/N</th>
+                                <td><?php echo $i; ?></td>
+                            </tr>
+                            <tr>
+                                <th>Risk</th>
+                                <td><?php echo ucwords(getRisks($item['as_risk'], $con)); ?></td>
+                            </tr>
+                            <tr>
+                                <th>Risk Hazard</th>
+                                <td><?php echo ucwords(getHazards($item['as_hazard'], $con)); ?></td>
+                            </tr>
+                            <tr>
+                                <th>...</th>
+                                <td>
+                                    <a href="<?php echo $viewLink; ?>" class="action-icons btn btn-primary btn-action mr-1"><i class="fas fa-eye"></i></a>
+                                    <a href="<?php echo $editLink; ?>" class="action-icons btn btn-info btn-action mr-1"><i class="fas fa-edit"></i></a>
+                                    <a href="<?php echo $deleteLink; ?>"><i class="fas fa-trash-alt"></i></a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="border:none !important;">&nbsp;</th>
+                                <td style="border:none !important;">&nbsp;</td>
+                            </tr>
+                            <?php } ?>
+                        </table>
+                        <?php }} ?>
                         
-                        <div class="card-header"><h3 class="subtitle">Treatment Plans</h3></div>
-                        <div class="card-body">
-                            <div class="form-group">
-                                <label>Treatments<a href="#" data-tooltip="You add treatments to your risk by selecting existing treatment from your treatments library or you can create your own custom treatment by typing it into the text field below and clicking on '+Add' button."><img src="../img/help_ico.gif" / class="help-ico"></a></label>
-                                <select name="existing_tr" id="existing_tr" class="form-control" required>
-                                    <option value="-1" selected>Select and add an existing treatment</option>
-                                    <?php
-                                    echo $assess->listTreatmentsLib($_SESSION["userid"]);
-                                    ?>
-                                </select>
-    
+                        <?php if($list_one !== false){ ?>
+                        <div class="card-header"><h4>Risk Chart</h4></div>
+                            <div class="card-body">
+                                <table width="100%" border="1" cellspacing="0" cellpadding="3">
+                                        <tr>
+                                            <td colspan="2" rowspan="2" align="center" valign="middle">&nbsp;</td>
+                                            <td colspan="6" align="center" valign="middle"><strong>Consequence</strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">
+                                                Insignificant</td>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Minor</td>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Moderate
+                                            </td>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Major</td>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Severe</td>
+                                            <td width="12%" align="center" valign="middle" bgcolor="#EAEAEA">
+                                                <strong>Totals</strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="3%" rowspan="6" align="center" valign="middle" class="tbl_rotate" style='transform: rotate(-90deg);'><strong>Likelihood</strong></td>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Almost
+                                                certain</td>
+                                            <td width="14%" align="center" valign="middle" class='c-b' bgcolor="#FFFF00">
+                                                <?php echo countChart($assess_id, $company_id, 1, 1, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF9900">
+                                                <?php echo countChart($assess_id, $company_id, 1, 2, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF0000">
+                                                <?php echo countChart($assess_id, $company_id, 1, 3, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF0000">
+                                                <?php echo countChart($assess_id, $company_id, 1, 4, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF0000">
+                                                <?php echo countChart($assess_id, $company_id, 1, 5, $con); ?></td>
+                                            <td width="12%" align="center" valign="middle">
+                                                <strong><?php echo countLikelihood($assess_id, $company_id, 1, $con); ?></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Likely
+                                            </td>
+                                            <td width="14%" align="center" valign="middle" class='c-b' bgcolor="#FFFF00">
+                                                <?php echo countChart($assess_id, $company_id, 2, 1, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF9900">
+                                                <?php echo countChart($assess_id, $company_id, 2, 2, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF9900">
+                                                <?php echo countChart($assess_id, $company_id, 2, 3, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF0000">
+                                                <?php echo countChart($assess_id, $company_id, 2, 4, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF0000">
+                                                <?php echo countChart($assess_id, $company_id, 2, 5, $con); ?></td>
+                                            <td width="12%" align="center" valign="middle">
+                                                <strong><?php echo countLikelihood($assess_id, $company_id, 2, $con); ?></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Possible
+                                            </td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#00FF00">
+                                                <?php echo countChart($assess_id, $company_id, 3, 1, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-b' bgcolor="#FFFF00">
+                                                <?php echo countChart($assess_id, $company_id, 3, 2, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF9900">
+                                                <?php echo countChart($assess_id, $company_id, 3, 3, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF9900">
+                                                <?php echo countChart($assess_id, $company_id, 3, 4, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF0000">
+                                                <?php echo countChart($assess_id, $company_id, 3, 5, $con); ?></td>
+                                            <td width="12%" align="center" valign="middle">
+                                                <strong><?php echo countLikelihood($assess_id, $company_id, 3, $con); ?></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Unlikely
+                                            </td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#00FF00">
+                                                <?php echo countChart($assess_id, $company_id, 4, 1, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#00FF00">
+                                                <?php echo countChart($assess_id, $company_id, 4, 2, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-b' bgcolor="#FFFF00">
+                                                <?php echo countChart($assess_id, $company_id, 4, 3, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-b' bgcolor="#FFFF00">
+                                                <?php echo countChart($assess_id, $company_id, 4, 4, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF9900">
+                                                <?php echo countChart($assess_id, $company_id, 4, 5, $con); ?></td>
+                                            <td width="12%" align="center" valign="middle">
+                                                <strong><?php echo countLikelihood($assess_id, $company_id, 4, $con); ?></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Rare</td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#00FF00">
+                                                <?php echo countChart($assess_id, $company_id, 5, 1, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#00FF00">
+                                                <?php echo countChart($assess_id, $company_id, 5, 2, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#00FF00">
+                                                <?php echo countChart($assess_id, $company_id, 5, 3, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-b' bgcolor="#FFFF00">
+                                                <?php echo countChart($assess_id, $company_id, 5, 4, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-b' bgcolor="#FFFF00">
+                                                <?php echo countChart($assess_id, $company_id, 5, 5, $con); ?></td>
+                                            <td width="12%" align="center" valign="middle">
+                                                <strong><?php echo countLikelihood($assess_id, $company_id, 5, $con); ?></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">
+                                                <strong>Totals</strong>
+                                            </td>
+                                            <td width="14%" align="center" valign="middle">
+                                                <strong><?php echo countConsequence($assess_id, $company_id, 1, $con); ?></strong>
+                                            </td>
+                                            <td width="14%" align="center" valign="middle">
+                                                <strong><?php echo countConsequence($assess_id, $company_id, 2, $con); ?></strong>
+                                            </td>
+                                            <td width="14%" align="center" valign="middle">
+                                                <strong><?php echo countConsequence($assess_id, $company_id, 3, $con); ?></strong>
+                                            </td>
+                                            <td width="14%" align="center" valign="middle">
+                                                <strong><?php echo countConsequence($assess_id, $company_id, 4, $con); ?></strong>
+                                            </td>
+                                            <td width="14%" align="center" valign="middle">
+                                                <strong><?php echo countConsequence($assess_id, $company_id, 5, $con); ?></strong>
+                                            </td>
+                                            <td width="12%" align="center" valign="middle">
+                                                <strong><?php echo $totalrisks; ?></strong>
+                                            </td>
+                                        </tr>
+                                </table>
                             </div>
-                            <div class="form-group">
-                                <input style="width:84%;float:left;" name="treatment" id="treatment" type="text" maxlength="255" class="form-control" placeholder="Enter custom treatment description...">
-                                <button style="width:15%;float:right;margin-top:0px;" type="button" class="btn btn-sm btn-info" id="btn_addtreatment">+ Add</button>
+                        
+                            <div class="card-header"><h4>Risk totals</h4></div>
+                            <div class="card-body">
+                                <table width="30%" border="1" cellspacing="0" cellpadding="3">
+                                        <tr>
+                                            <td width="60%" align="left" valign="middle">&nbsp;</td>
+                                            <td align="center" valign="middle" bgcolor="#EAEAEA"><strong>Total</strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="60%" align="left" valign="middle">&nbsp;Extreme risks</td>
+                                            <td align="center" valign="middle" bgcolor="#FF0000" class='c-w'>
+                                                <strong><?php echo countRisks($assess_id, $company_id, 4, $con); ?></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="60%" align="left" valign="middle">&nbsp;High risks</td>
+                                            <td align="center" valign="middle" bgcolor="#FF9900" class='c-w'>
+                                                <strong><?php echo countRisks($assess_id, $company_id, 3, $con); ?></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="60%" align="left" valign="middle">&nbsp;Medium risks</td>
+                                            <td align="center" valign="middle c-b" bgcolor="#FFFF00" class='c-b'>
+                                                <strong><?php echo countRisks($assess_id, $company_id, 2, $con); ?></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="60%" align="left" valign="middle">&nbsp;Low risks</td>
+                                            <td align="center" valign="middle" bgcolor="#00FF00" class='c-w'>
+                                                <strong><?php echo countRisks($assess_id, $company_id, 1, $con); ?></strong>
+                                            </td>
+                                        </tr>
+                                    </table>
                             </div>
-                            <div class="clearfix" id="treatments">
-                                &nbsp;
-                            </div>
-                            <div class="form-group">
-                                <label>Due Date</label>
-                                <input name="date" id="date" type="text" maxlength="100" class="form-control readonly" placeholder="Select date..." required readonly style="cursor:pointer;" value="<?php if ($edit) { echo date("m/d/Y", strtotime($datainfo["as_duedate"])); } else { echo date("m/d/Y"); } ?>">
-                            </div>
-                            <div class="form-group">
-                                <label>Action Owner</label>
-                                <input name="owner" id="owner" type="text" maxlength="100" class="form-control" placeholder="Enter action owner..." required value="<?php if ($edit) echo $datainfo["as_owner"]; ?>">
-                            </div>
-                        </div>
-
-                        <div class="card-body">
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-md btn-info" id="btn_save">Save Risk</button>
-                                <button type="button" class="btn btn-md btn-warning" id="btn_cancel">Cancel</button>
-
-                                <input name="action" type="hidden" value="<?php #echo $_REQUEST["action"]; ?>" />
-                                <input name="id" type="hidden" value="<?php if ($edit) echo $id; ?>" />
-                                <input name="assessmentId" type="hidden" value="<?php echo $assessment['idassessment']; ?>" />
-
-                            </div>
-                        </div>
-
-                    </form>
+                        <?php }else{} ?>
+                                
                 </div>
                 <?php }else{ ?>
+                <div class="card">
+                    <div class="card-body" style="display:flex;justify-content:center;align-items:center;min-height:500px;">
+                        <div>
+                            <h3 style="display:flex;justify-content:center;align-items:center;width:100%;">Error 402!!</h3>
+                            <div style="display:flex;justify-content:center;align-items:center;width:100%;font-weight:500;">Assessment Does Not Exist!!</div>
+                            <div style="display:flex;justify-content:center;align-items:center;width:100%;font-size:15px;font-weight:400;">File May Have Been Moved or Deleted, Contact <?php echo $whois; ?> For More Information.</div>
+                        </div>
+                    </div>
+                </div>
+                <?php }}else{ ?>
                 <div class="card">
                     <div class="card-body" style="display:flex;justify-content:center;align-items:center;min-height:500px;">
                         <div>
@@ -226,151 +470,65 @@ if (isset($_REQUEST["response"]) and $_REQUEST["response"] == "err") {
             </div>
             </section>
         </div>
+        <?php require '../../layout/delete_data.php' ?>
         <?php require '../../layout/footer.php' ?>
         </footer>
         </div>
     </div>
     <?php require '../../layout/general_js.php' ?>
+    <script src="<?php echo $file_dir; ?>assets/bundles/prism/prism.js"></script>
     <style>
         textarea{
             min-height: 120px !important;
         }
+        .bb{
+            margin: 0px 5px;
+        }
+        .main-footer{
+            margin-top: 15px !important;
+        }
+        .card{
+            margin: 10px 0px;
+            padding: 10px 0px;
+        }
+        .user-description + .user-description{
+            margin-top: 10px;
+        }
+        .title_text{
+            
+        }
+        table#table{
+            border-radius: 5px !important;
+        }
+        .c-w{
+            color:black !important;
+            font-weight:bolder;
+        }
+        .c-b{
+            color:black !important;
+            font-weight:bolder;
+        }
     </style>
     <script>
-        $(document).ready(function(e) {
-
-        <?php
-        //picks up data from the db and asigns values to JS variables
-            if ($edit) {
-            echo 'detid=' . $id . ';';
-            echo 'selrisk=' . $datainfo["as_risk"] . ';';
-            echo 'selhazard=' . $datainfo["as_hazard"] . ';';
-            echo 'cathazard=' . $datainfo["as_risk"] . ';';
-            echo 'riskType=' . $assessment["as_type"] . ';';
+		 $(".delete").click(function(e) { 
+            var id = $(this).attr('data-id');
+            var type = $(this).attr('data-type');
+            if (id == '' || !id || id == null || type == '' || !type || type == null) {
+                alert('Error 402!!');
+                //refresh
+                //window.location.assign("audits");
             } else {
-            echo 'detid=-1;';
-            echo 'selrisk=-1;';
-            echo 'selhazard=-1;';
-            echo 'cathazard=-1;';
-            echo "selcontrol=-1;";
-            echo 'riskType=' . $assessment["as_type"] . ';';
-            }
-
-        ?>
-
-        $(function() {
-            $("#date").datepicker();
-        });
-
-        $("#btn_cancel").click(function(e) {
-            $(location).attr("href", "assessment.php?id=<?php echo $assessment['idassessment']; ?>");
-        });
-
-
-        $("#risk_div").load('../rs/controller/assessment.php?action=listrisks&type=' + riskType + '&selected=' + selrisk);
-        $("#hazard_div").load('../rs/controller/assessment.php?action=listhazards&cat=' + cathazard + '&selected=' + selhazard);
-        $("#treatments").load('../rs/controller/assessment.php?action=listtreat&id=' + detid);
-        $("#controls").load('../rs/controller/assessment.php?action=listcontrols&id=' + detid);
-        $("#rating").load('../rs/controller/assessment.php?action=rating&likelihood=' + $("#likelihood").val() + '&consequence=' + $("#consequence").val());
-
-        $("#risk_div").change(function(e) {
-
-            $("#hazard_div").load('../rs/controller/assessment.php?action=listhazards&cat=' + $("#risk").val() + '&selected=' + selhazard);
-
-        });
-
-        $("#consequence, #likelihood").change(function(e) {
-
-            $("#rating").load('../rs/controller/assessment.php?action=rating&likelihood=' + $("#likelihood").val() + '&consequence=' + $("#consequence").val());
-
-        });
-
-        $("#btn_addtreatment").click(function(e) {
-            if ($("#treatment").val() !== '') {
-            $.ajax({
-                type: "GET",
-                url: "../rs/controller/assessment.php?action=addtreat&descript=" + $("#treatment").val() + '&id=' + detid,
-                async: false
-            })
-            $("#treatments").load('../rs/controller/assessment.php?action=listtreat&id=' + detid);
-            $("#treatment").val("");
+                $("#data-id").val();
+                $("#data-id").val(id);
+                $("#data-type").val();
+                $("#data-type").val(type);
+                $("#view-id").html();
+                $("#view-id").html(id);
+                $(".view-type").html();
+                $(".view-type").html(type);
             }
         });
-
-        $("#btn_addcontrol").click(function(e) {
-            if ($("#control").val() !== '') {
-                $.ajax({
-                    type: "GET",
-                    url: "../rs/controller/assessment.php?action=addcontrol&descript=" + $("#control").val() + '&id=' + detid,
-                    async: false
-                })
-                $("#controls").load('../rs/controller/assessment.php?action=listcontrols&id=' + detid);
-                $("#control").val("");    
-                // alert('works');
-            }
-        });
-
-        $("#existing_ct").change(function(e) {
-            if ($(this).val() !== '-1') {
-            $("#control").prop("disabled", true);
-            $("#btn_addcontrol").prop("disabled", true);
-            $.ajax({
-                type: "GET",
-                url: "../rs/controller/assessment.php?action=addlibcontrol&id=" + $(this).val() + '&det=' + detid,
-                async: false
-            })
-            // $("#controls").load('../rs/controller/assessment.php?action=listcontrols&id=' + detid);
-            // $("#control").val("");
-            }
-            if ($(this).val() === '-1') {
-            $("#control").prop("disabled", false);
-            $("#btn_addcontrol").prop("disabled", false);
-            }
-        });
-
-        $("#existing_tr").change(function(e) {
-            if ($("#exisitng_tr").val() !== '-1') {
-            $.ajax({
-                type: "GET",
-                url: "../rs/controller/assessment.php?action=addlibtreat&id=" + $("#existing_tr").val() + '&det=' + detid,
-                async: false
-            })
-            $("#treatments").load('../rs/controller/assessment.php?action=listtreat&id=' + detid);
-            $("#treatment").val("");
-            $("#existing_tr").val("-1");
-            }
-        });
-
-        $("#btn_viewdet").click(function(e) {
-            $(location).attr("href", "assessment.php?id=<?php echo $assessment['idassessment']; ?>");
-        });
-
-
-        });
-
-        function del(what, id) {
-
-        if (what == "treatment") {
-            $.ajax({
-            type: "GET",
-            url: "../rs/controller/assessment.php?action=deletetreat&id=" + id,
-            async: false
-            })
-            $("#treatments").load('../rs/controller/assessment.php?action=listtreat&id=' + detid);
-        }
-
-        if (what == "control") {
-            $.ajax({
-            type: "GET",
-            url: "../rs/controller/assessment.php?action=deletecontrol&id=" + id,
-            async: false
-            })
-            $("#controls").load('../rs/controller/assessment.php?action=listcontrols&id=' + detid);
-        }
-
-        }
-    </script>
-
+	</script>
 </body>
 
 </html>

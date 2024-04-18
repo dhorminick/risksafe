@@ -6,11 +6,12 @@
         }
         
     ?>
-    <!-- General JS Scripts -->
+    <link rel="preload" href="<?php echo $file_dir; ?>assets/js/app.min.js" as='script'>
+    <link rel="preload" href="<?php echo $file_dir; ?>assets/js/scripts.js" as='script'>
+    <link rel="preload" href="<?php echo $file_dir; ?>assets/js/custom.js" as='script'>
+    
     <script src="<?php echo $file_dir; ?>assets/js/app.min.js"></script>
-    <!-- JS Libraies -->
     <script src="<?php echo $file_dir; ?>assets/js/scripts.js"></script>
-    <!-- Custom JS File -->
     <script src="<?php echo $file_dir; ?>assets/js/custom.js"></script>
 
     <script>

@@ -12,9 +12,7 @@
 .section-signup {
   box-shadow: 0 4px 25px 0 rgba(0, 0, 0, 0.1);
 }
-* {
-  font-size: 16px;
-}
+
 .section-headers {
   /* color: #f8f8f8; */
   background: url(../img/intro-bg.png) no-repeat center center;
@@ -82,4 +80,7 @@ ul.section-ul {
 }
 .social-icons i {
   font-size: 25px;
+}
+.social-icons i.fas {
+  font-size: 24px;
 }

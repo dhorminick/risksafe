@@ -6,16 +6,17 @@
     <nav class="navbar navbar-expand-lg main-navbar sticky">
         <div class="form-inline mr-auto custom">
           <ul class="navbar-nav mr-3">
-            <li>RiskSafe - Risk Assessments</li>
+            <!-- <li>RiskSafe - Risk Assessments</li> -->
+            <li><a href='/'><img src="assets/images/logo-edit.jpg" class='logo' alt="LOGO*"></a></li>
           </ul>
         </div>
         <ul class="navbar-nav navbar-right breadcrumb header-lg">
             <li class="breadcrumb-item active"><a href="/">Home</a></li>
-            <li class="breadcrumb-item"><a href="/about.php">About</a></li>
-            <li class="breadcrumb-item"><a href="/resources.php">Resources</a></li>
-            <li class="breadcrumb-item"><a href="/pricing.php">Pricing</a></li>
-            <li class="breadcrumb-item"><a href="/contact.php">Contact Us</a></li>
-            <li class="breadcrumb-item"><a href="/login.php">Account</a></li>
+            <li class="breadcrumb-item"><a href="/about-us">About</a></li>
+            <li class="breadcrumb-item"><a href="/resources">Resources</a></li>
+            <li class="breadcrumb-item"><a href="/pricing">Pricing</a></li>
+            <li class="breadcrumb-item"><a href="/contact-us">Contact Us</a></li>
+            <li class="breadcrumb-item"><a href="/login">Account</a></li>
         </ul>
         <div class="header-sm">
           <ul class="navbar-nav navbar-right">
@@ -23,13 +24,14 @@
           </ul>
         </div>
         <div class="header-sm-links">
+          <div style="text-align: center;margin-bottom:10px;margin-top:-30px;"><img src="assets/images/logo-edit.jpg" class='logo' alt="LOGO*"></div>
           <ul>
             <li class=" active"><a href="/">Home</a></li>
-            <li class=""><a href="/about.php">About</a></li>
-            <li class=""><a href="/resources.php">Resources</a></li>
-            <li class=""><a href="/pricing.php">Pricing</a></li>
-            <li class=""><a href="/contact.php">Contact Us</a></li>
-            <li class=""><a href="/login.php">Account</a></li>
+            <li class=""><a href="/about-us">About</a></li>
+            <li class=""><a href="/resources">Resources</a></li>
+            <li class=""><a href="/pricing">Pricing</a></li>
+            <li class=""><a href="/contact-us">Contact Us</a></li>
+            <li class=""><a href="/login">Account</a></li>
           </ul>
         </div>
     </nav>

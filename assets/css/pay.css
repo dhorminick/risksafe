@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Raleway:100,200,300,400,500,600,700,800,900|Roboto:100,300,400,500,700,900|Rubik:300,400,500,700,900');
+        :root {
+          --primary: #14a800;
+          --sc-primary: #001e00;
+          --sc-secondary: #033500;
+        }
+            html, body {
+          height: 100%;
+          margin: 0px !important;
+          padding: 0px !important;
+          font-family: 'Rubik', sans-serif;
+        }
+                .__main{
+                    /*border: 1px solid var(--primary);*/
+                    position:absolute;
+          top:0px;
+          right:0px;
+          bottom:0px;
+          left:0px;
+          background: rgba(0, 0, 0, 0.8); /* Black background with 0.5 opacity */
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .__msg{
+            background-color:white;
+            box-shadow: 0 5px 10px 0 rgba(0,0,0,.1);
+            border-top: 10px solid var(--primary);
+            border-left: 2px solid var(--primary);
+            border-right: 2px solid var(--primary);
+            border-bottom: 2px solid var(--primary);
+            border-radius: 5px;
+            width: 50%;
+            height: 400px;
+            text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding:20px;
+        }
+        .__msg_txt{
+            margin-bottom:10px;
+        }
+        .__msg_btn button{
+                border-radius: 3px;
+                font-family: 'Rubik', sans-serif;
+    border: none;
+    outline: none !important;
+    padding: 10px 15px;
+    text-align: center;
+    background-color: var(--primary);
+    color: white;
+    /*font-weight:bolder;*/
+    cursor: pointer;
+        }
+        .__msg_btn button:hover{
+            background-color: var(--sc-secondary);
+        }
+        .__msg_btn{
+            margin-top: 10px;
+        }
+        .__msg_icon {
+    position: relative;
+    background-color: var(--primary);
+    width: 80px;
+    height: 80px;
+    line-height: 100px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+        .__msg_icon i{
+            font-size: 40px;
+            color: #fff;
+            position: relative;
+            z-index: 1;
+        }
+        @media screen and (max-width: 769px) {
+          .__msg{
+              width:100% !important;
+              
+          }
+          .__main{
+              /*display: block !important;*/
+              background: none !important;
+             align-items: normal !important;
+  justify-content: inherit !important;
+  padding: 10px;
+          }
+        }

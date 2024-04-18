@@ -20,7 +20,7 @@
         <?php require 'layout/header_main.php' ?>
         <!-- Main Content -->
         <div class="main-content">
-            <div class="intro-header custom resources">
+            <div class="intro-header custom resources" style="display: none;">
                 <div class="intro-message">
                     <h2>Our Resources</h2>
                     <div class="intro-breadcrumbs">
@@ -29,9 +29,21 @@
                     </div>
                 </div>
             </div>
+			<section class="header-section">
+				<div class="">
+					<div class="intro-breadcrumbs custom">
+                        <a href="/" class="bb">Home</a>
+                        <a href="">Our Resources</a>
+                    </div>
+					<h1 class="h">RiskSafe Resources</h1>
+					<div class="header-text">
+						<div>Free resources in all shapes and kinds made by our experts at <span class="risksafe">RiskSafe</span> on Risk Assessments, Management, Treatments and Maintenance for different possible outcomes and scenerios.</div>
+					</div>
+				</div>
+			</section>
             <section class="section">
             <div class="section-body">
-				<div class="card">
+				<div class="card" style="display:none;">
 					<div class="card-header"> 
 						<h2 class="section-text-heading">Risk Management</h2> 
 					</div>
@@ -48,7 +60,7 @@
 					<div class="card-footer"> 
 					</div>  
 				</div>   
-				<div class="card">
+				<div class="card" style="display:none;">
 					<div class="card-header"> 
 						<h2 class="section-text-heading">Risk Management – Overview in 5 Steps</h2> 
 					</div>
@@ -86,129 +98,117 @@
 					<div class="card-footer"> 
 					</div>  
 				</div>   
-				<div class="card">
-					<div class="card-header"> 
-						<h3 class="section-text-heading">Risk Management Resources</h3>
-					</div>
-					<div class="card-body"> 
-						<div class="row resources" style="display: flex;flex-wrap: wrap;">
+				<div class="card r">
+					<div class="card-body">
+						<div class="row custom-row resources">
 							<div class="col-lg-4 col-12">
-								<div class="thumbnail-custom">
-									<div class="r-card-header">
-										Conducting a Risk Assessment in 5 Steps
-									</div>
-									<div class="r-card-body">
+								<div class="resource-image" style="--bg-image: url('../images/What-is-a-Four-Factor-Breach-Risk-Assessment.png')"></div>
+								<div class="resource-text">
+									<h3 class="resource-header">Conducting a Risk Assessment</h3>
+									<p class="resource-desc">
 										<?php 
 											$string = "Describe the risk. What can happen? Consider how and why it can happen. What happens if the risk eventuates? Systematically analyse your systems and processes to identify critical points. Conduct a review of your records and reports to identify things that have gone wrong in the past.";
 											echo substr($string,0,200).'...'; 
 										?>
-									</div>
-									<div class="r-card-footer"><a href="<?php printPageURL("management-resources/conducting-a-risk-assessment-in-5-steps.php");?>" class="bb">Read More</a></div>
+									</p>
+									<div class="r-card-footer"><a href="/management-resources/control-self-assessment.php" class="bb">Read More</a></div>
 								</div>
 							</div>
 							<div class="col-lg-4 col-12">
-								<div class="thumbnail-custom">
-									<div class="r-card-header">
-										Common Risk Types
-									</div>
-									<div class="r-card-body">
+								<div class="resource-image" style="--bg-image: url('../images/Types-of-Risk-in-Insurance.webp')"></div>
+								<div class="resource-text">
+									<h3 class="resource-header">Common Risk Types</h3>
+									<p class="resource-desc">
 										<?php 
 											$string = "The level and type of risk that you need to consider will vary with the type of business you operate. However, there are some common categories which you can use to guide your thinking and the development of your risk management plan.";
 											echo substr($string,0,200).'...'; 
 										?>
-									</div>
-									<div class="r-card-footer"><a href="<?php printPageURL("management-resources/common-risk-types.php");?>" class="bb">Read More</a></div>
+									</p>
+									<div class="r-card-footer"><a href="management-resources/common-risk-types.php" class="bb">Read More</a></div>
 								</div>
 							</div>
 							<div class="col-lg-4 col-12">
-								<div class="thumbnail-custom">
-									<div class="r-card-header">
-										Control Self Assessment
-									</div>
-									<div class="r-card-body">
+								<div class="resource-image" style="--bg-image: url('../images/control-self-assessments-blog-20161123-k12532.jpg')"></div>
+								<div class="resource-text">
+									<h3 class="resource-header">Control Self Assessment (CSA)</h3>
+									<p class="resource-desc">
 										<?php 
 											$string = "Control Self Assessment (CSA) is a management tool designed to assist work teams to be more effective in achieving their objectives and managing their related risks. CSA is a highly interactive and collaborative process that is designed to focus on processes and issues that are important to a business or organisation. The CSA should include the people actually doing the work - not just those managing a process.";
 											echo substr($string,0,200).'...'; 
 										?>
-									</div>
-									<div class="r-card-footer"><a href="<?php printPageURL("management-resources/control-self-assessment.php");?>" class="bb">Read More</a></div>
+									</p>
+									<div class="r-card-footer"><a href="management-resources/control-self-assessment.php" class="bb">Read More</a></div>
 								</div>
 							</div>
 							<div class="col-lg-4 col-12">
-								<div class="thumbnail-custom">
-									<div class="r-card-header">
-										How can a Controls Assessment help your business?
-									</div>
-									<div class="r-card-body">
+								<div class="resource-image" style="--bg-image: url('../images/Scytale_Blog-images-03-3-1-768x511.jpg.webp')"></div>
+								<div class="resource-text">
+									<h3 class="resource-header">How can a Controls Assessment help your business?</h3>
+									<p class="resource-desc">
 										<?php 
 											$string = "How can a Controls Assessment help your business? Stay ahead of the competition, Comply with regulatory or licensing requirements, Deal with new technologies, Meet quality system requirements in the supply chain, Improve safety, Boost productivity and profitability, Keep customers, Allow for expansion, Reduce employee turnover, Increase efficiency, Decrease the need for supervision.";
 											echo substr($string,0,200).'...'; 
 										?>
-									</div>
-									<div class="r-card-footer"><a href="<?php printPageURL("management-resources/controls-assessment-for-business.php");?>" class="bb">Read More</a></div>
+									</p>
+									<div class="r-card-footer"><a href="management-resources/controls-assessment-for-business.php" class="bb">Read More</a></div>
 								</div>
 							</div>
 							<div class="col-lg-4 col-12">
-								<div class="thumbnail-custom">
-									<div class="r-card-header">
-										Workplace Health &amp; Safety Risk Assessments
-									</div>
-									<div class="r-card-body">
+								<div class="resource-image" style="--bg-image: url('../images/examples-of-health-and-safety-risk-assessmennts-464007914.jpg')"></div>
+								<div class="resource-text">
+									<h3 class="resource-header">Workplace Health &amp; Safety Risk Assessments</h3>
+									<p class="resource-desc">
 										<?php 
 											$string = "Every business owner should manage health & safety of your business and control risks. Health and safety risk assessments should be carried out with your key staff who knows the environment you operate in. Risks are triggered when any changes affect your work activities like";
 											echo substr($string,0,200).'...'; 
 										?>
-									</div>
-									<div class="r-card-footer"><a href="<?php printPageURL("management-resources/workplace-health-and-safety-risk-assessment.php");?>" class="bb">Read More</a></div>
+									</p>
+									<div class="r-card-footer"><a href="management-resources/workplace-health-and-safety-risk-assessment.php" class="bb">Read More</a></div>
 								</div>
 							</div>
 							<div class="col-lg-4 col-12">
-								<div class="thumbnail-custom">
-									<div class="r-card-header">
-										Risk Management for Community &amp; Charity Groups
-									</div>
-									<div class="r-card-body">
+								<div class="resource-image" style="--bg-image: url('../images/what-insurance-does-a-community-group-need.jpg')"></div>
+								<div class="resource-text">
+									<h3 class="resource-header">Risk Management for Community &amp; Charity Groups</h3>
+									<p class="resource-desc">
 										<?php 
 											$string = "The responsibility for the management and control of a charity rests with the committee or trustee body and therefore their involvement in the key aspects of the risk management process is essential. In all but the smallest charities, the trustees are likely to delegate elements of the risk management process to staff or professional advisers.";
 											echo substr($string,0,200).'...'; 
 										?>
-									</div>
-									<div class="r-card-footer"><a href="<?php printPageURL("management-resources/risk-management-for-community-and-charity-groups.php");?>" class="bb">Read More</a></div>
+									</p>
+									<div class="r-card-footer"><a href="management-resources/risk-management-for-community-and-charity-groups.php" class="bb">Read More</a></div>
 								</div>
 							</div>
 							<div class="col-lg-4 col-12">
-								<div class="thumbnail-custom">
-									<div class="r-card-header">
-										Insurable Risks
-									</div>
-									<div class="r-card-body">
+								<div class="resource-image" style="--bg-image: url('../images/7915_bigstock_Businessman_Collects_Wooden_Pu_302963389.jpg')"></div>
+								<div class="resource-text">
+									<h3 class="resource-header">Insurable Risks</h3>
+									<p class="resource-desc">
 										<?php 
 											$string = "Insurance is a small part of the whole Risk Management process. It allows your organisation to receive financial compensation in the case of loss through the operation of your organisation. However, it does not prevent an incident occurring. Insurance should be employed as a “safety net”in case of an incident.";
 											echo substr($string,0,200).'...'; 
 										?>
-									</div>
-									<div class="r-card-footer"><a href="<?php printPageURL("management-resources/insurable-risks.php");?>" class="bb">Read More</a></div>
+									</p>
+									<div class="r-card-footer"><a href="management-resources/insurable-risks.php" class="bb">Read More</a></div>
 								</div>
 							</div>
 							<div class="col-lg-4 col-12">
-								<div class="thumbnail-custom">
-									<div class="r-card-header">
-										How to Reduce Your Insurance Premiums
-									</div>
-									<div class="r-card-body">
+								<div class="resource-image" style="--bg-image: url('../images/shutterstock_14082997881.jpg')"></div>
+								<div class="resource-text">
+									<h3 class="resource-header">How to Reduce Your Insurance Premiums</h3>
+									<p class="resource-desc">
 										<?php 
 											$string = "Many of the risks that could edge your business into a higher premium bracket can be minimised, reassuring your insurance company about your reduced level of risk. As work environments become safer, the number of workers’ compensation claims continues to decline. By performing regular safety checks, reinforcement of safe working behaviour of employees, eliminating hazards that cause injuries can reduce workers compensation premiums.";
 											echo substr($string,0,200).'...'; 
 										?>
-									</div>
-									<div class="r-card-footer"><a href="<?php printPageURL("management-resources/reduce-your-insurance-premiums.php");?>" class="bb">Read More</a></div>
+									</p>
+									<div class="r-card-footer"><a href="management-resources/reduce-your-insurance-premiums.php" class="bb">Read More</a></div>
 								</div>
 							</div>
+
 						</div>
-					</div>
-					<div class="card-footer"> 
-					</div>  
-				</div>              
+					</div>      
+				</div>            
             </div>
             </section>
         </div>
@@ -219,6 +219,12 @@
     <?php require 'layout/general_js.php' ?>
 </body>
 <style>
+	.card.r .header-text{
+		font-weight: 400;
+		font-size: 16px;
+		text-align: center !important;
+		width: 100%;
+	}
     .section-body{
         padding: 20px;
     }
@@ -279,6 +285,10 @@
 	}
 	p.bold{
 	font-weight: bold !important;
+	}
+	.card{
+		padding: 0px 0px;
+		margin: 5px -30px 10px -30px;
 	}
 </style>
 </html>

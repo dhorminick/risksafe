@@ -1,14 +1,14 @@
 <?php
-
+    session_start();
     require 'layout/db.php';
     require 'layout/config.php';
     require 'layout/variablesandfunctions.php';     
     require 'layout/mail.php';     
 
+    $signedIn = false;
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {}
-    $signedIn = false;
     $message = [];
     $nameChecker = false;
     $emailChecker = false;
@@ -20,7 +20,7 @@
 
         $email = sanitizePlus($_POST["email"]);
         $password = sanitizePlus($_POST["password"]);
-        $name = sanitizePlus($_POST["name"]);
+        $name = sanitizePlus($_POST["fullname"]);
         $company = sanitizePlus($_POST["company"]);
         $u_id = secure_random_string(20);
         $datetime = date("Y-m-d H:i:s");
@@ -35,6 +35,22 @@
         if ($nameChecker == true || $emailChecker == true || $passwordChecker == true || $companyChecker == true) {
             array_push($message, "Error 402: Incomplete Parameters!!");
         } else {
+            $password = weirdlyEncode($password);
+            $company_details = array(
+                'company_name' => $company, 
+                'company_address' => '', 
+                'company_city' => '', 
+                'company_state' => '', 
+                'company_postcode' => '', 
+                'company_country' => '', 
+            );
+            $company_details = serialize($company_details);
+            $user_details = array(
+                'fullname' => $name,
+                'phone' => '',
+                'location' => '', 
+            );
+            $user_details = serialize($user_details);
             $CheckIfUserExist = "SELECT * FROM users WHERE u_mail = '$email' LIMIT 1";
             $UserExist = $con->query($CheckIfUserExist);
             if ($UserExist->num_rows > 0) {
@@ -43,63 +59,26 @@
                 $otp = secure_random_string(20);
                 $company_id = secure_random_string(10);
                 $company_id = strtoupper($company_id);
-                $confirmation_link = 'https:risksafe.co/auth?e='.weirdlyEncode($email).'&auth='.$otp;
-                #mail
-                    // $mail = new PHPMailer();
-                    // //Enable SMTP debugging
-                    // $mail->SMTPDebug = 0;
-                    
-                    // $mail->isSMTP();
-                    // $mail->Host = 'smtp.gmail.com';
-                    // $mail->SMTPAuth = true;
-                    // $mail->Username = 'dev3.bdpl@gmail.com';
-                    // $mail->Password = 'binarydata000';
-                    // $mail->SMTPSecure = 'tls';
-                    // $mail->Port = 587;
-                    // $mail->setFrom('dev3.bdpl@gmail.com');
-                    // $mail->addAddress($email);
-        
-                    // $mail->isHTML(true);
-                    // $mail->Subject = 'RiskSafe - Confirm Account One-Time Password (OTP)';
-                    // $mail->Body = 'Your One-Time Confirmation Link is:' . $confirmation_link;
-        
-        
-                    // if ($mail->send()) {
-                    //     #add user
-                    //     $createNewUser = "INSERT INTO users (`iduser`, `superuserid`, `u_mail`, `u_password`, `u_name`, `u_phone`, `u_location`, `c_company`, `c_address`, `c_city`, `c_state`, `c_postcode`, `c_country`, `u_complete`, `u_otp`, `u_datetime`, `u_expire`, `role`,`user_loginstatus`, `u_id`, `company_users`, `company_id`)
-                    //       VALUES (NULL, 0, '$email', '$password', '$name', '', '', '$company', '', '', '', '', '', '0', '$otp', '$datetime', '$expire', 'client', 0, '$u_id', 'a:0:{}', `$company_id`)";
-                    //     $userCreated = $con->query($createNewUser);
-                    //     if ($userCreated) {
-                    //         $createContext = "INSERT INTO `as_context`(`idcontext`, `cx_user`, `cx_objectives`, `cx_processes`, `cx_products`, `cx_projects`, `cx_systems`, `cx_relation`, `cx_internallosses`, `cx_externallosses`, `cx_competitors`, `cx_environment`, `cx_regulatory`) VALUES (Null,'$u_id','','','','','','','','','','','')";
-                    //         $contextCreated = $con->query($createContext);
-                    //         if ($contextCreated) {}else{
-                    //             array_push($message, "Error 502: Server Error!! Contact Our Support Team For More Info.");
-                    //         }
-                    //         array_push($message, 'Account Details Registered Successfully, Login To "'.$email.'" To Authenticate The Account!!');
-                    //     }else{
-                    //         array_push($message, "Error 502: Server Error!! Contact Our Support Team For More Info.");
-                    //     }
-                    // } else {
-                    //     array_push($message, "Error 502: Error Sending OTP!! ".$mail->ErrorInfo);
-                    // };
+                $confirmation_link = $site__.'/auth?e='.weirdlyEncode($email).'&auth='.$otp;
+                
                 #mail
                 $mailSubject = 'RiskSafe - Confirm Account One-Time Password (OTP)';
                 $mailRecipient = $email;
                 $mailSender = $signUpSender;
-                $mailBody = 'Your One-Time Confirmation Link is:' . $confirmation_link;
-                $mail = mailUser($mailSubject, $mailBody, $mailRecipient, $mailSender);
-                if ($mail['sent'] == true) {
+                $mail = _createAcc($mailSender, $mailRecipient, $mailSubject, $confirmation_link, $name, $page_fb, $page_ig, $page_yt, $page_x, $siteMainLocation, $page_wt, $site__, $signUpHelp);
+                // $mail['sent'] = true;
+                if ($mail['sent'] === 'true' && $mail['error'] === 'none') {
                     #add user
-                    $createNewUser = "INSERT INTO users (`iduser`, `superuserid`, `u_mail`, `u_password`, `u_name`, `u_phone`, `u_location`, `c_company`, `c_address`, `c_city`, `c_state`, `c_postcode`, `c_country`, `u_complete`, `u_otp`, `u_datetime`, `u_expire`, `role`,`user_loginstatus`, `u_id`, `company_users`, `company_id`)
-                      VALUES (NULL, 0, '$email', '$password', '$name', '', '', '$company', '', '', '', '', '', '0', '$otp', '$datetime', '$expire', 'client', 0, '$u_id', 'a:0:{}', `$company_id`)";
+                    $createNewUser = "INSERT INTO users (`superuserid`, `u_mail`, `u_password`, `u_name`, `u_phone`, `u_location`, `c_company`, `c_address`, `c_city`, `c_state`, `c_postcode`, `c_country`, `u_complete`, `u_otp`, `u_datetime`, `u_expire`, `role`,`user_loginstatus`, `u_id`, `company_users`, `company_id`, `company_details`, `user_details`, `payment_status`, `payment_duration`)
+                      VALUES (0, '$email', '$password', '$name', '', '', '$company', '', '', '', '', '', 'false', '$otp', '$datetime', '$expire', 'admin', 0, '$u_id', 'a:0:{}', '$company_id', '$company_details', '$user_details', 'free', 'trial')";
                     $userCreated = $con->query($createNewUser);
                     if ($userCreated) {
-                        $createContext = "INSERT INTO `as_context`(`idcontext`, `cx_user`, `cx_objectives`, `cx_processes`, `cx_products`, `cx_projects`, `cx_systems`, `cx_relation`, `cx_internallosses`, `cx_externallosses`, `cx_competitors`, `cx_environment`, `cx_regulatory`) VALUES (Null,'$u_id','','','','','','','','','','','')";
+                        $createContext = "INSERT INTO `as_context`(`cx_user`, `cx_objectives`, `cx_processes`, `cx_products`, `cx_projects`, `cx_systems`, `cx_relation`, `cx_internallosses`, `cx_externallosses`, `cx_competitors`, `cx_environment`, `cx_regulatory`) VALUES ('$u_id','','','','','','','','','','','')";
                         $contextCreated = $con->query($createContext);
                         if ($contextCreated) {}else{
                             array_push($message, "Error 502: Server Error!! Contact Our Support Team For More Info.");
                         }
-                        array_push($message, 'Account Details Registered Successfully, Login To "'.$email.'" To Authenticate The Account!!');
+                        array_push($message, 'Account Details Registered Successfully, Login To "'.$email.'" To Authenticate The Account!! ');
                     }else{
                         array_push($message, "Error 502: Server Error!! Contact Our Support Team For More Info.");
                     }
@@ -110,6 +89,7 @@
             }
         }
     }
+    
 
 ?>
 
@@ -179,12 +159,11 @@
                                 </form>
                             </div>
                             <div class="card-footer custom" style="text-align: center;">
-                               Already Have An Account? <a href="login.php" class="bb">Sign In</a>
+                               Already Have An Account? <a href="login" class="bb">Sign In</a>
                             </div>
                         </div>             
                     </div>
                 </div>
-        	
             </div>
             </section>
         </div>

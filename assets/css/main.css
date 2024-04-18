@@ -17,4 +17,307 @@
 }
 .breadcrumb-item + .breadcrumb-item::before {
   content: "|" !important;
+  /* margin: 20px !important; */
+}
+.breadcrumb-item + .breadcrumb-item::before {
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  /* border: 1px solid red; */
+}
+.section-headers.new {
+  /* color: #f8f8f8 !important; */
+  background: url(../images/risk-management-flow-chart-hand-sketching-red-marker-transparent-wipe-board-92790683.webp)
+    no-repeat center right !important;
+  /* background-size: cover !important; */
+  height: 600px !important;
+  mix-blend-mode: color !important;
+  padding: 10px !important;
+  margin-right: -25px !important;
+  margin-left: -25px !important;
+  display: flex !important;
+  /* justify-content: center !important; */
+  padding-left: 90px !important ;
+  background-color: white !important;
+  align-items: center !important;
+  color: black !important;
+  margin-top: -15px !important;
+  text-align: left;
+  justify-content: left;
+}
+.section-headers.new p {
+  font-size: 19px !important;
+  font-weight: 300 !important;
+}
+
+.section-headers.new .f {
+  margin-right: 0px;
+}
+.section-headers.new .s {
+  margin-top: 0px;
+}
+.section-headers.new a {
+  padding: 10px 25px !important;
+  margin-top: 5px !important;
+}
+
+.section-details.new .offer {
+  padding: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  align-self: center;
+}
+.section-details.new .offer div {
+  display: flex;
+  align-items: center;
+  font-size: 17px;
+}
+.section-details.new .offer i {
+  font-size: 30px;
+  margin-right: 10px;
+  color: var(--custom-primary) !important;
+}
+.activities.new .activity:before {
+  background-color: var(--custom-primary) !important;
+}
+.activity-icon.bg-success.text-white {
+  background-color: var(--custom-primary) !important;
+  cursor: pointer;
+}
+.activities.new .activity {
+  font-weight: 400;
+}
+.section-details.new.bg {
+  background: url(../images/Fotolia_90303767_Subscription_Monthly_M.jpg)
+    no-repeat center left;
+  /* background-size: cover; */
+}
+.section-details.new.rm .col-lg-9 {
+  /* background: url(../images/What-is-a-Four-Factor-Breach-Risk-Assessment.png) */
+  /* left; */
+  /* background-image: url(../images/What-is-a-Four-Factor-Breach-Risk-Assessment.png); */
+  /* background-repeat: no-repeat; */
+  /* background-attachment: fixed; */
+  /* background-position: right; */
+  /* background-size: auto; */
+}
+.section-details.new.rm {
+  background-color: white;
+  font-weight: 400;
+  padding: 40px 40px 20px 40px !important;
+}
+.section-details.new.rm .desc-p {
+  font-weight: 400;
+  text-transform: capitalize;
+  margin-top: 0px !important;
+}
+.section-details.new.rm .head-p {
+  font-weight: bolder;
+  margin-bottom: 5px !important;
+  text-transform: capitalize;
+}
+
+.section-details.new {
+  margin-left: -10px !important;
+  margin-right: -10px !important;
+}
+.slider-body {
+  /* border: 1px solid red; */
+  padding: 60px 20px 20px 20px;
+  /* background: rgb(0, 0, 0); */
+  background: rgba(0, 0, 0, 0.1) !important;
+  border-radius: 5px;
+}
+.slider.custom .owl-nav [class*="owl-"] {
+  top: 10% !important;
+  background-color: var(--custom-primary);
+  border-radius: 5px;
+}
+.slider.custom.owl-theme .owl-dots .owl-dot.active span,
+.slider.custom.owl-theme .owl-dots .owl-dot:hover span {
+  background: var(--custom-primary) !important;
+}
+.benefit-header {
+  font-size: 20px;
+  font-weight: bolder;
+  text-transform: capitalize;
+  /* margin-bottom: 0px; */
+}
+.benefit-text {
+  font-size: 16px;
+  font-weight: 400;
+}
+.section-details.new.bfits {
+  background-color: white;
+  font-weight: 500;
+}
+.risksafe {
+  font-weight: bolder;
+}
+.section-text-image.custom {
+  width: 100%;
+  height: 100%;
+}
+.section-details.new.whento {
+  font-weight: 400;
+  background-color: white;
+  padding: 10px 30px !important;
+}
+.scimg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.scimg img {
+  -moz-window-dragging: no-drag;
+  -webkit-user-drag: none;
+}
+.contact-popup-form input,
+.contact-popup-form textarea {
+  margin-bottom: 15px;
+}
+.contact-popup .card {
+  margin-bottom: 0px !important;
+}
+.contact-popup .card-footer {
+  /* border: 1px solid red; */
+  margin-top: -50px !important;
+}
+.contact-popup {
+  /* display: none; */
+  width: 350px;
+  background-color: var(--custom-primary);
+  padding: 1px;
+  border-radius: 5px;
+  position: fixed;
+  right: 50px;
+  bottom: 120px;
+  z-index: 1000;
+}
+.contact-popup-form button {
+  width: 100% !important;
+}
+.contact-popup-form textarea {
+  min-height: 150px !important;
+  resize: none;
+}
+
+.contact-popup-opener {
+  padding: 20px;
+  position: fixed;
+  right: 50px;
+  bottom: 50px;
+  background-color: var(--custom-primary);
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  z-index: 1000;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* position: relative; */
+  overflow: hidden;
+  transition-duration: 0.3s;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+  color: white;
+  font-size: 20px !important;
+}
+.contact-popup-opener svg path {
+  fill: white;
+}
+.extra {
+  /* border: 1px solid red; */
+  /* height: 300px; */
+  padding: 30px 20px;
+  /* width: 100%; */
+  margin-left: -30px !important;
+  margin-right: -30px !important;
+  margin-bottom: -30px;
+  margin-top: -10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* color: white !important; */
+  background-color: white;
+  /* z-index: 1000; */
+}
+.main-footer.custom {
+  text-transform: none !important;
+}
+.main-footer.custom .col-12 {
+  /* border: 1px solid red; */
+  padding: 10px;
+}
+.main-footer.custom .footer-header-p {
+  text-transform: uppercase !important;
+  margin-bottom: 10px;
+  /* border-bottom: 1px solid var(--custom-primary); */
+}
+.main-footer.custom ul {
+  /* margin-left: -20px; */
+  list-style-type: none;
+  list-style-position: inside;
+  padding: 0;
+}
+.risksafe-footer-desc {
+  font-weight: 400;
+  font-size: 15px;
+}
+.resource-image {
+  background-image: var(--bg-image);
+  /* background-size: cover; */
+  height: 300px;
+  background-size: 100% 100%;
+  border-radius: 10px 10px 0px 0px;
+  border: 1px solid var(--custom-primary);
+}
+.resource-text {
+  padding: 15px 10px;
+  border: 1px solid var(--custom-primary);
+  border-radius: 0px 0px 10px 10px;
+  /* background-color: var(--custom-primary); */
+  /* color: white !important; */
+}
+.resources .col-12 {
+  margin-bottom: 20px;
+  /* border: 1px solid var(--custom-primary); */
+}
+.resource-header {
+  color: var(--custom-primary);
+}
+.header-section {
+  /* border: 1px solid red; */
+  height: 450px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* margin-top: -20px; */
+  margin: -20px -30px -20px -30px;
+  background-color: white;
+}
+.header-section .h {
+  margin-top: 20px;
+  color: var(--custom-primary);
+}
+.intro-breadcrumbs.custom a {
+  color: var(--custom-primary) !important;
+  cursor: pointer !important;
+}
+.header-section div {
+  text-align: center;
+}
+.header-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.header-text div {
+  font-weight: 400;
+  width: 70%;
+  /* border: 1px solid red; */
+}
+.section-text-image.r {
+  border-radius: 6px;
 }

@@ -1,0 +1,111 @@
+#s_btn {
+  visibility: hidden;
+  display: none;
+}
+.empty_div{
+            text-align:center;
+            padding:20px;
+        }
+        .empty_div p{
+            margin-top:10px;
+        }
+.card {
+  padding: 10px;
+}
+.o {
+  position: relative;
+}
+.m {
+  position: relative;
+  border-bottom: 3px solid #6c7a92;
+  border-top: 1px solid #6c7a92;
+  border-right: 1px solid #6c7a92;
+  border-left: 1px solid #6c7a92;
+  width: 80%;
+  margin: 10px 0px;
+  border-radius: 10px;
+}
+.l {
+  left: 0;
+}
+
+/* Place the container to the right */
+.r {
+  left: 20%;
+}
+.r .tickets .ticket-content .ticket-header {
+  flex-direction: row-reverse;
+}
+.r .tickets .ticket-content .ticket-header .ticket-sender-picture {
+  margin-right: 0px !important;
+  margin-left: 20px;
+}
+.r .tickets .ticket-description {
+  margin: 10px 50px 10px 0px !important;
+  text-align: justify;
+  text-justify: inter-word;
+}
+.ticket-description p:empty {
+  display: none;
+}
+.ticket-description p:empty + p {
+  margin-top: 0px !important;
+}
+.ticket-description p + p {
+  margin-top: -10px !important;
+}
+.tickets .ticket-description p {
+  margin-bottom: 10px !important;
+}
+.l .tr {
+  text-align: right;
+}
+.r .tr {
+  text-align: left;
+}
+.tickets {
+  width: 100% !important;
+  padding: 10px;
+}
+.tickets .ticket-content {
+  width: 100% !important;
+}
+.tickets .ticket-sender-picture {
+  width: 30px !important;
+  height: 30px !important;
+}
+.tickets .ticket-title h6 {
+  margin-bottom: 0px !important;
+}
+.tickets .ticket-info span {
+  font-size: 11px !important;
+  font-weight: 100;
+  text-transform: capitalize;
+}
+.tickets .ticket-description {
+  margin: 10px 0 10px 50px !important;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+.note-editable.card-block {
+  min-height: 200px !important;
+  max-height: 250px !important;
+  overflow: auto;
+  padding: 15px 10px !important;
+}
+.note-toolbar-wrapper {
+  /* display: none !important; */
+}
+.note-editable.card-block p {
+  line-height: 5px !important;
+}
+.note-statusbar {
+  /* display: none !important; */
+}
+.note-editor.note-frame.card {
+  width: 100% !important;
+}
+hr {
+  margin: 40px 0px 20px 0px !important;
+}

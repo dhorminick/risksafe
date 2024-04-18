@@ -6,8 +6,8 @@ ini_set('display_startup_errors', true);
 
 date_default_timezone_set('Australia/Sydney');
 	
-session_name('risk_safe');
-session_start();
+// session_name('risk_safe');
+// session_start();
 
 define("APP_TITLE", "RiskSafe - Risk Assessment");
 define("ROOT_PATH", realpath("./"));

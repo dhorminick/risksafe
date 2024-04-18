@@ -1,0 +1,131 @@
+/*.container{
+	padding: 20px;	
+}
+h1{
+	text-align: center;
+	font-size: 2rem;
+	color: #888888;
+	text-transform: uppercase;
+	font-family: monospace;
+    font-weight: bold;
+}*/
+table.table.table-striped.sortable tbody .action-icons.btn.btn-action i.fas{
+    font-weight: 900 !important;
+}
+.action-icons{
+    margin-top:5px !important;
+}
+
+.pagination-header {
+  padding: 10px;
+  /* margin: 10px 0px; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.pagination-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+.pagination a:first-child {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.pagination a:last-child {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.table.sortable thead .sorting {
+  position: relative;
+  cursor: pointer;
+  padding-right: 1.7em;
+}
+table.table.table-striped.sortable *{
+  font-size: 14px !important;
+}
+table.table.table-striped.sortable tbody *{
+  font-weight: 400 !important;
+  /*color:blue;*/
+}
+.table.sortable thead th:not(:first-child):not(:last-child):before {
+  left: auto;
+  right: 1em;
+  /*content: "â†‘";*/
+  content: "\1F825";
+  position: absolute;
+  /*bottom: 0.5em;*/
+  display: block;
+  opacity: 0.3;
+}
+.table.sortable thead th:not(:first-child):not(:last-child)::after {
+  left: auto;
+  right: 0.5em;
+  /*content: "â†“";*/
+  content: "\1F827";
+  position: absolute;
+  bottom: 1.2em;
+  display: block;
+  opacity: 0.3;
+}
+.table.sortable thead .sorting:before {
+  
+}
+.table.sortable thead .sorting.asc:before {
+  opacity: 1;
+}
+.table.sortable tbody tr {
+  margin-bottom:20px !important;
+  margin-top:20px !important;
+}
+.table.sortable thead .sorting:after {
+  
+}
+.table.sortable thead .sorting.desc:after {
+  opacity: 1;
+}
+
+/* For Loading Overlay by CodexWorld */
+.datalist-wrapper {
+  position: relative;
+}
+.loading-overlay {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.7);
+}
+.overlay-content {
+  position: absolute;
+  transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  top: 50%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #555;
+  display: flex;
+  justify-content:center;
+  align-items:center;
+}
+.loading-data{
+    border-color: transparent !important;
+    box-shadow: 0 2px 6px #acb5f6;
+    max-width: 400px;
+    padding: 7px 15px;
+    border-radius: 10px;
+    color: white;
+    font-weight: bolder;
+    background-color: var(--custom-primary);
+}
+.loading-data strong{
+    /*letter-spacing: 3px;*/
+    margin-right:20px;
+}

@@ -1,5 +1,16 @@
 <?php
+
     include 'layout/variablesandfunctions.php';
+    include 'layout/mail.php';
+    
+    $mailSubject = 'test Subject';
+    $mailBody = 'test body';
+    $mailRecipient = 'etiketochukwu@gmail.com';
+    $mailSender = 'mailer@portfolio.name.ng';
+    
+    $dumps = mailUser($mailSubject, $mailBody, $mailRecipient, $mailSender);
+    var_dump($dumps);
+    exit();
     // $array = array(array(
     //     'etiketochukwu@gmail.com' => array(
     //         'id' => '53f8a8j',
@@ -60,10 +71,16 @@
         'password' => 'test3',
         
     ));
-    $arrayAll = array_merge($array1, $array2, $array3);
+    $arrayAll = array_merge($array, $array1, $array2, $array3);
+    // unset($arrayAll[4]);
+
     // var_dump($arrayAll);
     // echo $arrayAll[0]['email'];
+    $arrcount = count($arrayAll);
 
+    for ($i=0; $i < $arrcount; $i++) { 
+        echo $i.' - '.$arrayAll[$i]['email'];
+    }
 //     $cars = array
 //   (
 //   array("Volvo",22,18),
@@ -81,15 +98,15 @@
 //   echo "</ul>";
 // }
     
-    function in_array_custom($needle, $haystack, $strict = true){
-        foreach ($haystack as $items){
-            if (($strict ? $items === $needle : $items == $needle) || (is_array($items) && in_array_custom($needle, $items, $strict))){
-                return true;
-            }
-        }
+    // function in_array_custom($needle, $haystack, $strict = true){
+    //     foreach ($haystack as $items){
+    //         if (($strict ? $items === $needle : $items == $needle) || (is_array($items) && in_array_custom($needle, $items, $strict))){
+    //             return true;
+    //         }
+    //     }
     
-        return false;
-    }
+    //     return false;
+    // }
     if (isset($_POST['signup'])) {
         $found = false;
         $email = $_POST['email'];
@@ -113,7 +130,11 @@
         }else{
             echo 'not in array';
         }
+
+        // var_dump($arrayAll);
     }
+    
+    
 ?>
 
 <!DOCTYPE html>
