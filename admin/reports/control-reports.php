@@ -20,38 +20,37 @@
     
     $startDate = "";
     $endDate = "";
+    $export__ = false;
+    $export = false;
     
-    $query="SELECT MAX( cus_date ) AS max FROM as_customcontrols WHERE c_id = '$company_id'";
-	if ($result=$con->query($query)) {
-	    $row=$result->fetch_assoc();
-	    $largestNumber = $row['max'];
-	}else{
-	    $largestNumber = 0;
-	}
-	
-	$query="SELECT MIN( cus_date ) AS max FROM as_customcontrols WHERE c_id = '$company_id'";
-	if ($result=$con->query($query)) {	
-	    $row=$result->fetch_assoc();
-	    $smallestNumber = $row['max'];
-	}else{
-	    $smallestNumber = 0;
-	}
-	
-	$largestNumber_1 = DateTime::createFromFormat('Y-m-d', $largestNumber);
-    $smallestNumber_1 = DateTime::createFromFormat('Y-m-d', $smallestNumber);
+    if(has_data('as_customcontrols', 'c_id', $company_id, $con) == true){
+        $query="SELECT MAX( cus_date ) AS max FROM as_customcontrols WHERE c_id = '$company_id'";
+    	if ($result=$con->query($query)) {
+    	    $row=$result->fetch_assoc();
+    	    $largestNumber = $row['max'];
+    	}else{
+    	    $largestNumber = 0;
+    	}
+    	
+    	$query="SELECT MIN( cus_date ) AS max FROM as_customcontrols WHERE c_id = '$company_id'";
+    	if ($result=$con->query($query)) {	
+    	    $row=$result->fetch_assoc();
+    	    $smallestNumber = $row['max'];
+    	}else{
+    	    $smallestNumber = 0;
+    	}
+    	
+    	$largestNumber_1 = DateTime::createFromFormat('Y-m-d', $largestNumber);
+        $smallestNumber_1 = DateTime::createFromFormat('Y-m-d', $smallestNumber);
+                
+        $largestNumber__1 = date_format($largestNumber_1, "Y-m-d");
+        $smallestNumber__1 = date_format($smallestNumber_1, "Y-m-d");
+    }
+    
+    if (isset($_POST["export-report"]) && isset($_POST["export_param"])) {
+        if($_POST["export_param"] == 'date' || $_POST["export_param"] == 'all'){
+            $param = sanitizePlus($_POST["export_param"]);
             
-    $largestNumber__1 = date_format($largestNumber_1, "Y-m-d");
-    $smallestNumber__1 = date_format($smallestNumber_1, "Y-m-d");
-    
-    if (isset($_POST["export-report"])) {
-        $startDate = sanitizePlus($_POST['startDate']);
-    	$endDate = sanitizePlus($_POST['endDate']);
-    	$type = sanitizePlus($_POST['export_type']);
-    	$file_ext_name = strtolower($type);
-        
-        if($startDate > $smallestNumber__1){
-            array_push($message, 'Error : Earliest Recorded Control Is - '.$smallestNumber__1);
-        }else{
             $spreadsheet = new Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
             
@@ -68,9 +67,34 @@
             #start data on next line
             $r++;
             
-            $query="SELECT * FROM as_customcontrols WHERE c_id = '$company_id' AND cus_date BETWEEN CAST('$startDate' as datetime) AND CAST('$endDate' as datetime) ORDER BY id DESC";
-    		$result = mysqli_query($con, $query);
-    		if ($result->num_rows > 0) {
+            if($param == 'date'){
+                $startDate = sanitizePlus($_POST['startDate']);
+            	$endDate = sanitizePlus($_POST['endDate']);
+            	$type = sanitizePlus($_POST['export_type']);
+            	$file_ext_name = strtolower($type);
+            	
+            	if($startDate > $smallestNumber__1){
+                    array_push($message, 'Error : Earliest Recorded Control Is - '.$smallestNumber__1);
+                }else{
+                    $export__ = true;
+                    $fileName = "Control Data Export (From: ".$startDate." To: ".$endDate.") - RiskSAFE - Risk Assessment And Management - Exported On: " . date('d-m-Y');
+                
+                    $query="SELECT * FROM as_customcontrols WHERE c_id = '$company_id' AND cus_date BETWEEN CAST('$startDate' as datetime) AND CAST('$endDate' as datetime) ORDER BY cus_date DESC";
+    		        $query_run = mysqli_query($con, $query);
+                }
+            }else{
+                $type = sanitizePlus($_POST['export_type']);
+                $file_ext_name = strtolower($type);
+                $export__ = true;
+                $fileName = "Control Summary Data Export - RiskSAFE - Risk Assessment And Management - Exported On: " . date('d-m-Y');
+                
+                $query = "SELECT * FROM as_customcontrols WHERE c_id = '$company_id'"; 
+                $query_run = mysqli_query($con, $query);
+                #param is all
+            }
+            
+            if($export__ == true){
+                if ($query_run->num_rows > 0) {
     		    $export = true; #data to be exported exists
     		    $i = 0;
                     $sheet->getStyle('A'.$r.':H'.$r)->getFont()->setBold(true); #bold header values
@@ -84,7 +108,7 @@
                     $sheet->setCellValue('G'.$r, 'Frequency Of Application');
                     $sheet->setCellValue('H'.$r, 'Date Created');
     		    #loop through each assesment
-                foreach($result as $data) {
+                foreach($query_run as $data) {
                     $i++;
                     
                     #add a space between header and data
@@ -121,25 +145,31 @@
     		    array_push($message, 'Error : No Controls To Be Exported');
     		}
     		
-            if($export == true){
-                #only export if data exist to avoid missing variable $fileName
-                if($file_ext_name == 'xlsx') {
-                    $writer = new Xlsx($spreadsheet);
-                    $final_filename = $fileName.'.xlsx';
-                } elseif($file_ext_name == 'xls') {
-                    $writer = new Xls($spreadsheet);
-                    $final_filename = $fileName.'.xls';
-                } elseif($file_ext_name == 'csv') {
-                    $writer = new Csv($spreadsheet);
-                    $final_filename = $fileName.'.csv';
-                }
-        
-                // $writer->save($final_filename);
-                header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-                header('Content-Disposition: attactment; filename="'.urlencode($final_filename).'"');
-                $writer->save('php://output');
-            }  
+                if($export == true){
+                    #only export if data exist to avoid missing variable $fileName
+                    if($file_ext_name == 'xlsx') {
+                        $writer = new Xlsx($spreadsheet);
+                        $final_filename = $fileName.'.xlsx';
+                    } elseif($file_ext_name == 'xls') {
+                        $writer = new Xls($spreadsheet);
+                        $final_filename = $fileName.'.xls';
+                    } elseif($file_ext_name == 'csv') {
+                        $writer = new Csv($spreadsheet);
+                        $final_filename = $fileName.'.csv';
+                    }else{
+                        $writer = new Xls($spreadsheet);
+                        $final_filename = $fileName.'.xls';
+                    }
             
+                    // $writer->save($final_filename);
+                    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                    header('Content-Disposition: attactment; filename="'.urlencode($final_filename).'"');
+                    $writer->save('php://output');
+                } 
+            }
+        }else{
+            #invalid
+            array_push($message, 'Error 402: Invalid Report Parameters');
         }
     	
     }
@@ -167,83 +197,57 @@
         <div class="main-content">
             <section class="section">
             <div class="section-body">
-                <div class='card'>
-                    <div class="card-header">
+                <?php require $file_dir.'layout/alert.php' ?>
+                <div class="card" style='margin-top:10px;'>
+                    <div class="card-header" style="margin-top: 20px;display:flex;justify-content:space-between;">
                         <h3 class="d-inline">Control Reports</h3>
-                        <a style='display:none;' class="btn btn-primary btn-icon icon-left header-a" href="../customs/new-control"><i class="fas fa-plus"></i> New Control</a>
+                        <div>
+                            <?php if(has_data('as_customcontrols', 'c_id', $company_id, $con) == true){ ?>
+                            <button class="btn btn-primary btn-icon icon-left header-a" data-toggle="modal" data-target="#exportAll"><i class="fas fa-file"></i> Export All</button>
+                            <button class="btn btn-outline-primary btn-icon icon-left header-a" data-toggle="modal" data-target="#exportWithDate"><i class="fas fa-file"></i> Export By Date</button>
+                            <?php }else{ ?>
+                            <a class="btn btn-primary btn-icon icon-left header-a" href="../customs/new-control"><i class="fas fa-plus"></i> New Custom Control</a>
+                            <?php } ?>
+                        </div>
                     </div>
+                    
                     <div class='card-body'>
-                        <?php require '../../layout/alert.php' ?>
-                        <form role="form" id="form" method="post">
-        					<div class="form-group">
-        					    <div class="card-bod">
-                                    <?php 
-                                        $list_one = listCustomControls(0, 10, $company_id, $con);
-                                        $details_count = $list_one;
-                                        if(count($details_count) <= 1){$details[] = $list_one;}else{$details = $list_one;}
-                                        
-                                        if($list_one !== false){
-                                    ?>
-                                    <table class="table table-striped table-bordered table-hover" id="table" style='margin:10px 0px;'>
-                                        <tr>
-                                            <th style="width: 5%;">S/N</th>
-                                            <th>Title</th>
-                                            <th>Description</th>
-                                            <th>Effectiveness </th>
-                                            <th>Frequency </th>
-                                            <th>...</th>
-                                        </tr>
-                                    <?php if ($details === 'a:0:{}') { ?> 
-                                    </table> 
-                                    <div class="empty-table">
-                                        No Controls Created Yet!!
-                                        <div><a href='../customs/new-control' class='bb'><i class='fas fa-plus'></i> Create New Control</a></div>
-                                    </div> 
-                                    <?php }else{ $arrcount = count($details); $i = 0; foreach ($list_one as $item) { $i++;  ?>
-                                        <tr>
-                                            <td><?php echo $i; ?></td>
-                                            <td><?php echo $item['title']; ?></td>
-                                            <td><?php echo $item['description']; ?></td>
-                                            <td><?php echo getEffectiveness($item['effectiveness']); ?></td>
-                                            <td><?php echo getFrequency($item['frequency']); ?></td>
-                                            <td>...</td>
-                                        </tr>
-                                    <?php } ?> 
-                                    </table>
-                                    <div class='row custom-row' style='margin-top:30px;margin-bottom:10px;'>
-                                    <div class='col-12' style='margin:10px 0px;font-size:17px;'>
-                                        Select Timespan Of The Report To Be Exported:
-                                    </div>
-                                    <div class="form-group col-lg-5 col-12">
-                    		            <label>Start Date:</label>
-                    		            <input name="startDate" type="text" class="form-control datepicker" placeholder="Enter start date" min='<?php echo $largestNumber__1; ?>' value='<?php echo $smallestNumber__1; ?>' max='<?php echo $smallestNumber__1; ?>' required>        
-                    		        </div>
-                    		        <div class="form-group col-lg-5 col-12">
-                    		            <label>End Date:</label>
-                    		            <input name="endDate" type="text" class="form-control datepicker" placeholder="Enter end date" min='<?php echo $largestNumber__1; ?>' max='<?php echo $smallestNumber__1; ?>' required>
-                    		        </div>
-                    		        <div class="form-group col-lg-2 col-12">
-                    		            <label>Export Type:</label>
-                        		        <select class="form-control" name='export_type'>
-                                            <option value='xls' selected>XLS</option>
-                                            <option value='xlsx'>XLSX</option>
-                                            <option value='csv'>CSV</option>
-                                        </select>
-                                    </div>
-                    		        <div class='form-group col-lg-12 col-12' style='font-weight:400;'>
-                    		            <strong>NOTE:</strong> Earliest Registered Control - <?php echo $smallestNumber__1; ?> and Most Recent Registered Control - <?php echo $largestNumber__1; ?>
-                    		        </div>
-                    		        </div>
-                                    <div style='width:100%;text-align:center;margin-top:10px;text-align:right;'>
-                                        <button type="submit" class="btn btn-lg btn-primary btn-icon icon-left" name='export-report'><i class='fas fa-file-download'></i> Export Control Report</button>
-                					</div>
-                                    <?php } ?>
-                                    <?php }else{ ?>
-                                        <div class="empty-table"><h4>No Control Registered Yet!!</h4>
-                                        <div style='margin-top:10px;'><a href='../customs/new-control' class='btn btn-icon btn-primary icon-left'><i class='fas fa-plus'></i> Create New Control</a></div></div>
-                                    <?php } ?>
-                					</div>
-        				</form>
+                        <?php 
+                            $query = "SELECT * FROM as_customcontrols WHERE c_id = '$company_id' ORDER BY id DESC LIMIT 5";
+                            $result=$con->query($query);
+		                          if ($result->num_rows > 0) { $i = 0;
+		                              
+                        ?>
+                        <table class="table table-striped table-bordered table-hover hide-md" id="table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%;">S/N</th>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Effectiveness </th>
+                                    <th>Frequency </th>
+                                    <th>...</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php while($item = $result->fetch_assoc()){ $i++; ?>
+                                <tr>
+                                    <td><?php echo $i; ?></td>
+                                    <td><?php echo $item['title']; ?></td>
+                                    <td><?php echo $item['description']; ?></td>
+                                    <td><?php echo getEffectiveness($item['effectiveness']); ?></td>
+                                    <td><?php echo getFrequency($item['frequency']); ?></td>
+                                    <td>...</td>
+                                </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                        <?php }else{ ?>
+                        <div class="empty-table" style='min-height:300px;display:flex;flex-direction:column;justify-content:center;align-items:center;'>
+                            No No Risk Report Registered Yet!!
+                            <div><a href='../customs/new-control' class='btn btn-primary' style='margin-top:10px;'><i class='fas fa-plus'></i> Register New Custom Control</a></div>
+                        </div> 
+                        <?php } ?>
                     </div>
                     <div class='card-footer'></div>
                 </div>
@@ -251,6 +255,78 @@
             </div>
             </section>
         </div>
+        
+        <?php if(has_data('as_customcontrols', 'c_id', $company_id, $con) == true){ ?>
+        <div class="modal fade" id="exportAll" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <form method='post' action='' style='width:100%;'>
+              <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirm Action</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="font-weight: 400;">
+                        <div class="form-group">
+                    		    <label>Export Type:</label>
+                        		<select class="form-control" name='export_type'>
+                                    <option value='xls' selected>XLS</option>
+                                    <option value='xlsx'>XLSX</option>
+                                    <option value='csv'>CSV</option>
+                                </select>
+                        </div>
+                        <input type="hidden" name="export_param" value='all' required>
+                    </div>
+                    <div class="modal-footer bg-whitesmoke">
+                        <button type="submit" class="btn btn-lg btn-primary btn-icon icon-left" name='export-report'><i class='fas fa-file-download'></i> Export Controls Report</button>
+                     </div>
+                </div>
+              </div>
+              </form>
+        </div>
+        <div class="modal fade bd-example-modal-lg" id="exportWithDate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <form method='post' action=''>
+              <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Select Timespan Of The Report To Be Exported:</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="font-weight: 400;">
+                        <div class='row custom-row' style='margin-bottom:10px;'>
+                            <div class="form-group col-lg-6 col-12">
+                    		  <label>Start Date:</label>
+                    		  <input name="startDate" type="text" class="form-control datepicker" placeholder="Enter start date" min='<?php echo $largestNumber__1; ?>' value='<?php echo $smallestNumber__1; ?>' max='<?php echo $smallestNumber__1; ?>' required>        
+                    		 </div>
+                    		<div class="form-group col-lg-6 col-12">
+                    		        <label>End Date:</label>
+                    		        <input name="endDate" type="text" class="form-control datepicker" placeholder="Enter end date" min='<?php echo $largestNumber__1; ?>' max='<?php echo $smallestNumber__1; ?>'  required>
+                    		</div>
+                    		<div class="form-group col-12">
+                    		        <label>Export Type:</label>
+                        		    <select class="form-control" name='export_type'>
+                                    <option value='xls' selected>XLS</option>
+                                    <option value='xlsx'>XLSX</option>
+                                    <option value='csv'>CSV</option>
+                                </select>
+                            </div>
+                    		<div class='form-group col-lg-12 col-12' style='font-weight:400;margin-top:10px;'>
+                    		 <strong>NOTE:</strong> Earliest Registered Controls - <?php echo $smallestNumber__1; ?> and Most Recent Registered Controls - <?php echo $largestNumber__1; ?>
+                    		</div>
+                    	</div>
+                    	<input type="hidden" name="export_param" value='date' required>
+                        </div>
+                    <div class="modal-footer bg-whitesmoke">
+                        <button type="submit" class="btn btn-lg btn-primary btn-icon icon-left" name='export-report'><i class='fas fa-file-download'></i> Export Controls Report</button>
+                    </div>
+                </div>
+              </div>
+              </form>
+        </div>
+        <?php } ?>
         <?php require '../../layout/footer.php' ?>
         </footer>
         </div>

@@ -9,73 +9,45 @@
     }
     $message = [];
     include '../../layout/db.php';
-    include '../../layout/admin_config.php';
+    include '../../layout/admin__config.php';
     include 'summary.php';
-    include '../ajax/reports.php';
     
     use PhpOffice\PhpSpreadsheet\Spreadsheet;
     use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
     use PhpOffice\PhpSpreadsheet\Writer\Xls;
     use PhpOffice\PhpSpreadsheet\Writer\Csv;
     
-    $num = rowCount($con, "as_assessment", "c_id", $company_id);
-    $list = listReports(0, 20, $con, $company_id);
-    
-    $fulldata=array();
-    $data=array();
-        
-    // $fulldata["draw"]=$_REQUEST["draw"];
-    $fulldata["recordsTotal"]=$num;
-    $fulldata["recordsFiltered"]=$num;
-
-    foreach ($list as $item) {
-        $response=array();
-        $response["number"]=$item["as_number"];
-        $response["team"]=$item["as_team"];
-        $response["task"]=$item["as_task"];
-        $response["date"]=date("m/d/Y", strtotime($item["as_date"]));
-        $response["link"] = '<div style="text-align: center;"><a href="report.php?id=' . $item["idassessment"] . '"><button title="View risk assessment report" type="button" class="btn btn-xs btn-info">View report</button></a></div>';
-        
-
-        $myData = array(array(
-            'number_of_row' => $response["number"],
-            'team' => $response["team"],
-            'task' => $response["task"],
-            'date' => $response["date"],
-            'view' => "report-details?id=".$item["as_id"]
-        ));
-
-        $data[] = array_values($myData);
-    }
     
     #params
     $export = false;
     $export__ = false;
     
-    $query="SELECT MAX( export_date ) AS max FROM as_assessment WHERE c_id = '$company_id'";
-	if ($result=$con->query($query)) {
-	    $row=$result->fetch_assoc();
-	    $largestNumber = $row['max'];
-	}else{
-	    $largestNumber = 0;
-	}
-	
-	$query="SELECT MIN( export_date ) AS max FROM as_assessment WHERE c_id = '$company_id'";
-	if ($result=$con->query($query)) {	
-	    $row=$result->fetch_assoc();
-	    $smallestNumber = $row['max'];
-	}else{
-	    $smallestNumber = 0;
-	}
-	
-	$largestNumber_1 = DateTime::createFromFormat('Y-m-d', $largestNumber);
-    $smallestNumber_1 = DateTime::createFromFormat('Y-m-d', $smallestNumber);
-            
-    // $largestNumber_1 = date_format($largestNumber_1, "d-m-Y");
-    // $smallestNumber_1 = date_format($smallestNumber_1, "d-m-Y");
-    
-    $largestNumber__1 = date_format($largestNumber_1, "Y-m-d");
-    $smallestNumber__1 = date_format($smallestNumber_1, "Y-m-d");
+    if(has_data('as_assessment', 'c_id', $company_id, $con) == true){
+        $query="SELECT MAX( export_date ) AS max FROM as_assessment WHERE c_id = '$company_id'";
+    	if ($result=$con->query($query)) {
+    	    $row=$result->fetch_assoc();
+    	    $largestNumber = $row['max'];
+    	}else{
+    	    $largestNumber = 0;
+    	}
+    	
+    	$query="SELECT MIN( export_date ) AS max FROM as_assessment WHERE c_id = '$company_id'";
+    	if ($result=$con->query($query)) {	
+    	    $row=$result->fetch_assoc();
+    	    $smallestNumber = $row['max'];
+    	}else{
+    	    $smallestNumber = 0;
+    	}
+    	
+    	$largestNumber_1 = DateTime::createFromFormat('Y-m-d', $largestNumber);
+        $smallestNumber_1 = DateTime::createFromFormat('Y-m-d', $smallestNumber);
+                
+        // $largestNumber_1 = date_format($largestNumber_1, "d-m-Y");
+        // $smallestNumber_1 = date_format($smallestNumber_1, "d-m-Y");
+        
+        $largestNumber__1 = date_format($largestNumber_1, "Y-m-d");
+        $smallestNumber__1 = date_format($smallestNumber_1, "Y-m-d");
+    }
     
     if (isset($_POST["export-report"]) && isset($_POST["export_param"])) {
         if($_POST["export_param"] == 'date' || $_POST["export_param"] == 'all'){
@@ -102,7 +74,7 @@
             	$file_ext_name = strtolower($type);
             	
             	if($startDate > $smallestNumber__1){
-                    array_push($message, 'Error : Earliest Recorded Incident Is - '.$smallestNumber__1);
+                    array_push($message, 'Error : Earliest Recorded Risk Is - '.$smallestNumber__1);
                 }else{
                     $export__ = true;
                     $fileName = "Risk Assessment Summary Data Export (From: ".$startDate." To: ".$endDate.") - RiskSAFE - Risk Assessment And Management - Exported On: " . date('d-m-Y');
@@ -317,31 +289,33 @@
         <?php require '../../layout/header.php' ?>
         <?php require '../../layout/sidebar_admin.php' ?>
         <!-- Main Content -->
-        <div class="main-content">
+        <div class="main-content" style='min-height:0px;'>
             <section class="section">
             <div class="section-body">
-                <div class="card">
+                <?php require $file_dir.'layout/alert.php' ?>
+                <div class="card" style='margin-top:10px;'>
                     <div class="card-header" style="margin-top: 20px;display:flex;justify-content:space-between;">
-                        <h3 class="d-inline">My Risk Reports</h3>
+                        <h3 class="d-inline">Export Risk Reports</h3>
                         <div>
+                            <?php if(has_data('as_assessment', 'c_id', $company_id, $con) == true){ ?>
                             <button class="btn btn-primary btn-icon icon-left header-a" data-toggle="modal" data-target="#exportAll"><i class="fas fa-file"></i> Export All</button>
                             <button class="btn btn-outline-primary btn-icon icon-left header-a" data-toggle="modal" data-target="#exportWithDate"><i class="fas fa-file"></i> Export By Date</button>
-                            <!--<a class="btn btn-outline btn-icon icon-left header-a" href="new-assessment"><i class="fas fa-plus"></i> New Assesment</a>-->
+                            <?php }else{ ?>
+                            <a class="btn btn-primary btn-icon icon-left header-a" href="../assessments/new-assessment"><i class="fas fa-plus"></i> New Assesment</a>
+                            <?php } ?>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <?php if($data == []){ ?>
-                            <div style="width:100%;min-height:400px;display:flex;justify-content:center;align-items:center;">
-                               <div style="text-align: center;"> 
-                                    <h3>Empty Data!!</h3>
-                                    No Risk Report Created Yet,
-                                    <p><a href="new-assessment" class="btn btn-primary btn-icon icon-left mt-2"><i class="fas fa-plus"></i> Create New Assessment</a></p></div>
-                            </div>
-                        <?php }else{ ?>
+                    <div class='card-body'>
+                        <?php 
+                            $query = "SELECT * FROM as_assessment WHERE c_id = '$company_id' ORDER BY idassessment DESC LIMIT 5";
+                            $result=$con->query($query);
+		                          if ($result->num_rows > 0) { $i = 0;
+		                              
+                        ?>
                         <table class="table table-striped table-bordered table-hover hide-md" id="table">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th>S/N</th>
                                     <th>Team or Organisation</th>
                                     <th>Task or Process</th>
                                     <th>Date</th>
@@ -349,72 +323,32 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if(count($data) <= 1){$num = $num;}else{$num = $num - 1;} ?>
-                                <?php $num2 = $num - 2;$num2 = $num2 + 1; ?>
-                                <?php foreach ($data as $row) { for ($i = 0; $i < $num-$num2; $i++) { ?>
-                                    <tr>
-                                        <td>#</td>
-                                        <td><?php echo ucwords($row[$i]['team']); ?></td>
-                                        <td><?php echo ucwords($row[$i]['task']); ?></td>
-                                        <td><?php echo ucwords($row[$i]['date']); ?></td>
-                                        <td>
-                                            <a href="<?php echo $row[$i]['view']; ?>" target="_blank" class="action-icons btn btn-primary btn-action mr-1"><i class="fas fa-eye"></i> View Report</a>
-                                        </td>
-                                    </tr>
-                                <?php }}  ?>
+                                <?php while($item = $result->fetch_assoc()){ $i++; ?>
+                                <tr>
+                                    <td><?php echo $i; ?></td>
+                                    <td><?php echo ucwords($item['as_team']); ?></td>
+                                    <td><?php echo ucwords($item['as_task']); ?></td>
+                                    <td><?php echo ucwords($item['as_date']); ?></td>
+                                    <td>
+                                        <a href="report-details?id=<?php echo $item["as_id"]; ?>" target="_blank" class="action-icons btn btn-primary btn-action mr-1"><i class="fas fa-eye"></i> View Report</a>
+                                    </td>
+                                </tr>
+                                <?php } ?>
                             </tbody>
                         </table>
-                        <table class="show-md risk-desc">
-                            <?php if(count($data) <= 1){$num = $num;}else{$num = $num - 1;} ?>
-                                <?php $num2 = $num - 2;$num2 = $num2 + 1; ?>
-                                <?php foreach ($data as $row) { for ($i = 0; $i < $num-$num2; $i++) { ?>
-                            <tr>
-                                <th>S/N</th>
-                                <td>#</td>
-                            </tr>
-                            <tr>
-                                <th>Team or Organisation</th>
-                                <td><?php echo ucwords($row[$i]['team']); ?></td>
-                            </tr>
-                            <tr>
-                                <th>Task or Process</th>
-                                <td><?php echo ucwords($row[$i]['task']); ?></td>
-                            </tr>
-                            <tr>
-                                <th>Date</th>
-                                <td><?php echo ucwords($row[$i]['date']); ?></td>
-                            </tr>
-                            <tr>
-                                <th>Action</th>
-                                <td>
-                                    <a href="<?php echo $row[$i]['view']; ?>" target="_blank" class="action-icons btn btn-primary btn-icon icon-left"><i class="fas fa-eye"></i> View Report</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th style="border:none !important;">&nbsp;</th>
-                                <td style="border:none !important;">&nbsp;</td>
-                            </tr>
-                            <?php } } ?>
-                        </table>
-
-
+                        <?php }else{ ?>
+                        <div class="empty-table" style='min-height:300px;display:flex;flex-direction:column;justify-content:center;align-items:center;'>
+                            No Risk Report Registered Yet!!
+                            <div><a href='../assessments/new-assessment' class='btn btn-primary' style='margin-top:10px;'><i class='fas fa-plus'></i> Register New Risk</a></div>
+                        </div> 
                         <?php } ?>
                     </div>
                 </div>
             </div>
             </section>
-            <!--<div>-->
-            <!--    <form action='export' method='post'>-->
-            <!--        <select class="form-control" name='export-type'>-->
-            <!--                <option value='xls' selected>XLS</option>-->
-            <!--                <option value='xlsx'>XLSX</option>-->
-            <!--                <option value='csv'>CSV</option>-->
-            <!--            </select>-->
-            <!--        <button name='export_data'>Export</button>-->
-            <!--    </form>-->
-            <!--</div>-->
         </div>
         
+        <?php if(has_data('as_assessment', 'c_id', $company_id, $con) == true){ ?>
         <div class="modal fade" id="exportAll" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <form method='post' action='' style='width:100%;'>
               <div class="modal-dialog" role="document">
@@ -472,7 +406,7 @@
                                 </select>
                             </div>
                     		<div class='form-group col-lg-12 col-12' style='font-weight:400;margin-top:10px;'>
-                    		 <strong>NOTE:</strong> Earliest Registered Incident - <?php echo $smallestNumber__1; ?> and Most Recent Registered Incident - <?php echo $largestNumber__1; ?>
+                    		 <strong>NOTE:</strong> Earliest Registered Risk - <?php echo $smallestNumber__1; ?> and Most Recent Registered Risk - <?php echo $largestNumber__1; ?>
                     		</div>
                     	</div>
                     	<input type="hidden" name="export_param" value='date' required>
@@ -484,6 +418,7 @@
               </div>
               </form>
         </div>
+        <?php } ?>
         
         <?php require '../../layout/footer.php' ?>
         </footer>

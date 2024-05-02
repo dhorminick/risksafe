@@ -23,8 +23,9 @@
         #$category = sanitizePlus($_POST["category"]);
         $status = sanitizePlus($_POST["status"]);
         $treatment_id = secure_random_string(10);
+        $date__time = date("Y-m-d H:i:s");
         
-        $query = "INSERT INTO as_customtreatments ( title, description, status, c_id, treatment_id ) VALUES ('$title', '$description', '$status', '$company_id', '$treatment_id')";
+        $query = "INSERT INTO as_customtreatments ( title, description, status, c_id, treatment_id, cus_date ) VALUES ('$title', '$description', '$status', '$company_id', '$treatment_id', '$date__time')";
         $created = $con->query($query);
         if ($created) {
             #send notification

@@ -24,41 +24,40 @@
     
     #params
     $export = false;
+    $export__ = false;
     
-    $query="SELECT MAX( in_date ) AS max FROM as_incidents WHERE c_id = '$company_id'";
-	if ($result=$con->query($query)) {
-	    $row=$result->fetch_assoc();
-	    $largestNumber = $row['max'];
-	}else{
-	    $largestNumber = 0;
-	}
-	
-	$query="SELECT MIN( in_date ) AS max FROM as_incidents WHERE c_id = '$company_id'";
-	if ($result=$con->query($query)) {	
-	    $row=$result->fetch_assoc();
-	    $smallestNumber = $row['max'];
-	}else{
-	    $smallestNumber = 0;
-	}
-	
-	$largestNumber_1 = DateTime::createFromFormat('Y-m-d', $largestNumber);
-    $smallestNumber_1 = DateTime::createFromFormat('Y-m-d', $smallestNumber);
-            
-    // $largestNumber_1 = date_format($largestNumber_1, "d-m-Y");
-    // $smallestNumber_1 = date_format($smallestNumber_1, "d-m-Y");
+    if(has_data('as_incidents', 'c_id', $company_id, $con) == true){
     
-    $largestNumber__1 = date_format($largestNumber_1, "Y-m-d");
-    $smallestNumber__1 = date_format($smallestNumber_1, "Y-m-d");
-    
-    if (isset($_POST["export-report"])) {
-        $startDate = sanitizePlus($_POST['startDate']);
-    	$endDate = sanitizePlus($_POST['endDate']);
-    	$type = sanitizePlus($_POST['export_type']);
-    	$file_ext_name = strtolower($type);
+        $query="SELECT MAX( in_date ) AS max FROM as_incidents WHERE c_id = '$company_id'";
+    	if ($result=$con->query($query)) {
+    	    $row=$result->fetch_assoc();
+    	    $largestNumber = $row['max'];
+    	}else{
+    	    $largestNumber = 0;
+    	}
+    	
+    	$query="SELECT MIN( in_date ) AS max FROM as_incidents WHERE c_id = '$company_id'";
+    	if ($result=$con->query($query)) {	
+    	    $row=$result->fetch_assoc();
+    	    $smallestNumber = $row['max'];
+    	}else{
+    	    $smallestNumber = 0;
+    	}
+    	
+    	$largestNumber_1 = DateTime::createFromFormat('Y-m-d', $largestNumber);
+        $smallestNumber_1 = DateTime::createFromFormat('Y-m-d', $smallestNumber);
+                
+        // $largestNumber_1 = date_format($largestNumber_1, "d-m-Y");
+        // $smallestNumber_1 = date_format($smallestNumber_1, "d-m-Y");
         
-        if($startDate > $smallestNumber__1){
-            array_push($message, 'Error : Earliest Recorded Incident Is - '.$smallestNumber__1);
-        }else{
+        $largestNumber__1 = date_format($largestNumber_1, "Y-m-d");
+        $smallestNumber__1 = date_format($smallestNumber_1, "Y-m-d");
+        
+    }
+    
+    if (isset($_POST["export-report"])  && isset($_POST["export_param"])) {
+        if($_POST["export_param"] == 'date' || $_POST["export_param"] == 'all'){
+            $param = sanitizePlus($_POST["export_param"]);
             $spreadsheet = new Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
             
@@ -75,9 +74,34 @@
             #start data on next line
             $r++;
             
-            $query="SELECT * FROM as_incidents WHERE c_id = '$company_id' AND in_date BETWEEN CAST('$startDate' as datetime) AND CAST('$endDate' as datetime) ORDER BY idincident DESC";
-    		$result = mysqli_query($con, $query);
-    		if ($result->num_rows > 0) {
+            if($param == 'date'){
+                $startDate = sanitizePlus($_POST['startDate']);
+            	$endDate = sanitizePlus($_POST['endDate']);
+            	$type = sanitizePlus($_POST['export_type']);
+            	$file_ext_name = strtolower($type);
+            	
+            	if($startDate > $smallestNumber__1){
+                    array_push($message, 'Error : Earliest Recorded Incident Is - '.$smallestNumber__1);
+                }else{
+                    $export__ = true;
+                    $fileName = "Incidents Summary Data Export (From: ".$startDate." To: ".$endDate.") - RiskSAFE - Risk Assessment And Management - Exported On: " . date('d-m-Y');
+                
+                    $query="SELECT * FROM as_incidents WHERE c_id = '$company_id' AND in_date BETWEEN CAST('$startDate' as datetime) AND CAST('$endDate' as datetime) ORDER BY in_date DESC";
+    		        $query_run = mysqli_query($con, $query);
+                }
+            }else{
+                $type = sanitizePlus($_POST['export_type']);
+                $file_ext_name = strtolower($type);
+                $export__ = true;
+                $fileName = "Incidents Summary Data Export - RiskSAFE - Risk Assessment And Management - Exported On: " . date('d-m-Y');
+                
+                $query = "SELECT * FROM as_incidents WHERE c_id = '$company_id'"; 
+                $query_run = mysqli_query($con, $query);
+                #param is all
+            }
+            
+            if($export__ == true){
+            if ($query_run->num_rows > 0) {
     		    $export = true; #data to be exported exists
     		    $i = 0;
                     $sheet->getStyle('A'.$r.':J'.$r)->getFont()->setBold(true); #bold header values
@@ -93,7 +117,7 @@
                     $sheet->setCellValue('I'.$r, 'Priority');
                     $sheet->setCellValue('J'.$r, 'Status');
     		    #loop through each assesment
-                foreach($result as $data) {
+                foreach($query_run as $data) {
                     $i++;
                     
                     #add a space between header and data
@@ -134,25 +158,32 @@
     		    array_push($message, 'Error : No Incident To Be Exported');
     		}
     		
-            if($export == true){
-                #only export if data exist to avoid missing variable $fileName
-                if($file_ext_name == 'xlsx') {
-                    $writer = new Xlsx($spreadsheet);
-                    $final_filename = $fileName.'.xlsx';
-                } elseif($file_ext_name == 'xls') {
-                    $writer = new Xls($spreadsheet);
-                    $final_filename = $fileName.'.xls';
-                } elseif($file_ext_name == 'csv') {
-                    $writer = new Csv($spreadsheet);
-                    $final_filename = $fileName.'.csv';
-                }
-        
-                // $writer->save($final_filename);
-                header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-                header('Content-Disposition: attactment; filename="'.urlencode($final_filename).'"');
-                $writer->save('php://output');
-            }  
+                if($export == true){
+                    #only export if data exist to avoid missing variable $fileName
+                    if($file_ext_name == 'xlsx') {
+                        $writer = new Xlsx($spreadsheet);
+                        $final_filename = $fileName.'.xlsx';
+                    } elseif($file_ext_name == 'xls') {
+                        $writer = new Xls($spreadsheet);
+                        $final_filename = $fileName.'.xls';
+                    } elseif($file_ext_name == 'csv') {
+                        $writer = new Csv($spreadsheet);
+                        $final_filename = $fileName.'.csv';
+                    }else{
+                        $writer = new Xls($spreadsheet);
+                        $final_filename = $fileName.'.xls';
+                    }
             
+                    // $writer->save($final_filename);
+                    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                    header('Content-Disposition: attactment; filename="'.urlencode($final_filename).'"');
+                    $writer->save('php://output');
+                } 
+            }
+            
+        }else{
+            #invalid
+            array_push($message, 'Error 402: Invalid Report Parameters');
         }
     	
     }
@@ -180,109 +211,137 @@
         <div class="main-content">
             <section class="section">
             <div class="section-body">
-                <div class='card'>
-                    <div class="card-header">
+                <?php require $file_dir.'layout/alert.php' ?>
+                <div class="card" style='margin-top:10px;'>
+                    <div class="card-header" style="margin-top: 20px;display:flex;justify-content:space-between;">
                         <h3 class="d-inline">Incident Reports</h3>
-                        <a class="btn btn-primary btn-icon icon-left header-a" href="../business/new-incident"><i class="fas fa-plus"></i> New Incident</a>
+                        <div>
+                            <?php if(has_data('as_incidents', 'c_id', $company_id, $con) == true){ ?>
+                            <button class="btn btn-primary btn-icon icon-left header-a" data-toggle="modal" data-target="#exportAll"><i class="fas fa-file"></i> Export All</button>
+                            <button class="btn btn-outline-primary btn-icon icon-left header-a" data-toggle="modal" data-target="#exportWithDate"><i class="fas fa-file"></i> Export By Date</button>
+                            <?php }else{ ?>
+                            <a class="btn btn-primary btn-icon icon-left header-a" href="../business/new-incident"><i class="fas fa-plus"></i> New Incident</a>
+                            <?php } ?>
+                        </div>
                     </div>
                     <div class='card-body'>
-                        <?php require '../../layout/alert.php' ?>
-                        <form role="form" id="form" method="post">
-        					<div class="form-group">
-        					    <div class='bia-desc' style='text-align:left !important;'>
-        					        It can include data such as who was involved, what happened, when it happened, where it happened, what caused it to happen, 
-        					        and any other relevant details. This documentation helps organizations identify risks that need to 
-        					        be addressed to prevent similar incidents from occurring in the future.
-
-                                    <p>By recording incident data, organizations can use <strong>KEY RISK INDICATORS</strong> to gain insights that allow 
-                                    for predictive analytics and proactive measures to prevent similar events from happening again. 
-                                    It can also help streamline the process of incident reporting with accuracy and efficiency.</p>
-                                    
-                                    <p>Various incidents are reported, including workplace injuries, accidents and near-misses, 
-                                    data breaches and security threats, medical emergencies, and customer complaints. 
-                                    Each one needs to be properly documented so incidents can be tracked over time and patterns can be identified.</p>
-                                    <p>Your registered incidents on RiskSafe includes:</p>
-        					    </div>
-        					    <div class="card-bod">
-                                    <?php 
-                                        $list_one = listIncidentsForReportCustom($company_id, $con, 5);
-                                        $details_count = $list_one;
-                                        if($list_one !== false){
-                                        if(count($details_count) <= 1){$details[] = $list_one;}else{$details = $list_one;}
-                                        
-                                    ?>
-                                    
-                                    <?php if ($details === 'a:0:{}') { #empty data?> 
-                                    <div style="width:100%;min-height:400px;display:flex;justify-content:center;align-items:center;">
-                                          <div style="text-align: center;"> 
-                                            <h3>Empty Data!!</h3>
-                                            No Incident Recorded Yet,
-                                            <p><a href="../business/new-incident" class="btn btn-primary btn-icon icon-left mt-2"><i class="fas fa-plus"></i> Record New Incident</a></p>
-                                        </div>
-                                    </div>
-                                    <?php }else{ $arrcount = count($details); ?>
-                                    <table class="payment-data" style='margin:10px 0px;'>
-                                        <tr>
-                                            <th style="width: 5%;">S/N</th>
-                                            <th style="width: 30%;">Title</th>
-                                            <th>Status</th>
-                                            <th>Priority </th>
-                                            <th>Date </th>
-                                            <th>...</th>
-                                        </tr>
-                                        <?php $i = 0; foreach ($list_one as $item) { $i++; ?>
-                                        <tr>
-                                            <td><strong><?php echo $i; ?></strong></td>
-                                            <td><?php echo ucwords($item['in_title']); ?></td>
-                                            <td><?php echo ucwords($item['in_status']); ?></td>
-                                            <td><?php echo ucwords($item['in_priority']); ?></td>
-                                            <td><?php $d = date_create_from_format('Y-m-d', $item['in_date']); echo date_format($d, "m/d/Y"); ?></td>
-                                            <td>...</td>
-                                        </tr>
-                                    <?php }} if ($details !== 'a:0:{}') { echo '</table>'; } #closing tag for table ?>
-                                    
-                                    
-                                    
-                                    
-                                    <div class='row custom-row' style='margin-top:30px;margin-bottom:10px;'>
-                                    <div class='col-12' style='margin:10px 0px;font-size:17px;'>
-                                        Select Timespan Of The Report To Be Exported:
-                                    </div>
-                                    <div class="form-group col-lg-5 col-12">
-                    		            <label>Start Date:</label>
-                    		            <input name="startDate" type="text" class="form-control datepicker" placeholder="Enter start date" min='<?php echo $largestNumber__1; ?>' value='<?php echo $smallestNumber__1; ?>' max='<?php echo $smallestNumber__1; ?>' required>        
-                    		        </div>
-                    		        <div class="form-group col-lg-5 col-12">
-                    		            <label>End Date:</label>
-                    		            <input name="endDate" type="text" class="form-control datepicker" placeholder="Enter end date" min='<?php echo $largestNumber__1; ?>' max='<?php echo $smallestNumber__1; ?>' required>
-                    		        </div>
-                    		        <div class="form-group col-lg-2 col-12">
-                    		            <label>Export Type:</label>
-                        		        <select class="form-control" name='export_type'>
-                                            <option value='xls' selected>XLS</option>
-                                            <option value='xlsx'>XLSX</option>
-                                            <option value='csv'>CSV</option>
-                                        </select>
-                                    </div>
-                    		        <div class='form-group col-lg-12 col-12' style='font-weight:400;'>
-                    		            <strong>NOTE:</strong> Earliest Registered Incident - <?php echo $smallestNumber__1; ?> and Most Recent Registered Incident - <?php echo $largestNumber__1; ?>
-                    		        </div>
-                    		        </div>
-                                    <div style='width:100%;text-align:center;margin-top:10px;text-align:right;'>
-                					    <button type="submit" class="btn btn-lg btn-primary btn-icon icon-left" name='export-report'><i class='fas fa-file-download'></i> Export Incident Report</button>
-                					</div>
-                                    <?php }else{ ?>
-                                    <div class="empty-table">No Incident Registered Yet!!</div>
-                                    <?php } ?>
-                					</div>
-        				</form>
+                        <?php 
+                            $query = "SELECT * FROM as_incidents WHERE c_id = '$company_id' ORDER BY in_date DESC LIMIT 5";
+                            $result=$con->query($query);
+		                          if ($result->num_rows > 0) { $i = 0;
+		                              
+                        ?>
+                        <table class="table table-striped table-bordered table-hover hide-md" id="table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%;">S/N</th>
+                                    <th style="width: 30%;">Title</th>
+                                    <th>Status</th>
+                                    <th>Priority </th>
+                                    <th>Date </th>
+                                    <th>...</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php while($item = $result->fetch_assoc()){ $i++; ?>
+                                <tr>
+                                    <td><strong><?php echo $i; ?></strong></td>
+                                    <td><?php echo ucwords($item['in_title']); ?></td>
+                                    <td><?php echo ucwords($item['in_status']); ?></td>
+                                    <td><?php echo ucwords($item['in_priority']); ?></td>
+                                    <td><?php echo get_date($item['in_date']); ?></td>
+                                    <td>...</td>
+                                </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                        <?php }else{ ?>
+                        <div class="empty-table" style='min-height:300px;display:flex;flex-direction:column;justify-content:center;align-items:center;'>
+                            No Incident Registered Yet!!
+                            <div><a href='../business/new-incident' class='btn btn-primary' style='margin-top:10px;'><i class='fas fa-plus'></i> Register New Incident</a></div>
+                        </div> 
+                        <?php } ?>
                     </div>
+                    
                     <div class='card-footer'></div>
                 </div>
                 
             </div>
             </section>
         </div>
+        
+        <?php if(has_data('as_incidents', 'c_id', $company_id, $con) == true){ ?>
+        <div class="modal fade" id="exportAll" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <form method='post' action='' style='width:100%;'>
+              <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirm Action</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="font-weight: 400;">
+                        <div class="form-group">
+                    		    <label>Export Type:</label>
+                        		<select class="form-control" name='export_type'>
+                                    <option value='xls' selected>XLS</option>
+                                    <option value='xlsx'>XLSX</option>
+                                    <option value='csv'>CSV</option>
+                                </select>
+                        </div>
+                        <input type="hidden" name="export_param" value='all' required>
+                    </div>
+                    <div class="modal-footer bg-whitesmoke">
+                        <button type="submit" class="btn btn-lg btn-primary btn-icon icon-left" name='export-report'><i class='fas fa-file-download'></i> Export Incident Report</button>
+                     </div>
+                </div>
+              </div>
+              </form>
+        </div>
+        <div class="modal fade bd-example-modal-lg" id="exportWithDate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <form method='post' action=''>
+              <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Select Timespan Of The Report To Be Exported:</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="font-weight: 400;">
+                        <div class='row custom-row' style='margin-bottom:10px;'>
+                            <div class="form-group col-lg-6 col-12">
+                    		  <label>Start Date:</label>
+                    		  <input name="startDate" type="text" class="form-control datepicker" placeholder="Enter start date" min='<?php echo $largestNumber__1; ?>' value='<?php echo $smallestNumber__1; ?>' max='<?php echo $smallestNumber__1; ?>' required>        
+                    		 </div>
+                    		<div class="form-group col-lg-6 col-12">
+                    		        <label>End Date:</label>
+                    		        <input name="endDate" type="text" class="form-control datepicker" placeholder="Enter end date" min='<?php echo $largestNumber__1; ?>' max='<?php echo $smallestNumber__1; ?>'  required>
+                    		</div>
+                    		<div class="form-group col-12">
+                    		        <label>Export Type:</label>
+                        		    <select class="form-control" name='export_type'>
+                                    <option value='xls' selected>XLS</option>
+                                    <option value='xlsx'>XLSX</option>
+                                    <option value='csv'>CSV</option>
+                                </select>
+                            </div>
+                    		<div class='form-group col-lg-12 col-12' style='font-weight:400;margin-top:10px;'>
+                    		 <strong>NOTE:</strong> Earliest Registered Incident - <?php echo $smallestNumber__1; ?> and Most Recent Registered Incident - <?php echo $largestNumber__1; ?>
+                    		</div>
+                    	</div>
+                    	<input type="hidden" name="export_param" value='date' required>
+                        </div>
+                    <div class="modal-footer bg-whitesmoke">
+                        <button type="submit" class="btn btn-lg btn-primary btn-icon icon-left" name='export-report'><i class='fas fa-file-download'></i> Export Incident Report</button>
+                    </div>
+                </div>
+              </div>
+              </form>
+        </div>
+        <?php } ?>
+        
         <?php require '../../layout/footer.php' ?>
         </footer>
         </div>

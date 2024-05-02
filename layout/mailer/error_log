@@ -1,0 +1,5 @@
+[19-Apr-2024 11:24:52 Africa/Lagos] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: YES) in /home/portfol1/public_html/layout/mailer/db.php:2
+Stack trace:
+#0 /home/portfol1/public_html/layout/mailer/db.php(2): mysqli_connect('localhost', 'root', 'portfol1_risksa...', 'portfol1_risksa...')
+#1 {main}
+  thrown in /home/portfol1/public_html/layout/mailer/db.php on line 2

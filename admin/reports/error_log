@@ -1,0 +1,5 @@
+[26-Apr-2024 10:55:02 Africa/Lagos] PHP Fatal error:  Uncaught TypeError: date_format(): Argument #1 ($object) must be of type DateTimeInterface, bool given in /home/portfol1/public_html/admin/reports/treatment-report.php:46
+Stack trace:
+#0 /home/portfol1/public_html/admin/reports/treatment-report.php(46): date_format(false, 'Y-m-d')
+#1 {main}
+  thrown in /home/portfol1/public_html/admin/reports/treatment-report.php on line 46

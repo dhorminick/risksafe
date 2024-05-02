@@ -1,0 +1,2 @@
+[18-Apr-2024 16:02:29 Australia/Sydney] PHP Warning:  Undefined variable $user_authenticated in /home/portfol1/public_html/auth.php on line 66
+[18-Apr-2024 16:02:29 Australia/Sydney] PHP Warning:  Undefined variable $auth_complete in /home/portfol1/public_html/auth.php on line 83

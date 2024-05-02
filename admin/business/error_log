@@ -1,0 +1,5 @@
+[26-Apr-2024 02:58:53 Africa/Lagos] PHP Fatal error:  Uncaught Error: Object of class mysqli could not be converted to string in /home/portfol1/public_html/layout/admin__func.php:451
+Stack trace:
+#0 /home/portfol1/public_html/admin/business/new-bia.php(38): createNotification('8UT8QR55FR', 'New BIA Registe...', '2024-04-26 02:5...', 'w34ylp10hlzj5z4...', 'admin/business/...', 'bia', 'new', 'lsosb822x9', Object(mysqli), 'https://portfol...')
+#1 {main}
+  thrown in /home/portfol1/public_html/layout/admin__func.php on line 451

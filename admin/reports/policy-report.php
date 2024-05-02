@@ -23,27 +23,29 @@
     $startDate = "";
     $endDate = "";
     
-    $query="SELECT MAX( PolicyEffectiveDate ) AS max FROM policyfields WHERE c_id = '$company_id'";
-	if ($result=$con->query($query)) {
-	    $row=$result->fetch_assoc();
-	    $largestNumber = $row['max'];
-	}else{
-	    $largestNumber = 0;
-	}
-	
-	$query="SELECT MIN( PolicyEffectiveDate ) AS max FROM policyfields WHERE c_id = '$company_id'";
-	if ($result=$con->query($query)) {	
-	    $row=$result->fetch_assoc();
-	    $smallestNumber = $row['max'];
-	}else{
-	    $smallestNumber = 0;
-	}
-	
-	$largestNumber_1 = DateTime::createFromFormat('Y-m-d', $largestNumber);
-    $smallestNumber_1 = DateTime::createFromFormat('Y-m-d', $smallestNumber);
-            
-    $largestNumber__1 = date_format($largestNumber_1, "Y-m-d");
-    $smallestNumber__1 = date_format($smallestNumber_1, "Y-m-d");
+    if(has_data('policyfields', 'c_id', $company_id, $con) == true){
+        $query="SELECT MAX( PolicyEffectiveDate ) AS max FROM policyfields WHERE c_id = '$company_id'";
+    	if ($result=$con->query($query)) {
+    	    $row=$result->fetch_assoc();
+    	    $largestNumber = $row['max'];
+    	}else{
+    	    $largestNumber = 0;
+    	}
+    	
+    	$query="SELECT MIN( PolicyEffectiveDate ) AS max FROM policyfields WHERE c_id = '$company_id'";
+    	if ($result=$con->query($query)) {	
+    	    $row=$result->fetch_assoc();
+    	    $smallestNumber = $row['max'];
+    	}else{
+    	    $smallestNumber = 0;
+    	}
+    	
+    	$largestNumber_1 = DateTime::createFromFormat('Y-m-d', $largestNumber);
+        $smallestNumber_1 = DateTime::createFromFormat('Y-m-d', $smallestNumber);
+                
+        $largestNumber__1 = date_format($largestNumber_1, "Y-m-d");
+        $smallestNumber__1 = date_format($smallestNumber_1, "Y-m-d");
+    }
     
     if (isset($_POST["export-report"])) {
         $startDate = sanitizePlus($_POST['startDate']);
@@ -212,7 +214,7 @@
                                             <th>Review Date</th>
                                             <th>...</th>
                                         </tr>
-                                        <?php while($item = $query->fetch_assoc()){ $i++; ?>
+                                        <?php while($item = $result->fetch_assoc()){ $i++; ?>
                                         <tr> 
                                             <td><?php echo $i; ?></td>
                                             <td><?php echo ucwords($item['PolicyTitle']); ?></td>
@@ -229,6 +231,7 @@
                                         <div><a href='../compliances/new-policy' class='bb'><i class='fas fa-plus'></i> Register New Policy</a></div>
                                     </div> 
                                     <?php } ?>
+                                    
                                     <?php if($policyExist == true){ ?>
                                     <div class='row custom-row' style='margin-top:30px;margin-bottom:10px;'>
                                     <div class='col-12' style='margin:10px 0px;font-size:17px;'>

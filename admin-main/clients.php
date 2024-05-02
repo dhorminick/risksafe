@@ -17,6 +17,13 @@
         $toDisplay = true;
         $id = sanitizePlus($_GET['id']);
 
+        if(isset($_POST['v_user']) && isset($_POST['v_c_id']) !== ""){
+            $v_id = sanitizePlus($_POST['v_c_id']);
+            
+            $query = "UPDATE users SET u_complete = 'true' WHERE company_id = '$v_id'";
+            $u = $con->query($query);
+        }
+        
         $info = getCompanyDetails($id, $con);
         if ($info == 'error') {
             $exists = false;
@@ -24,6 +31,7 @@
             $exists = true;
             $details = unserialize($info['company_details']);
         }
+        
         
     }else{
         $toDisplay = false;
@@ -55,8 +63,17 @@
                     <?php if ($toDisplay == true) { ?>
                     <?php if ($exists == true) { ?>
                     <div class="card">
-                        <div class="card-header">
+                        <div class="card-header" style='display:flex;justify-content:space-between;'>
                             <h3>Client Details</h3>
+                            <div class="card-header-form" style='display:flex;'>
+                                <?php if($info['u_complete'] !== 'true'){ ?>
+                                <form action='' method='post' style='margin-right:10px;'>
+                                    <input type='hidden' name='v_c_id' value='<?php echo $info['company_id']; ?>' />
+                                    <button class="btn btn-secondary" name='v_user'>Validate User</button>
+                                </form>
+                                <?php } ?>
+                                <a href="../" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Back</a>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="row section-rows customs">

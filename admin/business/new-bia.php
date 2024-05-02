@@ -22,8 +22,9 @@
         $resource = sanitizePlus($_POST["resource"]);
         
 		$bia_id = secure_random_string(10);
-        $query = "INSERT INTO as_bia (bia_user, bia_activity, bia_descript, bia_priority, bia_impact, bia_time, bia_action, bia_resource, c_id, bia_id) 
-        VALUES ('$userId', '$activity', '$descript', '$priority', '$impact', '$time', '$action','$resource', '$company_id', '$bia_id')";
+		$date_time = date("Y-m-d H:i:s");
+        $query = "INSERT INTO as_bia (bia_user, bia_activity, bia_descript, bia_priority, bia_impact, bia_time, bia_action, bia_resource, c_id, bia_id, datee_time) 
+        VALUES ('$userId', '$activity', '$descript', '$priority', '$impact', '$time', '$action','$resource', '$company_id', '$bia_id', '$date_time')";
         $biaCreated = $con->query($query);
         if ($biaCreated) {
             #send notification
@@ -34,7 +35,8 @@
             $type = 'bia';
             $case = 'new';
             $id = $bia_id;
-            $returnArray = createNotification($company_id, $notification_message, $datetime, $notifier, $link, $type, $case, $id, $con, $sitee);
+            $returnArray = createNotification($company_id, $notification_message, $datetime, $notifier, $link, $type, $case, $con, $sitee);
+            
             header("Location: bia?id=".$bia_id);
         }else{
             array_push($message, 'Error 502: Error!!');

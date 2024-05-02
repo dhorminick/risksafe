@@ -42,6 +42,18 @@
 
         return $riskType;
     }
+    
+    function has_data($table, $var, $id, $con){
+        $query="SELECT * FROM $table WHERE c_id= '$id'";
+        $result=$con->query($query);
+        if ($result->num_rows > 0) {
+            $has_data = true;
+        }else{
+            $has_data = false;
+        }
+
+        return $has_data;
+    }
 
     function get_date($date){
         return date("D\. jS \of F Y", strtotime($date));
@@ -109,6 +121,24 @@
             case 4:
                 $riskRating = 'Extreme';
                 break;
+        }
+
+		return $riskRating;
+    }
+    
+    function con_treat_status($id){
+        switch ($id) {
+            case 1:
+                $riskRating = 'Completed';
+                break;
+            case 2:
+                $riskRating = 'In Progress';
+                break;
+            case 3:
+                $riskRating = 'Not Started';
+                break;
+            default:
+                $riskRating = 'Not Specified';
         }
 
 		return $riskRating;
