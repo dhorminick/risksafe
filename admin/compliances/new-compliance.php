@@ -128,7 +128,8 @@
             $targetFilePath = 'null';
             #$com_id = secure_random_string(10);
             $date = date("Y-m-d");
-            $query = "INSERT INTO as_compliancestandard (com_user_id, com_compliancestandard, com_legislation, com_controls, com_training, co_status, com_officer, com_documentation,existing_tr,existing_ct, c_id, compli_id, saved_control, saved_treatment, custom_control, custom_treatment, frequency) VALUES ('$userId', '$compliancestandard', '$legislation', '$control', '$training', '$compliancestatus', '$officer', '$targetFilePath','$existing_tr','$existing_ct','$company_id','$com_id', '$saved_control', '$saved_treatment', '$custom_control', '$custom_treatment', '$freq')";
+            $query = "INSERT INTO as_compliancestandard (com_user_id, com_compliancestandard, com_legislation, com_controls, com_training, co_status, com_officer, com_documentation,existing_tr,existing_ct, c_id, compli_id, saved_control, saved_treatment, custom_control, custom_treatment, frequency) VALUES 
+            ('$userId', '$compliancestandard', '$legislation', '$control', '$training', '$compliancestatus', '$officer', '$targetFilePath','$existing_tr','$existing_ct','$company_id','$com_id', '$saved_control', '$saved_treatment', '$custom_control', '$custom_treatment', '$freq')";
             $sql = mysqli_query($con, $query);
             if ($sql) {
                 #notify
@@ -218,11 +219,11 @@
                                 <div class="form-group col-12 col-lg-3">
 									<label>Compliance Frequency: </label>
 									<select class="form-control" name="freq">
-										<option value="1">Daily Controls</option>
-                                        <option value="2">Weekly Controls</option>
-                                        <option value="4">Monthly Controls</option>
-                                        <option value="5">Quaterly Controls</option>
-                                        <option value="6">Annually Controls</option>
+										<option value="1">Daily Applications</option>
+                                        <option value="2">Weekly Applications</option>
+                                        <option value="4">Monthly Applications</option>
+                                        <option value="5">Quaterly Applications</option>
+                                        <option value="6">Annually Applications</option>
                                         <option value="7">As Required</option>
 									</select>
 

@@ -5,10 +5,11 @@
         $signedIn = true;
     } else {
         header('Location: '.$file_dir.'login?r=/reports/control-reports');
+        exit();
     }
     $message = [];
     include '../../layout/db.php';
-    include '../../layout/admin_config.php';
+    include '../../layout/admin__config.php';
     include '../ajax/customs.php';
     include_once 'summary.php';
     

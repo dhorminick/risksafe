@@ -5,14 +5,13 @@
         $signedIn = true;
     } else {
         header('Location: '.$file_dir.'login?r=/reports/incident-report');
+        exit();
     }
     $message = [];
     include '../../layout/db.php';
-    include '../../layout/admin_config.php';
+    include '../../layout/admin__config.php';
     include '../ajax/incidents.php';
-    // require_once $file_dir.'classes/PHPExcel.php';
     include_once 'summary.php';
-    // require '../_external/v/vendor/autoload.php';
     
     use PhpOffice\PhpSpreadsheet\Spreadsheet;
     use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -231,7 +230,7 @@
 		                          if ($result->num_rows > 0) { $i = 0;
 		                              
                         ?>
-                        <table class="table table-striped table-bordered table-hover hide-md" id="table">
+                        <table class="table table-striped table-bordered table-hover hide-m" id="table">
                             <thead>
                                 <tr>
                                     <th style="width: 5%;">S/N</th>

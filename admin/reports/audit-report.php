@@ -4,7 +4,7 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/reports/risk-reports');
+        header('Location: '.$file_dir.'login?r=/reports/audit-report');
         exit();
     }
     $message = [];
@@ -22,8 +22,8 @@
     $export = false;
     $export__ = false;
     
-    if(has_data('as_assessment', 'c_id', $company_id, $con) == true){
-        $query="SELECT MAX( export_date ) AS max FROM as_assessment WHERE c_id = '$company_id'";
+    if(has_data('as_auditcontrols', 'c_id', $company_id, $con) == true){
+        $query="SELECT MAX( con_date ) AS max FROM as_auditcontrols WHERE c_id = '$company_id'";
     	if ($result=$con->query($query)) {
     	    $row=$result->fetch_assoc();
     	    $largestNumber = $row['max'];
@@ -31,7 +31,7 @@
     	    $largestNumber = 0;
     	}
     	
-    	$query="SELECT MIN( export_date ) AS max FROM as_assessment WHERE c_id = '$company_id'";
+    	$query="SELECT MIN( con_date ) AS max FROM as_auditcontrols WHERE c_id = '$company_id'";
     	if ($result=$con->query($query)) {	
     	    $row=$result->fetch_assoc();
     	    $smallestNumber = $row['max'];
@@ -59,7 +59,7 @@
             #set and merge risksafe header
             $spreadsheet->getActiveSheet()->mergeCells("A1:E1"); 
             $sheet->getStyle('A1:L1')->getAlignment()->setHorizontal('center');
-            $sheet->setCellValue('A'.$r, "Risk Assessment Summary Data Export - RiskSAFE - " . date('d-m-Y'));
+            $sheet->setCellValue('A'.$r, "Audit Summary Data Export - RiskSAFE - " . date('d-m-Y'));
             
             #add a space between header and data
             $r++;
@@ -74,21 +74,21 @@
             	$file_ext_name = strtolower($type);
             	
             	if($startDate > $smallestNumber__1){
-                    array_push($message, 'Error : Earliest Recorded Risk Is - '.$smallestNumber__1);
+                    array_push($message, 'Error : Earliest Recorded Audit Is - '.$smallestNumber__1);
                 }else{
                     $export__ = true;
-                    $fileName = "Risk Assessment Summary Data Export (From: ".$startDate." To: ".$endDate.") - RiskSAFE - Risk Assessment And Management - Exported On: " . date('d-m-Y');
+                    $fileName = "Audit Summary Data Export (From: ".$startDate." To: ".$endDate.") - RiskSAFE - Risk Assessment And Management - Exported On: " . date('d-m-Y');
                 
-                    $query="SELECT * FROM as_assessment WHERE c_id = '$company_id' AND export_date BETWEEN CAST('$startDate' as datetime) AND CAST('$endDate' as datetime) ORDER BY export_date DESC";
+                    $query="SELECT * FROM as_auditcontrols WHERE c_id = '$company_id' AND con_date BETWEEN CAST('$startDate' as datetime) AND CAST('$endDate' as datetime) ORDER BY con_date DESC";
     		        $query_run = mysqli_query($con, $query);
                 }
             }else{
                 $type = sanitizePlus($_POST['export_type']);
                 $file_ext_name = strtolower($type);
                 $export__ = true;
-                $fileName = "Risk Assessment Summary Data Export - RiskSAFE - Risk Assessment And Management - Exported On: " . date('d-m-Y');
+                $fileName = "Audit Summary Data Export - RiskSAFE - Risk Assessment And Management - Exported On: " . date('d-m-Y');
                 
-                $query = "SELECT * FROM as_assessment WHERE c_id = '$company_id'"; 
+                $query = "SELECT * FROM as_auditcontrols WHERE c_id = '$company_id'"; 
                 $query_run = mysqli_query($con, $query);
                 #param is all
             }
@@ -102,46 +102,49 @@
                     #loop through each assesment
                     foreach($query_run as $data) {
                         $ii++;
-                        $as__id = $data['as_id'];
+                        $as__id = $data['aud_id'];
+                        
+                        $spreadsheet->getActiveSheet()->mergeCells("A$r:I$r");
+                        $sheet->getStyle("A$r:I$r")->getFont()->setBold(true); #bold header values
+                        $sheet->setCellValue('A'.$r, "Audit Details:");
+                                
+                        #add a space between assessment and risks
+                        $r++;
                             
-                        $sheet->getStyle('A'.$r.':J'.$r)->getFont()->setBold(true); #bold header values
+                        $sheet->getStyle("A$r:I$r")->getFont()->setBold(true); #bold header values
                         #add assessment headers
                         $sheet->setCellValue('A'.$r, 'S/N');
-                        $sheet->setCellValue('B'.$r, 'Assessment Type');
-                        $sheet->setCellValue('C'.$r, 'Assessment Team');
-                        $sheet->setCellValue('D'.$r, 'Assessment Task');
-                        $sheet->setCellValue('E'.$r, 'Assessment Description');
-                        $sheet->setCellValue('F'.$r, 'Assessment Owner');
-                        $sheet->setCellValue('G'.$r, 'Assessor');
-                        $sheet->setCellValue('H'.$r, 'Assessment Approval');
-                        $sheet->setCellValue('I'.$r, 'Assessment Date');
-                        $sheet->setCellValue('J'.$r, 'Next Assessment');
+                        $sheet->setCellValue('B'.$r, 'Company');
+                        $sheet->setCellValue('C'.$r, 'Industry Type');
+                        $sheet->setCellValue('D'.$r, 'Business Unit or Team');
+                        $sheet->setCellValue('E'.$r, 'Process, Task or Activity');
+                        $sheet->setCellValue('F'.$r, 'Auditor');
+                        $sheet->setCellValue('G'.$r, 'Issued On');
+                        $sheet->setCellValue('H'.$r, 'Site');
+                        $sheet->setCellValue('I'.$r, 'Address');
                         
                         #add a space between header and data
                         $r++;
 
-                        $as_approval = ($data['as_approval'] == 1) ? 'True - Assessment Acknowledged' : 'False - Assessment Denied';
-                        $as__type = as_type($data['as_type'], $con);
-                        $as_date = get_date($data['as_date']);
-                        $as_next_date = get_date($data['as_next']);
+                        $as_date = get_date($data['con_date']);
+                        $addrr = $data['con_building'].', '.$data['con_street'].', '.$data['con_state'].', '.$data['con_country'].', '.$data['con_zipcode'];
         
                         $sheet->setCellValue('A'.$r, $ii);
-                        $sheet->setCellValue('B'.$r, $as__type);
-                        $sheet->setCellValue('C'.$r, $data['as_team']);
-                        $sheet->setCellValue('D'.$r, $data['as_task']);
-                        $sheet->setCellValue('E'.$r, $data['as_descript']);
-                        $sheet->setCellValue('F'.$r, $data['as_owner']);
-                        $sheet->setCellValue('G'.$r, $data['as_assessor']);
-                        $sheet->setCellValue('H'.$r, $as_approval);
-                        $sheet->setCellValue('I'.$r, $as_date);
-                        $sheet->setCellValue('J'.$r, $as_next_date);
-        
-                        #get risks
-                        $query_2 = "SELECT * FROM as_details WHERE c_id = '$company_id' AND as_id = '$as__id' ORDER BY iddetail DESC"; 
-                        $query_run_2 = mysqli_query($con, $query_2);
+                        $sheet->setCellValue('B'.$r, $data['con_company']);
+                        $sheet->setCellValue('C'.$r, $data['con_industry']);
+                        $sheet->setCellValue('D'.$r, $data['con_team']);
+                        $sheet->setCellValue('E'.$r, $data['con_task']);
+                        $sheet->setCellValue('F'.$r, $data['con_assessor']);
+                        $sheet->setCellValue('G'.$r, $as_date.' '.$data['con_time']);
+                        $sheet->setCellValue('H'.$r, $data['con_site']);
+                        $sheet->setCellValue('I'.$r, ucwords($addrr)); 
+                        
+                        #get control
+                        $query_3 = "SELECT * FROM as_auditcontrols WHERE c_id = '$company_id' AND aud_id = '$as__id' ORDER BY idcontrol DESC"; 
+                        $query_run_3 = mysqli_query($con, $query_3);
 
                         #if exist
-                        if(mysqli_num_rows($query_run_2) > 0) {
+                        if(mysqli_num_rows($query_run_3) > 0) {
                                 $jj = 0;
                                 #add a space between assessment and risks
                                 $r++;
@@ -149,44 +152,38 @@
                                 #begin on the next line
                                 $r++;
                                 
-                                $sheet->getStyle('A'.$r.':J'.$r)->getFont()->setBold(true); #bold header values
+                                $spreadsheet->getActiveSheet()->mergeCells("A$r:E$r");
+                                $sheet->getStyle("A$r:E$r")->getFont()->setBold(true); #bold header values
+                                $sheet->setCellValue('A'.$r, "Audit Control Data:");
+                                
+                                #add a space between assessment and risks
+                                $r++;
+                                
+                                $sheet->getStyle("A$r:E$r")->getFont()->setBold(true); #bold header values
                                 #add risk headers
-                                $sheet->setCellValue('A'.$r, 'S/N');
-                                $sheet->setCellValue('B'.$r, 'Risk');
-                                $sheet->setCellValue('C'.$r, 'Hazard');
-                                $sheet->setCellValue('D'.$r, 'Description');
-                                #skipped likelihood and consequence
-                                $sheet->setCellValue('E'.$r, 'Risk Rating');
-                                $sheet->setCellValue('F'.$r, 'Effectiveness');
-                                $sheet->setCellValue('G'.$r, 'Action');
-                                $sheet->setCellValue('H'.$r, 'Due Date');
-                                $sheet->setCellValue('I'.$r, 'Controls');
-                                $sheet->setCellValue('J'.$r, 'Treatments');
+                                $sheet->setCellValue('A'.$r, 'Auditted Control');
+                                $sheet->setCellValue('B'.$r, 'Control Rationale');
+                                $sheet->setCellValue('C'.$r, 'Control Root Cause');
+                                $sheet->setCellValue('D'.$r, 'Control Effectiveness');
+                                $sheet->setCellValue('E'.$r, 'Frequency Of Application (FoA)');
+                                $sheet->setCellValue('F'.$r, 'Next Audit');
                                 
                                 
                                 #begin on the next line
                                 $r++;
                         
-                                foreach($query_run_2 as $data_2) {
+                                foreach($query_run_3 as $data_3) {
                                     $jj++;
-                                    $as__risk = as_risk($data_2['as_risk'], $con);
-                                    $as__hazard = as_hazard($data_2['as_hazard'], $con);
-                                    $as__rating = as_rating($data_2['as_rating']);
-                                    $as__action = as_action($data_2['as_action'], $con);
-                                    $as__date = get_date($data_2['as_duedate']);
-                                    $controls = list_out_control($company_id, $data_2['ri_id'], $con);
-                                    $treatments = list_out_treat($company_id, $data_2['ri_id'], $con);
+                                    $l_eff = getEffectiveness($data_3['con_effect']);
+                                    $l_freq = get_Frequency($data_3['con_frequency']);
+                                    $l_next = get_date($data_3['con_next']);
             
-                                    $sheet->setCellValue('A'.$r, $jj);
-                                    $sheet->setCellValue('B'.$r, $as__risk);
-                                    $sheet->setCellValue('C'.$r, $as__hazard);
-                                    $sheet->setCellValue('D'.$r, $data_2['as_descript']);
-                                    $sheet->setCellValue('E'.$r, $as__rating);
-                                    $sheet->setCellValue('F'.$r, $data_2['as_effect']);
-                                    $sheet->setCellValue('G'.$r, $as__action);
-                                    $sheet->setCellValue('H'.$r, $as__date);
-                                    $sheet->setCellValue('I'.$r, $controls);
-                                    $sheet->setCellValue('J'.$r, $treatments);
+                                    $sheet->setCellValue('A'.$r, $data_3['con_control']);
+                                    $sheet->setCellValue('B'.$r, $data_3['con_observation']);
+                                    $sheet->setCellValue('C'.$r, $data_3['con_rootcause']);
+                                    $sheet->setCellValue('D'.$r, $l_eff);
+                                    $sheet->setCellValue('E'.$r, $l_freq);
+                                    $sheet->setCellValue('F'.$r, $l_next);
                                     
                                     #begin on the next line
                                     $r++;
@@ -205,8 +202,73 @@
                             $r++;
         
                             #empty row - no assessment addedd for this risk
-                            $spreadsheet->getActiveSheet()->mergeCells("A'.$r.':J".$r); 
-                            $sheet->setCellValue('A'.$r, "No Risk Registered For This Assessment Yet!!");
+                            $spreadsheet->getActiveSheet()->mergeCells("A$r:E$r"); 
+                            $sheet->setCellValue('A'.$r, "No Control Registered For This Audit!!");
+                        }
+                        
+                        #get criteria
+                        $query_2 = "SELECT * FROM as_auditcriteria WHERE c_id = '$company_id' AND aud_id = '$as__id' ORDER BY idcriteria DESC"; 
+                        $query_run_2 = mysqli_query($con, $query_2);
+
+                        #if exist
+                        if(mysqli_num_rows($query_run_2) > 0) {
+                                $jj = 0;
+                                #add a space between assessment and risks
+                                $r++;
+                                        
+                                #begin on the next line
+                                $r++;
+                                
+                                $spreadsheet->getActiveSheet()->mergeCells("A$r:F$r");
+                                $sheet->getStyle("A$r:F$r")->getFont()->setBold(true); #bold header values
+                                $sheet->setCellValue('A'.$r, "Audit Criteria:");
+                                
+                                #add a space between assessment and risks
+                                $r++;
+                                
+                                $sheet->getStyle("A$r:I$r")->getFont()->setBold(true); #bold header values
+                                #add risk headers
+                                $sheet->setCellValue('A'.$r, 'S/N');
+                                $sheet->setCellValue('B'.$r, 'Criteria Question');
+                                $sheet->setCellValue('C'.$r, 'Procedure');
+                                $sheet->setCellValue('D'.$r, 'Expected Outcome');
+                                $sheet->setCellValue('E'.$r, 'Outcome');
+                                $sheet->setCellValue('F'.$r, 'Notes');
+                                
+                                
+                                #begin on the next line
+                                $r++;
+                        
+                                foreach($query_run_2 as $data_2) {
+                                    $jj++;
+                                    $l_outcome = get_outcome($data_2['cri_outcome']);
+            
+                                    $sheet->setCellValue('A'.$r, $jj);
+                                    $sheet->setCellValue('B'.$r, $data_2['cri_question']);
+                                    $sheet->setCellValue('C'.$r, $data_2['cri_procedure']);
+                                    $sheet->setCellValue('D'.$r, $data_2['cri_expected']);
+                                    $sheet->setCellValue('E'.$r, $l_outcome);
+                                    $sheet->setCellValue('F'.$r, $data_2['cri_notes']);
+                                    
+                                    #begin on the next line
+                                    $r++;
+                                }
+            
+                                #add a space between this and next assessment
+                                $r++;
+            
+                                #begin on next line
+                                $r++;
+                        }else{
+                            #add a space between assessment and risks
+                            $r++;
+        
+                            #begin on the next line
+                            $r++;
+        
+                            #empty row - no assessment addedd for this risk
+                            $spreadsheet->getActiveSheet()->mergeCells("A$r:F$r"); 
+                            $sheet->setCellValue('A'.$r, "No Criteria Registered For This Audit Yet!!");
                         }
 
                     }
@@ -229,8 +291,8 @@
                     #set values
                     $spreadsheet->getProperties()->setCreator("RiskSafe")
                                 ->setLastModifiedBy("RiskSafe")
-                                ->setTitle("Risk Assessment Data Export - RiskSAFE")
-                                ->setSubject("Risk Assessment Data Export - RiskSAFE");
+                                ->setTitle("Audit Data Export - RiskSAFE")
+                                ->setSubject("Audit Data Export - RiskSAFE");
                 } else {
                     #no risk to be exported
                     echo "No Record Found";
@@ -274,7 +336,7 @@
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-  <title>Risk Assessments Reports | <?php echo $siteEndTitle ?></title>
+  <title>Audit Reports | <?php echo $siteEndTitle ?></title>
   <?php require '../../layout/general_css.php' ?>
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/admin.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/bundles/bootstrap-timepicker/css/bootstrap-timepicker.min.css">
@@ -295,19 +357,19 @@
                 <?php require $file_dir.'layout/alert.php' ?>
                 <div class="card" style='margin-top:10px;'>
                     <div class="card-header" style="margin-top: 20px;display:flex;justify-content:space-between;">
-                        <h3 class="d-inline">Export Risk Reports</h3>
+                        <h3 class="d-inline">Export Audit Reports</h3>
                         <div>
-                            <?php if(has_data('as_assessment', 'c_id', $company_id, $con) == true){ ?>
+                            <?php if(has_data('as_auditcontrols', 'c_id', $company_id, $con) == true){ ?>
                             <button class="btn btn-primary btn-icon icon-left header-a" data-toggle="modal" data-target="#exportAll"><i class="fas fa-file"></i> Export All</button>
                             <button class="btn btn-outline-primary btn-icon icon-left header-a" data-toggle="modal" data-target="#exportWithDate"><i class="fas fa-file"></i> Export By Date</button>
                             <?php }else{ ?>
-                            <a class="btn btn-primary btn-icon icon-left header-a" href="../assessments/new-assessment"><i class="fas fa-plus"></i> New Assesment</a>
+                            <a class="btn btn-primary btn-icon icon-left header-a" href="../monitoring/new-audit"><i class="fas fa-plus"></i> New Audit</a>
                             <?php } ?>
                         </div>
                     </div>
                     <div class='card-body'>
                         <?php 
-                            $query = "SELECT * FROM as_assessment WHERE c_id = '$company_id' ORDER BY idassessment DESC LIMIT 5";
+                            $query = "SELECT * FROM as_auditcontrols WHERE c_id = '$company_id' ORDER BY idcontrol DESC LIMIT 5";
                             $result=$con->query($query);
 		                          if ($result->num_rows > 0) { $i = 0;
 		                              
@@ -316,21 +378,23 @@
                             <thead>
                                 <tr>
                                     <th>S/N</th>
-                                    <th>Team or Organisation</th>
-                                    <th>Task or Process</th>
-                                    <th>Date</th>
-                                    <th>Action</th>
+                                    <th>Audit Control</th>
+                                    <th>Issued On</th>
+                                    <th>Effectiveness</th>
+                                    <th>Frequency</th>
+                                    <th>...</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php while($item = $result->fetch_assoc()){ $i++; ?>
                                 <tr>
                                     <td><?php echo $i; ?></td>
-                                    <td><?php echo ucwords($item['as_team']); ?></td>
-                                    <td><?php echo ucwords($item['as_task']); ?></td>
-                                    <td><?php echo ucwords($item['as_date']); ?></td>
+                                    <td><?php echo ucwords($item['con_control']); ?></td>
+                                    <td><?php echo get_date($item['con_date']); ?></td>
+                                    <td><?php echo getEffectiveness($item['con_effect']); ?></td>
+                                    <td><?php echo get_Frequency($item['con_frequency']); ?></td>
                                     <td>
-                                        <a href="report-details?id=<?php echo $item["as_id"]; ?>" target="_blank" class="action-icons btn btn-primary btn-action mr-1"><i class="fas fa-eye"></i> View Report</a>
+                                        <a href="../monitoring/audit-details?id=<?php echo $item["aud_id"]; ?>" target="_blank" class="action-icons btn btn-primary btn-action mr-1"><i class="fas fa-eye"></i> View Audit</a>
                                     </td>
                                 </tr>
                                 <?php } ?>
@@ -338,8 +402,8 @@
                         </table>
                         <?php }else{ ?>
                         <div class="empty-table" style='min-height:300px;display:flex;flex-direction:column;justify-content:center;align-items:center;'>
-                            No Risk Report Registered Yet!!
-                            <div><a href='../assessments/new-assessment' class='btn btn-primary' style='margin-top:10px;'><i class='fas fa-plus'></i> Register New Risk</a></div>
+                            No Audit Registered Yet!!
+                            <div><a href='../monitoring/new-audit' class='btn btn-primary' style='margin-top:10px;'><i class='fas fa-plus'></i> Register New Audit</a></div>
                         </div> 
                         <?php } ?>
                     </div>
@@ -348,7 +412,7 @@
             </section>
         </div>
         
-        <?php if(has_data('as_assessment', 'c_id', $company_id, $con) == true){ ?>
+        <?php if(has_data('as_auditcontrols', 'c_id', $company_id, $con) == true){ ?>
         <div class="modal fade" id="exportAll" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <form method='post' action='' style='width:100%;'>
               <div class="modal-dialog" role="document">
@@ -371,7 +435,7 @@
                         <input type="hidden" name="export_param" value='all' required>
                     </div>
                     <div class="modal-footer bg-whitesmoke">
-                        <button type="submit" class="btn btn-lg btn-primary btn-icon icon-left" name='export-report'><i class='fas fa-file-download'></i> Export Risk Report</button>
+                        <button type="submit" class="btn btn-lg btn-primary btn-icon icon-left" name='export-report'><i class='fas fa-file-download'></i> Export Audit Report</button>
                      </div>
                 </div>
               </div>
@@ -406,13 +470,13 @@
                                 </select>
                             </div>
                     		<div class='form-group col-lg-12 col-12' style='font-weight:400;margin-top:10px;'>
-                    		 <strong>NOTE:</strong> Earliest Registered Risk - <?php echo $smallestNumber__1; ?> and Most Recent Registered Risk - <?php echo $largestNumber__1; ?>
+                    		 <strong>NOTE:</strong> Earliest Registered Audit - <?php echo $smallestNumber__1; ?> and Most Recently Registered Audit - <?php echo $largestNumber__1; ?>
                     		</div>
                     	</div>
                     	<input type="hidden" name="export_param" value='date' required>
                         </div>
                     <div class="modal-footer bg-whitesmoke">
-                        <button type="submit" class="btn btn-lg btn-primary btn-icon icon-left" name='export-report'><i class='fas fa-file-download'></i> Export Risk Report</button>
+                        <button type="submit" class="btn btn-lg btn-primary btn-icon icon-left" name='export-report'><i class='fas fa-file-download'></i> Export Audit Report</button>
                     </div>
                 </div>
               </div>

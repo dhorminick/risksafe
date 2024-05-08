@@ -5,11 +5,11 @@
         $signedIn = true;
     } else {
         header('Location: '.$file_dir.'login?r=/reports/business-impact-analysis-report');
+        exit();
     }
     $message = [];
     include '../../layout/db.php';
-    include '../../layout/admin_config.php';
-    // include '../ajax/customs.php';
+    include '../../layout/admin__config.php';
     include_once 'summary.php';
     
     use PhpOffice\PhpSpreadsheet\Spreadsheet;

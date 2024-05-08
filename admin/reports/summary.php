@@ -126,6 +126,151 @@
 		return $riskRating;
     }
     
+    function list_out_control_com($c_id, $id, $con){
+        
+        $query="SELECT * FROM as_compliancestandard WHERE c_id = '$c_id' AND compli_id = '$id' LIMIT 1";
+		$result=$con->query($query);
+        if($result->num_rows > 0){
+            $row=$result->fetch_assoc();
+            $rc = $row["existing_ct"];
+            $sc = $row["saved_control"];
+            $cc = $row["custom_control"];
+            
+            $response = '';
+            
+            if($rc !== 'null' && $rc != '' && $rc != null){
+                $response .= ucwords(get_recommended_control($rc, $con))." \r\n";
+            }
+            if($sc !== 'null' && $sc != '' && $sc != null){
+                $response .= ucwords(get_custom_control($sc, $con))." \r\n";
+            }
+            if($cc !== 'null' && $cc != '' && $cc != null){
+                $cc = unserialize($cc);
+                foreach ($cc as $arr) {
+                    #$response .= $arr.'\n';
+                    $response .= ucwords($arr)." \r\n";
+                }
+            }
+            $response .= '';
+            
+        }else{
+            $response = 'Error!';
+        }
+		return $response;
+    }
+    
+    function list_out_treat_com($c_id, $id, $con){
+        
+        $query="SELECT * FROM as_compliancestandard WHERE c_id = '$c_id' AND compli_id = '$id' LIMIT 1";
+		$result=$con->query($query);
+        if($result->num_rows > 0){
+            $row=$result->fetch_assoc();
+            $sc = $row["saved_treatment"];
+            $cc = $row["custom_treatment"];
+            
+            $response = '';
+            
+            if($sc !== 'null' && $sc != '' && $sc != null){
+                $response .= ucwords(get_custom_treatment($sc, $con))." \r\n";
+            }
+            if($cc !== 'null' && $cc != '' && $cc != null){
+                $cc = unserialize($cc);
+                foreach ($cc as $arr) {
+                    #$response .= $arr.'\n';
+                    $response .= ucwords($arr)." \r\n";
+                }
+            }
+            $response .= '';
+            
+        }else{
+            $response = 'Error!';
+        }
+		return $response;
+    }
+    
+    
+    function get_outcome($rating){
+        switch ($rating) {
+            case 0:
+                $riskRating = 'Not Rated';
+                break;
+            case 1:
+                $riskRating = 'Pass';
+                break;
+            default:
+                $riskRating = 'Not Rated';
+                break;
+            case 2:
+                $riskRating = 'Fail';
+                break;
+        }
+
+		return $riskRating;
+    }
+    
+    function getNext($date, $freq){
+
+		if ($freq == 0) {
+			$next = "Not set";
+		} else {
+			$next = strtotime($date) + ($freq * 24 * 60 * 60);
+			$next = date("m/d/Y", $next);
+		}
+		return $next;
+	}
+	
+	function get_Frequency($freq){
+
+		if ($freq == 7) {
+			return "As Required";
+		} else if ($freq == 1) {
+			return "Daily Controls";
+		} else if ($freq == 2) {
+			return "Weekly Controls";
+		} else if ($freq == 3) {
+			return "Fort-Nightly Controls";
+		} else if ($freq == 4) {
+			return "Monthly Controls";
+		} else if ($freq == 5) {
+			return "Semi-Annually Controls";
+		} else if ($freq == 6) {
+			return "Annually Controls";
+		} else {
+			return "As Required";
+		}
+	}
+
+	function getEffectiveness($effe){
+		if ($effe == 0) {
+			return "Not Assessed";
+		} else if ($effe == 1) {
+			return "Not Effective";
+		} else if ($effe == 2) {
+			return "Effective";
+		} else{
+            return "Not Assessed!";
+        }
+	}
+	
+	function get_Frequency_com($freq){
+
+		if ($freq == 7) {
+			return "As Required";
+		} else if ($freq == 1) {
+			return "Daily Controls";
+		} else if ($freq == 2) {
+			return "Weekly Controls";
+		} else if ($freq == 4) {
+			return "Monthly Controls";
+		} else if ($freq == 5) {
+			return "Quaterly Controls";
+		} else if ($freq == 6) {
+			return "Annually Controls";
+		} else {
+			return "As Required";
+		}
+	}
+    
     function con_treat_status($id){
         switch ($id) {
             case 1:
