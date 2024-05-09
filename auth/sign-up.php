@@ -178,4 +178,7 @@
    form.row div.col-12.pl{
        padding-left:10px !important;
    }
+   form.row div.col-12.pr{
+       padding-left:15px !important;
+   }
 </style>
