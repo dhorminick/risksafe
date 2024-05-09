@@ -9,7 +9,7 @@
 
     function __mail($mailSubject, $mailBody, $mailRecipient, $mailSender){
         $mail = new PHPMailer();
-            $mail->SMTPDebug = 3;
+            $mail->SMTPDebug = 0;
             $mail->isSMTP();
             $mail->SMTPAuth = true;
             $mail->Host = 'smtpout.secureserver.net';

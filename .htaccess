@@ -19,5 +19,6 @@ RewriteRule ^/?(.*)$ /$1.php [L]
 
 # php -- END cPanel-generated handler, do not edit
 Redirect /login /auth/sign-in
+Redirect /reset-password /auth/reset-password
 Redirect /register /auth/sign-up
 Redirect /logout /auth/sign-out

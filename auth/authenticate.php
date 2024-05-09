@@ -72,7 +72,7 @@
                 
         <div class="main-content custom">
             <div class="section-body row custom">
-                <div class='col-12' style='margin-bottom:-10px;'><?php include $file_dir.'layout/alert.php'; ?></div>
+                <div class='col-12 col-lg-8' style='margin-bottom:10px;'><?php include $file_dir.'layout/alert.php'; ?></div>
                 
                 <?php if ($authentication == true){ ?>
                         <?php if($user_authenticated == true){ ?>
@@ -83,7 +83,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="empty-state" data-height="320">
-                                              <div class="empty-state-icon">
+                                              <div class="empty-state-icon"  style='display:flex;justify-content:center;align-items:center;'>
                                                 <i class="fas fa-question"></i>
                                               </div>
                                               <h2>Error 402: Authentication Error</h2>
@@ -130,7 +130,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="empty-state" data-height="320">
-                                              <div class="empty-state-icon">
+                                              <div class="empty-state-icon"  style='display:flex;justify-content:center;align-items:center;'>
                                                 <i class="fas fa-question"></i>
                                               </div>
                                               <h2>Error 502: Authentication Error</h2>
@@ -156,7 +156,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="empty-state" data-height="320">
-                                              <div class="empty-state-icon">
+                                              <div class="empty-state-icon"  style='display:flex;justify-content:center;align-items:center;'>
                                                 <i class="fas fa-question"></i>
                                               </div>
                                               <h2>Error 402: Authentication Error</h2>
@@ -179,7 +179,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="empty-state" data-height="320">
-                                              <div class="empty-state-icon">
+                                              <div class="empty-state-icon"  style='display:flex;justify-content:center;align-items:center;'>
                                                 <i class="fas fa-question"></i>
                                               </div>
                                               <h2>Error 402: Invalid Parameters!!</h2>
