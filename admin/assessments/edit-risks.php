@@ -28,6 +28,7 @@
             if ($assessmentId == $assess_id) {
                 $risk = sanitizePlus($_POST["risk"]);
                 $hazard = sanitizePlus($_POST["hazard"]);
+                
                 $descript = sanitizePlus($_POST["descript"]);
                 $likelihood = sanitizePlus($_POST["likelihood"]);
                 $consequence = sanitizePlus($_POST["consequence"]);
@@ -75,7 +76,7 @@
                     # code...
                     $date = date("Y-m-d", strtotime($date));
                     $rating = calculateRating($likelihood, $consequence, $con);
-                    $UpdateRisk = "UPDATE as_details SET recommended_control = '$existing_ct', saved_control = '$saved_control', saved_treatment = '$saved_treatment', custom_control = '$custom_control', custom_treatment = '$custom_treatment', as_risk = '$risk', as_hazard = '$hazard', as_descript = '$descript', as_like = '$likelihood', as_consequence = '$consequence', as_rating = '$rating', as_effect = '$effectiveness', as_action = '$actiontake', as_duedate = '$date', as_owner = '$owner', as_details_has_value = 'true' WHERE ri_id = '$assess_id' AND as_id = '$assess_id' AND c_id = '$company_id'";
+                    $UpdateRisk = "UPDATE as_details SET recommended_control = '$existing_ct', saved_control = '$saved_control', saved_treatment = '$saved_treatment', custom_control = '$custom_control', custom_treatment = '$custom_treatment', as_risk = '$risk', as_hazard = '$hazard', as_descript = '$descript', as_like = '$likelihood', as_consequence = '$consequence', as_rating = '$rating', as_effect = '$effectiveness', as_action = '$actiontake', as_duedate = '$date', as_owner = '$owner', as_details_has_value = 'true' WHERE ri_id = '$assess_id' AND c_id = '$company_id'";
                     $RiskInserted = $con->query($UpdateRisk);  
                     if ($RiskInserted) {
                         
@@ -214,7 +215,8 @@
     } else {
         $toDisplay = false;
     }
-
+    
+    
     #add a new column to the db, custom_control_main, custom_treatment_main
     #change risk rating to risk evaluation rating and make them col-lg-6
     #remove the no custom ... created yet from the while and make it a response to avoid looping, change WHERE company_id to c_id

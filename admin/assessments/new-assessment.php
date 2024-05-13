@@ -4,12 +4,13 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
+        $signedIn = false;
         header('Location: '.$file_dir.'login?r=/assessments/new-assessment');
         exit();
     }
     $message = [];
     include '../../layout/db.php';
-    include '../../layout/admin_config.php';
+    include '../../layout/admin__config.php';
     #include '../../layout/user_details.php';
 
     function calculateRating($like, $consequence, $conn) {
@@ -80,7 +81,7 @@
                 $case = 'new';
                 #$case_type = 'new-risk';
                 $id = $as_id;
-                $returnArray = createNotification($company_id, $notification_message, $datetime, $notifier, $link, $type, $case, $id, $con, $sitee);
+                $returnArray = createNotification($company_id, $notification_message, $datetime, $notifier, $link, $type, $case, $con, $sitee);
                 
                 header("Location: add-risks?id=".$as_id);
                 exit();

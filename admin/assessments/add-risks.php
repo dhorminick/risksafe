@@ -111,8 +111,6 @@
                         if ($hasValue == 'true') {
                         }else{
                             $con->query("UPDATE as_assessment SET has_values = 'true' WHERE as_id = '$assessmentId' AND c_id = '$company_id'");
-                            $con->query("UPDATE as_astreat SET tr_tmpid = -1, tr_det = '$det' WHERE tr_assessment = '$assessmentId'");
-                            $con->query("UPDATE as_ascontrols SET ct_tmpid = -1, ct_det = '$det' WHERE ct_assessment = '$assessmentId'");
                         }
                         #create notification and send notifier email
                         $notification_message = "New Risk Created Successfully";

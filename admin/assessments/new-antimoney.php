@@ -9,7 +9,7 @@
     }
     $message = [];
     include '../../layout/db.php';
-    include '../../layout/admin_config.php';
+    include '../../layout/admin__config.php';
     include '../../layout/user_details.php';
 
     function calculateRating($like, $consequence, $conn) {

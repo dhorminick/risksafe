@@ -9,7 +9,7 @@
     }
     $message = [];
     include '../../layout/db.php';
-    include '../../layout/admin_config.php';
+    include '../../layout/admin__config.php';
     include '../ajax/assessment.php';
 
     switch ($role) {
@@ -181,15 +181,40 @@
                         <a class="btn btn-primary btn-icon icon-left header-a" href="add-risks?id=<?php echo $ass_Id; ?>"><i class="fas fa-plus"></i> Add Risks</a>
                     </div>
                     <div class="card-body">
+                        
                         <?php
-                            $list_one = listAssessment($ass_Id, 0, 20, $con);
-                            $details_count = $list_one;
-                            if($list_one !== false){
-                            if(count($details_count) <= 1){$details[] = $list_one;}else{$details = $list_one;}
-                            
+                            $CheckIfAssessmentExist = "SELECT * FROM as_details LEFT JOIN as_risks ON as_risks.idrisk=as_details.as_risk LEFT JOIN as_cat ON as_cat.idcat=as_details.as_hazard WHERE as_details.as_id= '$ass_Id' AND as_details_has_value = 'true' ORDER BY as_details.iddetail";
+                            $AssessmentExist = $con->query($CheckIfAssessmentExist);
+                            if ($AssessmentExist->num_rows > 0) { $ass_has_data = true; $i = 0;
                         ?>
-                        <?php if($on_mobile == false) { ?>
-                        <?php if ($details === 'a:0:{}') { #empty data?> 
+                        <table class="table table-striped table-bordered table-hover" id="table">
+                            <tr>
+                                <th>S/N</th>
+                                <th>Risk</th>
+                                <th>Risk Hazard</th>
+                                <th style='width:20%;'>...</th>
+                            </tr>
+                        <?php 
+                            while($item = $AssessmentExist->fetch_assoc()){ 
+                                $i++;
+                                $viewLink = 'risks?id='.$item["ri_id"].'" data-toggle="tooltip" title="View Risk" data-placement="right"';
+                                $editLink = 'edit-risks?id='.$item["ri_id"].'" data-toggle="tooltip" title="Edit Risk" data-placement="right"';
+                                $deleteLink = 'javascript:void(0);" class="delete action-icons btn btn-danger btn-action mr-1" data-toggle="modal" data-target="#deleteModal" data-type="risks" data-id="'.$item["ri_id"];
+                        ?>
+                            <tr>
+                                <td><?php echo $i; ?></td>
+                                <td><?php echo ucwords(getRisks($item['as_risk'], $con)); ?></td>
+                                <td><?php echo ucwords(getHazards($item['as_hazard'], $con)); ?></td>
+                                <td>
+                                    <a href="<?php echo $viewLink; ?>" class="action-icons btn btn-primary btn-action mr-1"><i class="fas fa-eye"></i></a>
+                                    <a href="<?php echo $editLink; ?>" class="action-icons btn btn-info btn-action mr-1"><i class="fas fa-edit"></i></a>
+                                    <a href="<?php echo $deleteLink; ?>"><i class="fas fa-trash-alt"></i></a>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                        </table>
+                        <?php }else{ $ass_has_data = false; ?>
+                        
                         <div style="width:100%;min-height:400px;display:flex;justify-content:center;align-items:center;">
                             <div style="text-align: center;"> 
                                 <h3>Empty Data!!</h3>
@@ -197,88 +222,10 @@
                                 <p><a href="add-risks?id=<?php echo $ass_Id; ?>" class="btn btn-primary btn-icon icon-left mt-2"><i class="fas fa-plus"></i> Add Risks</a></p>
                             </div>
                         </div>
-                        <?php }else{ $arrcount = count($details); ?>
-                        <table class="table table-striped table-bordered table-hover" id="table">
-                            <tr>
-                                <th>S/N</th>
-                                <th>Risk</th>
-                                <th>Risk Hazard</th>
-                                <th>...</th>
-                            </tr>
-                        <?php 
-                            $i = 0;
-                            foreach ($list_one as $item) { $i++;
-                            $viewLink = 'risks?id='.$item["ri_id"].'" data-toggle="tooltip" title="View Risk" data-placement="right"';
-                            $editLink = 'edit-risks?id='.$item["ri_id"].'" data-toggle="tooltip" title="Edit Risk" data-placement="right"';
-                            $deleteLink = 'javascript:void(0);" class="delete action-icons btn btn-danger btn-action mr-1" data-toggle="modal" data-target="#deleteModal" data-type="risks" data-id="'.$item["ri_id"];
-                        ?>
-                        <tr>
-                            <td><?php echo $i; ?></td>
-                            <td><?php echo ucwords(getRisks($item['as_risk'], $con)); ?></td>
-                            <td><?php echo ucwords(getHazards($item['as_hazard'], $con)); ?></td>
-                            <td>
-                                <a href="<?php echo $viewLink; ?>" class="action-icons btn btn-primary btn-action mr-1"><i class="fas fa-eye"></i></a>
-                                <a href="<?php echo $editLink; ?>" class="action-icons btn btn-info btn-action mr-1"><i class="fas fa-edit"></i></a>
-                                <a href="<?php echo $deleteLink; ?>"><i class="fas fa-trash-alt"></i></a>
-                            </td>
-                        </tr>
-                        <?php }} if ($details !== 'a:0:{}') { echo '</table>'; } #closing tag for table ?>
-                        <?php }}else{ #empty data ?>
-                            <div style="width:100%;min-height:400px;display:flex;justify-content:center;align-items:center;">
-                               <div style="text-align: center;"> 
-                                    <h3>Empty Data!!</h3>
-                                    No Risk Covered For This Assessment Yet,
-                                    <p><a href="add-risks?id=<?php echo $ass_Id; ?>" class="btn btn-primary btn-icon icon-left mt-2"><i class="fas fa-plus"></i> Add Risks</a></p>
-                                </div>
-                            </div>
+                        
                         <?php } ?>
                         
-                        <?php if($on_mobile == true) { ?>
-                        <?php if($details == []){ ?>
-                        <div style="width:100%;min-height:400px;display:flex;justify-content:center;align-items:center;">
-                               <div style="text-align: center;"> 
-                                    <h3>Empty Data!!</h3>
-                                    No Risk Covered For This Assessment Yet,
-                                    <p><a href="add-risks?id=<?php echo $ass_Id; ?>" class="btn btn-primary btn-icon icon-left mt-2"><i class="fas fa-plus"></i> Add Risks</a></p>
-                                </div>
-                            </div>
-                        <?php }else{ ?>
-                        <table class="risk-desc">
-                            <?php 
-                                $i=0; foreach ($list_one as $item) { $i++; 
-                                $viewLink = 'risks?id='.$item["ri_id"].'" data-toggle="tooltip" title="View Risk" data-placement="right"';
-                                $editLink = 'edit-risks?id='.$item["ri_id"].'" data-toggle="tooltip" title="Edit Risk" data-placement="right"';
-                                $deleteLink = 'javascript:void(0);" class="delete action-icons btn btn-danger btn-action mr-1" data-toggle="modal" data-target="#deleteModal" data-type="risks" data-id="'.$item["ri_id"];
-                            ?>
-                            <tr>
-                                <th>S/N</th>
-                                <td><?php echo $i; ?></td>
-                            </tr>
-                            <tr>
-                                <th>Risk</th>
-                                <td><?php echo ucwords(getRisks($item['as_risk'], $con)); ?></td>
-                            </tr>
-                            <tr>
-                                <th>Risk Hazard</th>
-                                <td><?php echo ucwords(getHazards($item['as_hazard'], $con)); ?></td>
-                            </tr>
-                            <tr>
-                                <th>...</th>
-                                <td>
-                                    <a href="<?php echo $viewLink; ?>" class="action-icons btn btn-primary btn-action mr-1"><i class="fas fa-eye"></i></a>
-                                    <a href="<?php echo $editLink; ?>" class="action-icons btn btn-info btn-action mr-1"><i class="fas fa-edit"></i></a>
-                                    <a href="<?php echo $deleteLink; ?>"><i class="fas fa-trash-alt"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th style="border:none !important;">&nbsp;</th>
-                                <td style="border:none !important;">&nbsp;</td>
-                            </tr>
-                            <?php } ?>
-                        </table>
-                        <?php }} ?>
-                        
-                        <?php if($list_one !== false){ ?>
+                        <?php if($ass_has_data == true){ ?>
                         <div class="card-header"><h4>Risk Chart</h4></div>
                             <div class="card-body">
                                 <table width="100%" border="1" cellspacing="0" cellpadding="3">
@@ -446,7 +393,7 @@
                             </div>
                         <?php }else{} ?>
                                 
-                </div>
+                </div><!-- close -->
                 <?php }else{ ?>
                 <div class="card">
                     <div class="card-body" style="display:flex;justify-content:center;align-items:center;min-height:500px;">
@@ -493,9 +440,6 @@
         }
         .user-description + .user-description{
             margin-top: 10px;
-        }
-        .title_text{
-            
         }
         table#table{
             border-radius: 5px !important;
