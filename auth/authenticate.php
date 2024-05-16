@@ -74,6 +74,7 @@
             <div class="section-body row custom">
                 <div class='col-12 col-lg-8' style='margin-bottom:10px;'><?php include $file_dir.'layout/alert.php'; ?></div>
                 
+                <?php if($invalid_params == false){ ?>
                 <?php if ($authentication == true){ ?>
                         <?php if($user_authenticated == true){ ?>
                                 <div class="col-lg-8 col-12 fhsgr8">      	
@@ -171,7 +172,7 @@
                                 </div>
                     <?php } ?>
                     
-                    <?php if($invalid_params == true){ ?>
+                    <?php }else{ ?>
                                 <div class="col-lg-8 col-12 fhsgr8">      	
                                     <div class="login-panel card panel-default">
                                         <div class="card-header custom">
