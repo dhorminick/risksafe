@@ -11,16 +11,8 @@
     include $file_dir.'layout/db.php';
     include $file_dir.'layout/admin__config.php';
 
-    if (isset($_GET['id']) && isset($_GET['id']) !== "") {
-        $toDisplay = true;   
-        $id = sanitizePlus($_GET['id']);
-        $CheckIfIncidentExist = "SELECT * FROM as_incidents WHERE in_id = '$id' AND c_id = '$company_id'";
-        $IncidentExist = $con->query($CheckIfIncidentExist);
-        if ($IncidentExist->num_rows > 0) {	
-            $in_exist = true;
-			$info = $IncidentExist->fetch_assoc();
-
-            if (isset($_POST['update-incident'])) {
+    if (isset($_POST['update-incident']) && isset($_POST['c__id'])) {
+        $id = sanitizePlus($_POST["c__id"]);
                 $title = sanitizePlus($_POST["title"]);
                 $date = sanitizePlus($_POST["date"]);
                 $reported = sanitizePlus($_POST["reported"]);
@@ -42,6 +34,15 @@
                     array_push($message, 'Error Updating Incident Details!!');
                 }	
             }
+
+    if (isset($_GET['id']) && isset($_GET['id']) !== "") {
+        $toDisplay = true;   
+        $id = sanitizePlus($_GET['id']);
+        $CheckIfIncidentExist = "SELECT * FROM as_incidents WHERE in_id = '$id' AND c_id = '$company_id'";
+        $IncidentExist = $con->query($CheckIfIncidentExist);
+        if ($IncidentExist->num_rows > 0) {	
+            $in_exist = true;
+			$info = $IncidentExist->fetch_assoc();
         }else{
             $in_exist = false;
         }
@@ -88,6 +89,7 @@
                                     <label>Case Title</label>
                                     <input value="<?php echo $info["in_title"];?>" name="title" type="text" maxlength="255" class="form-control" placeholder="Enter case title" required>        
                                 </div>
+                                <input type='hidden' name='c__id' value='<?php echo $info['in_id']; ?>' />
                                 <div class='row custom-row'>
                                 <div class="form-group col-lg-8 col-12">
                                     <label>Reported By</label>
