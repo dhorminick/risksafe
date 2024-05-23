@@ -77,7 +77,7 @@
                     <form method="post">
                         <div class="card-body">
                             <?php require $file_dir.'layout/alert.php' ?>
-                            <div class="card-header">
+                            <div class="card-header" style='display:flex;justify-content:space-between;'>
                                 <h3 class="d-inline hide-md">Edit Business Impact Analysis</h3>
                                 <h3 class="d-inline show-md">Edit BIA</h3>
                                 <a class="btn btn-primary btn-icon icon-left header-a" href="bia?id=<?php echo $info['bia_id']; ?>"><i class="fas fa-arrow-left"></i> Back</a>

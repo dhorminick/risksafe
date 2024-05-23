@@ -75,7 +75,7 @@
                         <div class="card-header"></div>
                         <div class="card-body">
                             <?php require $file_dir.'layout/alert.php' ?>
-                            <div class="card-header">
+                            <div class="card-header" style='display:flex;justify-content:space-between;'>
                                 <h3 class="d-inline">Edit Insurance</h3>
                                 <a class="btn btn-primary btn-icon icon-left header-a" href="insurances?id=<?php echo $info['in_id']; ?>"><i class="fas fa-arrow-left"></i> Back</a>
                             </div>
