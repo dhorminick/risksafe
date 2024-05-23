@@ -4,13 +4,12 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/compliances/applicable-procedure');
+        header('Location: '.$file_dir.'auth/sign-in?r=/compliances/applicable-procedure');
         exit();
     }
     $message = [];
-    include '../../layout/db.php';
-    include '../../layout/admin_config.php';
-    #include '../../layout/user_details.php';
+    include $file_dir.'layout/db.php';
+    include $file_dir.'layout/admin__config.php';
 
     if (isset($_GET['id']) && isset($_GET['id']) !== "") {
         $toDisplay = true;   
@@ -23,7 +22,7 @@
                 $procedureEffectiveDate = sanitizePlus($_POST["procedureEffectiveDate"]);
                 $procedureReviewDate = sanitizePlus($_POST["procedureReviewDate"]);
                 $applicability = sanitizePlus($_POST["applicability"]);
-                #$procedureRequirements = sanitizePlus($_POST["procedureRequirements"]);
+                $procedureRequirements = 'null';
                 $complianceResponsibility = sanitizePlus($_POST["procedureRequirements"]);
                 $resources = sanitizePlus($_POST["resources"]);
                 $procedureApproval = sanitizePlus($_POST["procedureApproval"]);
@@ -34,7 +33,8 @@
                 $incidentUpdated = $con->query($query);
                 if ($incidentUpdated) {
                     #notify
-                    header("Location: applicable-procedure?id=".$id);
+                    array_push($message, 'Procedure Data Updated Successfully!!');
+                    // header("Location: applicable-procedure?id=".$id);
                 }else{
                     array_push($message, 'Error 502: Error!!');
                 }	
@@ -62,7 +62,7 @@
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title>Edit Procedures | <?php echo $siteEndTitle; ?></title>
-  <?php require '../../layout/general_css.php' ?>
+  <?php require $file_dir.'layout/general_css.php' ?>
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/footer.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/admin.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/bundles/bootstrap-daterangepicker/daterangepicker.css">
@@ -73,8 +73,8 @@
     <div id="app">
         <div class="main-wrapper main-wrapper-1">
         <div class="navbar-bg"></div>
-        <?php require '../../layout/header.php' ?>
-        <?php require '../../layout/sidebar_admin.php' ?>
+        <?php require $file_dir.'layout/header.php' ?>
+        <?php require $file_dir.'layout/sidebar_admin.php' ?>
         <!-- Main Content -->
         <div class="main-content">
             <section class="section">
@@ -85,10 +85,10 @@
                     <form method="post">
                         <div class="card-header"></div>
                         <div class="card-body">
-                            <?php require '../../layout/alert.php' ?>
+                            <?php require $file_dir.'layout/alert.php' ?>
                             <div class="card-header">
                                 <h3 class="d-inline">Edit Procedure</h3>
-                                <a class="btn btn-primary btn-icon icon-left header-a" href="applicable-procedure"><i class="fas fa-arrow-left"></i> View All</a>
+                                <a class="btn btn-primary btn-icon icon-left header-a" href="applicable-procedure?id=<?php echo $info['p_id']; ?>"><i class="fas fa-arrow-left"></i> Back</a>
                             </div>
                             <div class="card-body">
                                 <div class="form-group">
@@ -174,11 +174,11 @@
             </div>
             </section>
         </div>
-        <?php require '../../layout/footer.php' ?>
+        <?php require $file_dir.'layout/footer.php' ?>
         </footer>
         </div>
     </div>
-    <?php require '../../layout/general_js.php' ?>
+    <?php require $file_dir.'layout/general_js.php' ?>
     <script src="<?php echo $file_dir; ?>assets/bundles/bootstrap-daterangepicker/daterangepicker.js"></script>
     <style>
         textarea{

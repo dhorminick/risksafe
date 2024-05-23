@@ -93,15 +93,13 @@
           
           <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
               class="nav-link message-toggle nav-link-lg"><i data-feather="bell" class="bell"></i>
-              <span class="badge headerBadge1"><?php echo count_Notif($con, 'notification', 'status', 'unread', 'c_id', '$company_id'); ?></span>
+              <span class="badge headerBadge1"><?php echo count_Notif($con, 'notification', 'status', 'unread', 'c_id', $company_id); ?></span>
             </a>
             <?php
               $CheckIfUserExist = "SELECT * FROM notification WHERE c_id = '$company_id'";
               $UserExist = $con->query($CheckIfUserExist);
               if ($UserExist->num_rows > 0) {
                   $hasNotification = true;
-                  #$datainfo = $UserExist->fetch_assoc();
-                  // echo count($datainfo);
               }else{
                 $hasNotification = false;
               }

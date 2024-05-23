@@ -5,14 +5,14 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/customs/new-treatment');
+        header('Location: '.$file_dir.'auth/sign-in?r=/customs/new-treatment');
         exit();
     }
   
     $message = [];
-    include '../../layout/db.php';
+    include $file_dir.'layout/db.php';
+    include $file_dir.'layout/admin__config.php';
     include '../ajax/customs.php';
-    include '../../layout/admin_config.php';
 
     if(isset($_POST["create-treatments"])){
         
@@ -37,9 +37,11 @@
             $case = 'new';
             #$case_type = 'new-risk';
             $id = $treatment_id;
-            $returnArray = sendNotificationUser($company_id, $notification_message, $datetime, $notifier, $link, $type, $case, $id, $con);
+            
+            $returnArray = createNotification($company_id, $notification_message, $datetime, $notifier, $link, $type, $case, $con, $sitee);
             
             header("Location: treatments?id=".$treatment_id);
+            exit();
         }else{
             array_push($message, 'Error 502: Error Creating Treatment!!');
         }
@@ -53,7 +55,7 @@
   <meta
    content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title>Create New Custom Treatment | <?php echo $siteEndTitle; ?></title>
-  <?php require '../../layout/general_css.php' ?>
+  <?php require $file_dir.'layout/general_css.php' ?>
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/footer.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/admin.custom.css">
 </head>
@@ -63,8 +65,8 @@
     <div id="app">
         <div class="main-wrapper main-wrapper-1">
         <div class="navbar-bg"></div>
-        <?php require '../../layout/header.php' ?>
-        <?php require '../../layout/sidebar_admin.php' ?>
+        <?php require $file_dir.'layout/header.php' ?>
+        <?php require $file_dir.'layout/sidebar_admin.php' ?>
         <!-- Main
          Content -->
         <div class="main-content">
@@ -72,14 +74,14 @@
             <div class="section-body">
                 <div class="card">
                   <div class="card-body">
-                    <?php require '../../layout/alert.php' ?>
+                    <?php require $file_dir.'layout/alert.php' ?>
                     <?php if(isset($_GET['redirect']) && isset($_GET['redirect']) == "true"){ ?>
                     <div class="note"><strong>NOTE:</strong> After Registering A New Custom Control, Go Back To The Already Opened Risk Assessment Page, And Refresh The Customs List With The Refresh Button At The Far Right Corner Of The Form.</div>
                     <?php } ?>
                     <form method="post">
                         <div class="card-header">
                             <h3 class="subtitle d-inline">Treatment Details</h3>
-                            <a href='treatments' class="btn btn-primary btn-icon icon-left header-a">View All <i class="fas fa-arrow-right"></i></a>
+                            <a href='treatments' class="btn btn-primary btn-icon icon-left header-a"><i class="fas fa-arrow-left"></i> Back</a>
                         </div>
                         <div class="card-bodyy">
                             <div class="card-body">
@@ -119,11 +121,11 @@
             </div>
             </section>
         </div>
-        <?php require '../../layout/footer.php' ?>
+        <?php require $file_dir.'layout/footer.php' ?>
         </footer>
         </div>
     </div>
-    <?php require '../../layout/general_js.php' ?>
+    <?php require $file_dir.'layout/general_js.php' ?>
     <style>
         textarea{
             min-height: 120px !important;

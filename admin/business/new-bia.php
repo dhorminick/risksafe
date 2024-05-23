@@ -4,12 +4,12 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login.php?r=/business/bia.php');
+        header('Location: '.$file_dir.'auth/sign-in?r=/business/bia');
         exit();
     }
     $message = [];
-    include '../../layout/db.php';
-    include '../../layout/admin__config.php';
+    include $file_dir.'layout/db.php';
+    include $file_dir.'layout/admin__config.php';
 
     if(isset($_POST["create-bia"])){
 
@@ -51,7 +51,7 @@
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title>Create New Business Impact Analysis | <?php echo $siteEndTitle; ?></title>
-  <?php require '../../layout/general_css.php' ?>
+  <?php require $file_dir.'layout/general_css.php' ?>
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/footer.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/admin.custom.css">
 </head>
@@ -61,8 +61,8 @@
     <div id="app">
         <div class="main-wrapper main-wrapper-1">
         <div class="navbar-bg"></div>
-        <?php require '../../layout/header.php' ?>
-        <?php require '../../layout/sidebar_admin.php' ?>
+        <?php require $file_dir.'layout/header.php' ?>
+        <?php require $file_dir.'layout/sidebar_admin.php' ?>
         <!-- Main Content -->
         <div class="main-content">
             <section class="section">
@@ -71,7 +71,7 @@
                     <form method="post">
                         <div class="card-header"></div>
                         <div class="card-body">
-                            <?php require '../../layout/alert.php' ?>
+                            <?php require $file_dir.'layout/alert.php' ?>
                             <div class="card-header">
                                 <h3 class="d-inline hide-md">Create New Business Impact Analysis</h3>
                                 <h3 class="d-inline show-md">Create New BIA</h3>
@@ -132,11 +132,11 @@
             </div>
             </section>
         </div>
-        <?php require '../../layout/footer.php' ?>
+        <?php require $file_dir.'layout/footer.php' ?>
         </footer>
         </div>
     </div>
-    <?php require '../../layout/general_js.php' ?>
+    <?php require $file_dir.'layout/general_js.php' ?>
     <style>
         textarea{
             min-height: 120px !important;

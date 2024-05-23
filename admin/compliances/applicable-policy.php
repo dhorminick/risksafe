@@ -4,13 +4,12 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/compliances/applicable-policy');
+        header('Location: '.$file_dir.'auth/sign-in?r=/compliances/applicable-policy');
         exit();
     }
     $message = [];
-    include '../../layout/db.php';
-    include '../../layout/admin_config.php';
-    #include '../ajax/compliances.php';
+    include $file_dir.'layout/db.php';
+    include $file_dir.'layout/admin__config.php';
     
     #confirm data
     $querys = "SELECT * FROM policyfields WHERE c_id = '$company_id'";
@@ -55,14 +54,14 @@
         }
     } else {
         $toDisplay = false;
-        $pagetitle = 'Registered Applicable Policyies';
+        $pagetitle = 'Registered Applicable Policies';
     }
     
     // Include pagination library file 
-    include_once '../../layout/pagination.class.php'; 
+    include_once $file_dir.'layout/pagination.class.php'; 
     
     // Include database configuration file 
-    require_once '../../layout/dbConfig.php'; 
+    require_once $file_dir.'layout/dbConfig.php'; 
     
     // Set some useful configuration 
     $limit = 10; 
@@ -93,7 +92,7 @@
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title><?php echo $pagetitle.' | '.$siteEndTitle ?></title>
-  <?php require '../../layout/general_css.php' ?>
+  <?php require $file_dir.'layout/general_css.php' ?>
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/footer.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/admin.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/sort.css">
@@ -105,8 +104,8 @@
     <div id="app">
         <div class="main-wrapper main-wrapper-1">
         <div class="navbar-bg"></div>
-        <?php require '../../layout/header.php' ?>
-        <?php require '../../layout/sidebar_admin.php' ?>
+        <?php require $file_dir.'layout/header.php' ?>
+        <?php require $file_dir.'layout/sidebar_admin.php' ?>
         <!-- Main Content -->
         <div class="main-content">
             <section class="section">
@@ -117,10 +116,10 @@
                     <form method="post">
                         <div class="card-header"></div>
                         <div class="card-body">
-                            <?php require '../../layout/alert.php' ?>
+                            <?php require $file_dir.'layout/alert.php' ?>
                             <div class="card-header">
                                 <h3 class="d-inline">Policy Details</h3>
-                                <a class="btn btn-primary btn-icon icon-left header-a" href="applicable-policy"><i class="fas fa-arrow-left"></i> View All</a>
+                                <a class="btn btn-primary btn-icon icon-left header-a" href="applicable-policy"><i class="fas fa-arrow-left"></i> Back</a>
                             </div>
                             <div class="card-body">
                                 <div class="row section-rows customs">
@@ -187,7 +186,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer"></div>
+                        <div class="card-footer">
+                            <div class="card-body">
+                            <div class="form-group">
+								<a href="edit-policy?id=<?php echo $info['p_id']; ?>" class="btn btn-md btn-primary">Edit Policy</a>
+								<button type="button" class="btn btn-md btn-warning" id="btn_cancel">Cancel</button>
+							</div>
+							</div>
+                        </div>
                     </form>
                 </div>
                 <?php }else{ ?>
@@ -210,7 +216,7 @@
                     <?php if($hasData == true) { ?>
                     <div class="datalist-wrapper">
                     <!-- Loading overlay -->
-                    <div class="loading-overlay"><div class="overlay-content"><?php require '../../layout/loading_data.php' ?></div></div>
+                    <div class="loading-overlay"><div class="overlay-content"><?php require $file_dir.'layout/loading_data.php' ?></div></div>
                     <div class="card-body">
                         <!-- Data list container -->
                         <div id="dataContainer">
@@ -221,7 +227,7 @@
                                 <th scope="col" class="sorting" coltype="id" colorder="">Policy Title</th>
                                 <th scope="col" class="sorting" coltype="id" colorder="">Policy Description</th>
                                 <th scope="col" class="sorting" coltype="id" colorder="">Policy Effective Date</th>
-                                <th scope="col" class="sorting" coltype="id" colorder="">Policy Review Date</th>
+                                <!--<th scope="col" class="sorting" coltype="id" colorder="">Policy Review Date</th>-->
                                 <th scope="col" class="sorting" coltype="id" colorder="">...</th> 
                             </tr> 
                         </thead> 
@@ -240,7 +246,7 @@
                                     <td><?php echo ucwords($item['PolicyTitle']); ?></td>
                                     <td><?php echo ucwords($item['PolicyDescription']); ?></td>
                                     <th><?php echo ucwords($item["PolicyEffectiveDate"]); ?></th>
-                                    <td><?php echo ucwords($item["PolicyReviewDate"]); ?></td>
+                                    <!--<td><?php #echo ucwords($item["PolicyReviewDate"]); ?></td>-->
                                     <td>
                                         <a href="<?php echo $viewLink; ?>" class="action-icons btn btn-primary btn-action mr-1"><i class="fas fa-eye"></i></a>
                                         <a href="<?php echo $editLink; ?>" class="action-icons btn btn-info btn-action mr-1"><i class="fas fa-edit"></i></a>
@@ -274,12 +280,12 @@
             </div>
             </section>
         </div>
-        <?php require '../../layout/delete_data.php' ?>
-        <?php require '../../layout/footer.php' ?>
+        <?php require $file_dir.'layout/delete_data.php' ?>
+        <?php require $file_dir.'layout/footer.php' ?>
         </footer>
         </div>
     </div>
-    <?php require '../../layout/general_js.php' ?>
+    <?php require $file_dir.'layout/general_js.php' ?>
     <script src="<?php echo $file_dir; ?>assets/bundles/prism/prism.js"></script>
     <script src="<?php echo $file_dir; ?>assets/js/admin/d_policy.js"></script>
     <style>

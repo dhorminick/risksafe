@@ -4,23 +4,17 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login.php?r=/business/bia.php');
+        header('Location: '.$file_dir.'auth/sign-in?r=/business/bia');
         exit();
     }
     $message = [];
-    include '../../layout/db.php';
-    include '../../layout/admin__config.php';
-
-    if (isset($_GET['id']) && isset($_GET['id']) !== "") {
-        $toDisplay = true;   
-        $id = sanitizePlus($_GET['id']);
-        $CheckIfBIAExist = "SELECT * FROM as_bia WHERE bia_id = '$id' AND c_id = '$company_id'";
-        $BIAExist = $con->query($CheckIfBIAExist);
-        if ($BIAExist->num_rows > 0) {	
-            $in_exist = true;
-			$info = $BIAExist->fetch_assoc();
-
-            if (isset($_POST['update-bia'])) {
+    include $file_dir.'layout/db.php';
+    include $file_dir.'layout/admin__config.php';
+    
+    if (isset($_POST['update-bia']) && isset($_POST['c__id'])) {
+        
+        $id = sanitizePlus($_POST["c__id"]);
+        
                 $activity = sanitizePlus($_POST["activity"]);
                 $descript = sanitizePlus($_POST["descript"]);
                 $priority = sanitizePlus($_POST["priority"]);
@@ -36,7 +30,16 @@
                 }else{
                     array_push($message, 'Error 502: Error Updating BIA!!');
                 }	
-            }
+    }
+
+    if (isset($_GET['id']) && isset($_GET['id']) !== "") {
+        $toDisplay = true;   
+        $id = sanitizePlus($_GET['id']);
+        $CheckIfBIAExist = "SELECT * FROM as_bia WHERE bia_id = '$id' AND c_id = '$company_id'";
+        $BIAExist = $con->query($CheckIfBIAExist);
+        if ($BIAExist->num_rows > 0) {	
+            $in_exist = true;
+			$info = $BIAExist->fetch_assoc();
         }else{
             $in_exist = false;
         }
@@ -52,7 +55,7 @@
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title>Edit Business Impact Analysis | <?php echo $siteEndTitle; ?></title>
-  <?php require '../../layout/general_css.php' ?>
+  <?php require $file_dir.'layout/general_css.php' ?>
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/footer.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/admin.custom.css">
 </head>
@@ -62,8 +65,8 @@
     <div id="app">
         <div class="main-wrapper main-wrapper-1">
         <div class="navbar-bg"></div>
-        <?php require '../../layout/header.php' ?>
-        <?php require '../../layout/sidebar_admin.php' ?>
+        <?php require $file_dir.'layout/header.php' ?>
+        <?php require $file_dir.'layout/sidebar_admin.php' ?>
         <!-- Main Content -->
         <div class="main-content">
             <section class="section">
@@ -72,13 +75,12 @@
                 <?php if ($in_exist == true) { ?>
                 <div class="card">
                     <form method="post">
-                        <div class="card-header"></div>
                         <div class="card-body">
-                            <?php require '../../layout/alert.php' ?>
+                            <?php require $file_dir.'layout/alert.php' ?>
                             <div class="card-header">
                                 <h3 class="d-inline hide-md">Edit Business Impact Analysis</h3>
                                 <h3 class="d-inline show-md">Edit BIA</h3>
-                                <a class="btn btn-primary btn-icon icon-left header-a" href="bia"><i class="fas fa-arrow-left"></i> View All</a>
+                                <a class="btn btn-primary btn-icon icon-left header-a" href="bia?id=<?php echo $info['bia_id']; ?>"><i class="fas fa-arrow-left"></i> Back</a>
                             </div>
                             <div class="card-body">
                                 <div class="form-group">
@@ -86,6 +88,9 @@
                                     <input value="<?php echo $info["bia_activity"];?>" name="activity" type="text" maxlength="255" class="form-control" placeholder="Enter critical business activity..." required>
                                 
                                 </div>
+                                
+                                <input type='hidden' name='c__id' value='<?php echo $info['bia_id']; ?>' />
+                                
                                 <div class="form-group">
                                     <label>Description:</label>
                                     <textarea rows="3" class="form-control" placeholder="Enter description..." class="form-control" name="descript"><?php echo $info["bia_descript"];?></textarea>                    
@@ -155,11 +160,11 @@
             </div>
             </section>
         </div>
-        <?php require '../../layout/footer.php' ?>
+        <?php require $file_dir.'layout/footer.php' ?>
         </footer>
         </div>
     </div>
-    <?php require '../../layout/general_js.php' ?>
+    <?php require $file_dir.'layout/general_js.php' ?>
     <style>
         textarea{
             min-height: 120px !important;

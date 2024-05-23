@@ -5,15 +5,34 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/customs/controls');
+        header('Location: '.$file_dir.'auth/sign-in?r=/customs/controls');
         exit();
     }
   
     $message = [];
-    include '../../layout/db.php';
+    include $file_dir.'layout/db.php';
+    include $file_dir.'layout/admin__config.php';
     include '../ajax/customs.php';
-    include '../../layout/admin_config.php';
-
+    
+    if(isset($_POST["update-control"]) && isset($_POST['c__id'])){
+                
+                $id = sanitizePlus($_POST["c__id"]);
+                
+                $title = sanitizePlus($_POST["title"]);
+                $description = htmlentities(trim($_POST["description"]));
+                $effectiveness = sanitizePlus($_POST["effectiveness"]);
+                $frequency = sanitizePlus($_POST["frequency"]);
+                $category = sanitizePlus($_POST["category"]);
+                
+                $query = "UPDATE as_customcontrols SET title = '$title', description = '$description', effectiveness = '$effectiveness', frequency = '$frequency', category = '$category' WHERE control_id = '$id' AND c_id = '$company_id'";
+                $customCreated = $con->query($query);
+                if ($customCreated) {
+                    array_push($message, 'Control Details Updated Successfully!!');
+                }else{
+                  array_push($message, 'Error 502: Error Updating Control!!');
+                }
+            }
+            
     if (isset($_GET['id']) && isset($_GET['id']) !== "") {
         $toDisplay = true;   
         $id = sanitizePlus($_GET['id']);
@@ -23,39 +42,7 @@
             $aud_exist = true;
             $info = $CustomExist->fetch_assoc();
 
-            if(isset($_POST["update-control"])){
-
-                $title = sanitizePlus($_POST["title"]);
-                $description = sanitizePlus($_POST["description"]);
-                $effectiveness = sanitizePlus($_POST["effectiveness"]);
-                $frequency = sanitizePlus($_POST["frequency"]);
-                $category = sanitizePlus($_POST["category"]);
-                
-                $query = "UPDATE as_customcontrols SET title = '$title', description = '$description', effectiveness = '$effectiveness', frequency = '$frequency', category = '$category' WHERE control_id = '$id' AND c_id = '$company_id'";
-                $customCreated = $con->query($query);
-                if ($customCreated) {
-                    #create notification and send notifier email
-                        $notification_message = "Custom Control Modified Successfully";
-                        $datetime = date("Y-m-d H:i:s");
-                        $notify_link = "admin/customs/controls?id=".$id;
-                        $notifier = $userId;
-                        $type = 'control';
-                        $case = 'edit';
-                        $notificationResult = createNotification($company_id, $notification_message, $datetime, $notifier, $notify_link, $type, $case, $con);
-                        # $notificationResult = savenotification($company_id, $notification_message, 0, 0, $assessmentId, $risk, $descript, $date, $con, $role);
-                        if ($notificationResult == 'true') {
-                            array_push($message, 'Control Details Updated Successfully!!');
-                            header("Location: controls?id=".$id);
-                            exit;
-                        } else {
-                            array_push($message, 'Error Updating Control Details!!');
-                            header("Location: edit-controls?id=".$id);
-                            exit;
-                        }
-                }else{
-                  array_push($message, 'Error 502: Error Updating Control!!');
-                }
-            }
+            
 
         }else{
           $aud_exist = false;
@@ -71,7 +58,7 @@
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title>Edit Custom Controls | <?php echo $siteEndTitle; ?></title>
-  <?php require '../../layout/general_css.php' ?>
+  <?php require $file_dir.'layout/general_css.php' ?>
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/admin.custom.css">
 </head>
 
@@ -80,19 +67,22 @@
     <div id="app">
         <div class="main-wrapper main-wrapper-1">
         <div class="navbar-bg"></div>
-        <?php require '../../layout/header.php' ?>
-        <?php require '../../layout/sidebar_admin.php' ?>
+        <?php require $file_dir.'layout/header.php' ?>
+        <?php require $file_dir.'layout/sidebar_admin.php' ?>
         <!-- Main Content -->
         <div class="main-content">
             <section class="section">
             <div class="section-body">
               <?php if($toDisplay == true){ ?>
               <?php if ($aud_exist == true) { ?>
-                <div class="card">
+                <div class="card" style='padding:10px;'>
                     <form role="form" method="post">
-                        <div class="card-header"></div>
                         <div class="card-bodyy">
-                            <div class="card-header"><h3 class="subtitle">Control Details</h3></div>
+                            <?php require $file_dir.'layout/alert.php' ?>
+                            <div class="card-header">
+                                <h3 class="subtitle">Control Details</h3>
+                                <a class="btn btn-primary btn-icon icon-left header-a" href="controls?id=<?php echo $info['control_id']; ?>"><i class="fas fa-arrow-left"></i> Back</a>
+                            </div>
                             <div class="card-body">
                                 <div class="form-group">
                                   <label>Control Category</label>
@@ -101,6 +91,7 @@
                                     <?php echo listTypes($info["category"], $con); ?>
                                   </select>
                                 </div>
+                                <input type='hidden' name='c__id' value='<?php echo $info['control_id']; ?>' />
 
                                 <div class="form-group">
                                     <label>Control Title:</label>
@@ -110,14 +101,14 @@
                                 <div class="form-group">
                                     <label>Control Description:</label>
                                     <textarea name="description" class="form-control" placeholder="Enter Control Description">
-                                        <?php echo $info["description"]; ?>
+                                        <?php echo html_entity_decode($info["description"]); ?>
                                     </textarea>
                                 </div>
 
                                 <div class="row custom-row">
                                     <div class="form-group col-lg-6 col-12">
                                         <label>Effectiveness</label>
-                                        <select name="effectivness" class="form-control" required>
+                                        <select name="effectiveness" class="form-control" required>
                                             <option value="1" <?php if ($info['effectiveness'] == 1) echo "selected"; ?>>Effective</option>
                                             <option value="2" <?php if ($info['effectiveness'] == 2) echo "selected"; ?>>InEffective</option>
                                             <option value="3" <?php if ($info['effectiveness'] == 3) echo "selected"; ?>>Unassessed</option>
@@ -138,7 +129,7 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <div class="form-group">
+                                <div class="form-group text-right">
                                     <button type="submit" class="btn btn-md btn-primary" name="update-control">Update Control Details</button>
                                     <button type="button" class="btn btn-md btn-warning" id="btn_cancel">Cancel</button>
                                 </div>
@@ -179,11 +170,11 @@
             </div>
             </section>
         </div>
-        <?php require '../../layout/footer.php' ?>
+        <?php require $file_dir.'layout/footer.php' ?>
         </footer>
         </div>
     </div>
-    <?php require '../../layout/general_js.php' ?>
+    <?php require $file_dir.'layout/general_js.php' ?>
     <style>
         textarea{
             min-height: 120px !important;

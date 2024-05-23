@@ -3,10 +3,10 @@
     $file_dir = '../../';
     $company_id = $_SESSION["company_id"];
     // Include pagination library file 
-    include '../../layout/pagination.class.php'; 
+    include $file_dir.'layout/pagination.class.php'; 
     
     // Include database configuration file 
-    require '../../layout/dbConfig.php'; 
+    require $file_dir.'layout/dbConfig.php'; 
 
 if(isset($_POST['page'])){ 
      
@@ -47,7 +47,7 @@ if(isset($_POST['page'])){
                                 <th scope="col" class="sorting" coltype="id" colorder="">Procedure Title</th>
                                 <th scope="col" class="sorting" coltype="id" colorder="">Procedure Description</th>
                                 <th scope="col" class="sorting" coltype="id" colorder="">Procedure Effective Date</th>
-                                <th scope="col" class="sorting" coltype="id" colorder="">Procedure Review Date</th>
+                                <!--<th scope="col" class="sorting" coltype="id" colorder="">Procedure Review Date</th>-->
                                 <th scope="col" class="sorting" coltype="id" colorder="">...</th> 
                             </tr> 
                         </thead> 
@@ -66,7 +66,7 @@ if(isset($_POST['page'])){
                                     <td><?php echo ucwords($item['ProcedureTitle']); ?></td>
                                     <td><?php echo ucwords($item['ProcedureDescription']); ?></td>
                                     <th><?php echo ucwords($item["ProcedureEffectiveDate"]); ?></th>
-                                    <td><?php echo ucwords($item["ProcedureReviewDate"]); ?></td>
+                                    <!--<td><?php #echo ucwords($item["ProcedureReviewDate"]); ?></td>-->
                                     <td>
                                         <a href="<?php echo $viewLink; ?>" class="action-icons btn btn-primary btn-action mr-1"><i class="fas fa-eye"></i></a>
                                         <a href="<?php echo $editLink; ?>" class="action-icons btn btn-info btn-action mr-1"><i class="fas fa-edit"></i></a>

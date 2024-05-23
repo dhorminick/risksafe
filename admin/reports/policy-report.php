@@ -4,7 +4,7 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/reports/policy-report');
+        header('Location: '.$file_dir.'auth/sign-in?r=/reports/policy-report');
         exit();
     }
     $message = [];

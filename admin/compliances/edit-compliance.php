@@ -4,84 +4,16 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/compliances/all');
+        header('Location: '.$file_dir.'auth/sign-in?r=/compliances/all');
         exit();
     }
     $message = [];
     include '../../layout/db.php';
     include '../../layout/admin__config.php';
-    #include '../../layout/user_details.php';
     include '../ajax/compliances.php';
     
-    if (isset($_GET['id']) && isset($_GET['id']) !== "") {
-        $toDisplay = true;   
-        $id = sanitizePlus($_GET['id']);
-        $CheckIfProcedureExist = "SELECT * FROM as_compliancestandard WHERE compli_id = '$id' AND c_id = '$company_id'";
-        $ProcedureExist = $con->query($CheckIfProcedureExist);
-        if ($ProcedureExist->num_rows > 0) {	
-            $compli_exist = true;
-			$info = $ProcedureExist->fetch_assoc();
-			
-			$recommended_control = $info['existing_ct'];
-            $saved_control = $info['saved_control'];	
-            $saved_treatment = $info['saved_treatment'];	
-            $custom_control = $info['custom_control'];	
-            $custom_treatment = $info['custom_treatment'];
-            $existing_ct = $info['existing_ct'];
-            $freq = $info['frequency'];
-
-            $un_custom_control = unserialize($custom_control);
-            $un_custom_treatment = unserialize($custom_treatment);
-            
-            $hasCustomControl = is_array($un_custom_control);
-            $hasCustomTreatment = is_array($un_custom_treatment);
-            
-            $evidence = $info['com_documentation'];
-            
-            if($evidence == 'null'){
-                $uploadedEvidence = 'None Uploaded';
-            }else{
-                $uploadedEvidence = '<a href="evidence/'.$evidence.'" target="_blank">View File</a>';
-            }
-
-            if ($hasCustomControl == true) {
-                #if value in db is array
-                $customControlArrayStatus = 'true';
-                if ($custom_control == 'a:1:{i:0;s:0:"";}') {
-                    #empty array
-                    $customControlValuesStatus = 'empty';
-                    #show a single empty textbox
-                } else if ($custom_control == null){
-                    $customControlValuesStatus = 'empty';
-                    #show all details
-                } else {
-                    $customControlValuesStatus = 'not-empty';
-                    #show all details
-                }
-            } else {
-                $customControlArrayStatus = 'false';
-            }
-
-            if ($hasCustomTreatment == true) {
-                #if value in db is array
-                $customTreatmentArrayStatus = 'true';
-                if ($custom_treatment == 'a:1:{i:0;s:0:"";}') {
-                    #empty array
-                    $customTreatmentValuesStatus = 'empty';
-                    #show a single empty textbox
-                } else if ($custom_treatment == null) {
-                    $customTreatmentValuesStatus = 'empty';
-                    #show all details
-                } else {
-                    $customTreatmentValuesStatus = 'not-empty';
-                    #show all details
-                }   
-            } else {
-                $customTreatmentArrayStatus = 'false';
-            }
-			
-            if(isset($_POST["update-compliance"])){
-                
+    if(isset($_POST["update-compliance"]) && isset($_POST["id"])){
+                $id = sanitizePlus($_POST["id"]);
                 $compliancestandard = sanitizePlus($_POST["compliancestandard"]);
                 $legislation = sanitizePlus($_POST["legislation"]);
                 $control = sanitizePlus($_POST["control"]);
@@ -181,11 +113,79 @@
                     $query = "UPDATE as_compliancestandard SET com_compliancestandard = '$compliancestandard', com_legislation = '$legislation', com_controls = '$control', com_training = '$training', co_status = '$compliancestatus', com_officer = '$officer', existing_ct = '$existing_ct', saved_control = '$saved_control', saved_treatment = '$saved_treatment', custom_control = '$custom_control', custom_treatment = '$custom_treatment' WHERE c_id = '$company_id' AND compli_id = '$id'";               
                     $sql = mysqli_query($con, $query);
                     if ($sql) {
-                        header('Location: compliance-details?id='.$com_id);
+                        array_push($message, 'Compliance Values Updated Successfully!!');
+                        // header('Location: compliance-details?id='.$com_id);
                     } else {
                         array_push($message, 'Error 502: Error!!');
                     }
                 }
+            }
+            
+    if (isset($_GET['id']) && isset($_GET['id']) !== "") {
+        $toDisplay = true;   
+        $id = sanitizePlus($_GET['id']);
+        $CheckIfProcedureExist = "SELECT * FROM as_compliancestandard WHERE compli_id = '$id' AND c_id = '$company_id'";
+        $ProcedureExist = $con->query($CheckIfProcedureExist);
+        if ($ProcedureExist->num_rows > 0) {	
+            $compli_exist = true;
+			$info = $ProcedureExist->fetch_assoc();
+			
+			$recommended_control = $info['existing_ct'];
+            $saved_control = $info['saved_control'];	
+            $saved_treatment = $info['saved_treatment'];	
+            $custom_control = $info['custom_control'];	
+            $custom_treatment = $info['custom_treatment'];
+            $existing_ct = $info['existing_ct'];
+            $freq = $info['frequency'];
+
+            $un_custom_control = unserialize($custom_control);
+            $un_custom_treatment = unserialize($custom_treatment);
+            
+            $hasCustomControl = is_array($un_custom_control);
+            $hasCustomTreatment = is_array($un_custom_treatment);
+            
+            $evidence = $info['com_documentation'];
+            
+            if($evidence == 'null'){
+                $uploadedEvidence = 'None Uploaded';
+            }else{
+                $uploadedEvidence = '<a href="evidence/'.$evidence.'" target="_blank">View File</a>';
+            }
+
+            if ($hasCustomControl == true) {
+                #if value in db is array
+                $customControlArrayStatus = 'true';
+                if ($custom_control == 'a:1:{i:0;s:0:"";}') {
+                    #empty array
+                    $customControlValuesStatus = 'empty';
+                    #show a single empty textbox
+                } else if ($custom_control == null){
+                    $customControlValuesStatus = 'empty';
+                    #show all details
+                } else {
+                    $customControlValuesStatus = 'not-empty';
+                    #show all details
+                }
+            } else {
+                $customControlArrayStatus = 'false';
+            }
+
+            if ($hasCustomTreatment == true) {
+                #if value in db is array
+                $customTreatmentArrayStatus = 'true';
+                if ($custom_treatment == 'a:1:{i:0;s:0:"";}') {
+                    #empty array
+                    $customTreatmentValuesStatus = 'empty';
+                    #show a single empty textbox
+                } else if ($custom_treatment == null) {
+                    $customTreatmentValuesStatus = 'empty';
+                    #show all details
+                } else {
+                    $customTreatmentValuesStatus = 'not-empty';
+                    #show all details
+                }   
+            } else {
+                $customTreatmentArrayStatus = 'false';
             }
             
         }else{
@@ -231,7 +231,7 @@
 
                             <div class="card-header">
                                 <h3 class="d-inline">Compliance Information</h3>
-                                <a class="btn btn-primary btn-icon icon-left header-a" href="all"><i class="fas fa-arrow-left"></i> Back</a>
+                                <a class="btn btn-primary btn-icon icon-left header-a" href="compliance-details?id=<?php echo $info['compli_id']; ?>"><i class="fas fa-arrow-left"></i> Back</a>
                             </div>
                             <div class="card-body">
                                 <div class="form-group">
@@ -239,6 +239,7 @@
 									<input name="compliancestandard" value='<?php echo $info['com_compliancestandard']; ?>' type="text" maxlength="100" class="form-control" placeholder="Enter Compliance Standard..." required>
 
 								</div>
+								<input name='id' value='<?php echo $info['compli_id']; ?>' type='hidden' />
 								<div class='row custom-row'>
 								<div class="form-group col-12 col-lg-4">
 									<label>Compliance Officer: </label>

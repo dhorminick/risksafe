@@ -3,10 +3,10 @@
     $file_dir = '../../';
     $company_id = $_SESSION["company_id"];
     // Include pagination library file 
-    include '../../layout/pagination.class.php'; 
+    include $file_dir.'layout/pagination.class.php'; 
     
     // Include database configuration file 
-    require '../../layout/dbConfig.php'; 
+    require $file_dir.'layout/dbConfig.php'; 
 
 if(isset($_POST['page'])){ 
      

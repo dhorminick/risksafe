@@ -448,7 +448,7 @@
     }
 
     function createNotification($company_id, $notification_message, $datetime, $notifier, $link, $type, $case, $conn, $sitee){
-        $link = $sitee.$link;
+        $link = $link;
         $role = $GLOBALS['role'];
         $n_case_custom = $case.'-'.$type;
         $query_details = "INSERT INTO notification (n_message, n_datetime, n_sender, link, c_id, status, type, n_case, n_case_custom, role) VALUES ('$notification_message', '$datetime', '$notifier', '$link', '$company_id', 'unread', '$type', '$case', '$n_case_custom', '$role')";
@@ -573,32 +573,32 @@
     }
     
     function daysAgo ($oldTime, $newTime) {
-	$timeCalc = strtotime($newTime) - strtotime($oldTime);
-    $left = '';
-	if ($timeCalc >= (60*60*24*2)){
-        $left = 'days';
-		$timeCalc = intval($timeCalc/60/60/24);
-	}else if ($timeCalc >= (60*60*2)){
-        $left = 'hours';
-		$timeCalc = intval($timeCalc/60/60);
-	}else if ($timeCalc >= (60*60)){
-        $left = 'hour';
-		$timeCalc = intval($timeCalc/60/60);
-	}else if ($timeCalc >= 60*2){
-        $left = 'minutes';
-		$timeCalc = intval($timeCalc/60);
-	}else if ($timeCalc >= 60){
-        $left = 'minute';
-		$timeCalc = intval($timeCalc/60);
-	}else if ($timeCalc > 0){
-        $left = 'seconds';
-		$timeCalc .= " seconds";
-	}
-    $timeStamp = array(
-        'timeCalc' => $timeCalc,
-        'left' => $left
-    );
+        $timeCalc = strtotime($newTime) - strtotime($oldTime);
+        $left = '';
+        if ($timeCalc >= (60*60*24*2)){
+            $left = 'days';
+            $timeCalc = intval($timeCalc/60/60/24);
+        }else if ($timeCalc >= (60*60*2)){
+            $left = 'hours';
+            $timeCalc = intval($timeCalc/60/60);
+        }else if ($timeCalc >= (60*60)){
+            $left = 'hour';
+            $timeCalc = intval($timeCalc/60/60);
+        }else if ($timeCalc >= 60*2){
+            $left = 'minutes';
+            $timeCalc = intval($timeCalc/60);
+        }else if ($timeCalc >= 60){
+            $left = 'minute';
+            $timeCalc = intval($timeCalc/60);
+        }else if ($timeCalc > 0){
+            $left = 'seconds';
+            $timeCalc .= " seconds";
+        }
+        $timeStamp = array(
+            'timeCalc' => $timeCalc,
+            'left' => $left
+        );
 
-	return $timeStamp;
-}
+        return $timeStamp;
+    }
 ?>

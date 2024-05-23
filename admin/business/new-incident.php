@@ -4,12 +4,12 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/business/incidents');
+        header('Location: '.$file_dir.'auth/sign-in?r=/business/incidents');
         exit();
     }
     $message = [];
-    include '../../layout/db.php';
-    include '../../layout/admin__config.php';
+    include $file_dir.'layout/db.php';
+    include $file_dir.'layout/admin__config.php';
 
     if(isset($_POST["create-incident"])){
 
@@ -39,7 +39,7 @@
             $type = 'incident';
             $case = 'new';
             $id = $in_id;
-            $returnArray = createNotification($company_id, $notification_message, $datetime, $notifier, $link, $type, $case, $id, $con, $sitee);
+            $returnArray = createNotification($company_id, $notification_message, $datetime, $notifier, $link, $type, $case, $con, $sitee);
             header("Location: incidents?id=".$in_id);
         }else{
             array_push($message, 'Error 502: Error!!');
@@ -54,7 +54,7 @@
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title>Create New Incident | <?php echo $siteEndTitle; ?></title>
-  <?php require '../../layout/general_css.php' ?>
+  <?php require $file_dir.'layout/general_css.php' ?>
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/footer.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/admin.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/bundles/bootstrap-daterangepicker/daterangepicker.css">
@@ -65,8 +65,8 @@
     <div id="app">
         <div class="main-wrapper main-wrapper-1">
         <div class="navbar-bg"></div>
-        <?php require '../../layout/header.php' ?>
-        <?php require '../../layout/sidebar_admin.php' ?>
+        <?php require $file_dir.'layout/header.php' ?>
+        <?php require $file_dir.'layout/sidebar_admin.php' ?>
         <!-- Main Content -->
         <div class="main-content">
             <section class="section">
@@ -75,7 +75,7 @@
                     <form method="post">
                         <div class="card-header"></div>
                         <div class="card-body">
-                            <?php require '../../layout/alert.php' ?>
+                            <?php require $file_dir.'layout/alert.php' ?>
                             <div class="card-header">
                                 <h3 class="d-inline">Create New Incident</h3>
                                 <a class="btn btn-primary btn-icon icon-left header-a" href="incidents"><i class="fas fa-arrow-left"></i> View All</a>
@@ -156,11 +156,11 @@
             </div>
             </section>
         </div>
-        <?php require '../../layout/footer.php' ?>
+        <?php require $file_dir.'layout/footer.php' ?>
         </footer>
         </div>
     </div>
-    <?php require '../../layout/general_js.php' ?>
+    <?php require $file_dir.'layout/general_js.php' ?>
     <script src="<?php echo $file_dir; ?>assets/bundles/bootstrap-daterangepicker/daterangepicker.js"></script>
     <style>
         textarea{

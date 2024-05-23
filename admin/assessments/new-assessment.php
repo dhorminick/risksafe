@@ -5,7 +5,7 @@
         $signedIn = true;
     } else {
         $signedIn = false;
-        header('Location: '.$file_dir.'login?r=/assessments/new-assessment');
+        header('Location: '.$file_dir.'auth/sign-in?r=/assessments/new-assessment');
         exit();
     }
     $message = [];

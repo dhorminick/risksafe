@@ -128,6 +128,9 @@
                                 </div>
                             </div>
                         </div>
+                        <div class='card-footer'>
+
+                        </div>
                     </div>
                     <?php } else { ?>
                     <?php } ?>
