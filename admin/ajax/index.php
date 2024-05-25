@@ -345,7 +345,7 @@ if ($totalincidentsCount != 0) {
 } else {
   $openPercentage = 0;
   $closedPercentage = 0;
-  $closedPercentage = 0;
+  $progressPercentage = 0;
 }
 ?>
 <?php
