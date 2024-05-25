@@ -49,8 +49,18 @@
             // $custom_control_main = $info['custom_control_main'];
             $as_details_has_value = $info['as_details_has_value'];	
 
-            $un_custom_control = unserialize($custom_control);
-            $un_custom_treatment = unserialize($custom_treatment);
+            if($custom_control == 'null'){
+                $un_custom_control = $custom_control;
+            }else{
+                $un_custom_control = unserialize($custom_control);
+            }
+
+            if($custom_treatment == 'null'){
+                $un_custom_treatment = $custom_treatment;
+            }else{
+                $un_custom_treatment = unserialize($custom_treatment);
+            }
+            
 
             $hasCustomControl = is_array($un_custom_control);
             $hasCustomTreatment = is_array($un_custom_treatment);
