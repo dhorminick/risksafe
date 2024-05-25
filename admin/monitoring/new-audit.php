@@ -5,15 +5,14 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/monitoring/new-audit');
+        header('Location: '.$file_dir.'auth/sign-in?r=/monitoring/audits');
         exit();
     }
   
     $message = [];
-    include '../../layout/db.php';
+    include $file_dir.'layout/db.php';
     include '../ajax/audits.php';
-    include '../../layout/admin_config.php';
-    // include '../../layout/user_details.php';
+    include $file_dir.'layout/admin__config.php';
 
     if(isset($_POST["create-audit"])){
  
@@ -68,7 +67,8 @@
             $type = 'audit';
             $case = 'new';
             $id = $aud_id;
-            $returnArray = sendNotificationUser($company_id, $notification_message, $datetime, $notifier, $link, $type, $case, $id, $con);
+            $returnArray = createNotification($company_id, $notification_message, $datetime, $notifier, $link, $type, $case, $con, $sitee);
+            
             header("Location: audit-details?id=".$aud_id);
             exit();
         }else{
@@ -76,7 +76,7 @@
         }
     }
 
-    $userName_audit = 'Me';
+    $userName_audit = ucwords($_SESSION["u_name"]);
     $edit = true;
 ?>
 
@@ -86,7 +86,7 @@
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title>Create New Audit | <?php echo $siteEndTitle; ?></title>
-  <?php require '../../layout/general_css.php' ?>
+  <?php require $file_dir.'layout/general_css.php' ?>
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/footer.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/admin.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/bundles/bootstrap-timepicker/css/bootstrap-timepicker.min.css">
@@ -98,21 +98,21 @@
     <div id="app">
         <div class="main-wrapper main-wrapper-1">
         <div class="navbar-bg"></div>
-        <?php require '../../layout/header.php' ?>
-        <?php require '../../layout/sidebar_admin.php' ?>
+        <?php require $file_dir.'layout/header.php' ?>
+        <?php require $file_dir.'layout/sidebar_admin.php' ?>
         <!-- Main Content -->
         <div class="main-content">
             <section class="section">
             <div class="section-body">
                 <div class="card">
-                  <div class="card-body">
-                    <?php require '../../layout/alert.php' ?>
+                  <!--<div class="card-body">-->
+                    <?php require $file_dir.'layout/alert.php' ?>
                     <form method="post">
-                        <div class="card-header">
-                          <a href='audits' class="btn btn-primary btn-icon icon-left header-a"><i class="fas fa-arrow-left"></i> Back</a>
-                        </div>
                         <div class="card-body">
-                            <div class="card-header"><h3 class="subtitle">Audited Control Details:</h3></div>
+                            <div class="card-header" style='display:flex;justify-content:space-between;'>
+                                <h3 class="subtitle">Audited Control Details:</h3>
+                                <a href='audits' class="btn btn-primary btn-icon icon-left header-a"><i class="fas fa-arrow-left"></i> Back</a>
+                            </div>
                             <div class="card-body">
                                 <div class="form-group">
                                   <label>Type of Control</label>
@@ -209,19 +209,20 @@
                                   <input name="site" type="text" class="form-control" placeholder="Site..." required>
                 
                                 </div>
-
-                
-                
-                                <div class="form-group">
+                                
+                                <div class="row custom-row">
+                                <div class="form-group col-lg-6 col-12">
                                   <label>Street Address</label>
                                   <input name="street" type="text" class="form-control" placeholder="Street Address..." required>
                 
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group col-lg-6 col-12">
                                   <label>Building</label>
                                   <input name="building" type="text" class="form-control" placeholder="Building..." required>
                 
                                 </div>
+                                </div>
+                                
                                 <div class="row custom-row">
                                   <div class="form-group col-12 col-lg-5">
                                     <label>Country</label>
@@ -242,8 +243,8 @@
                   
                             </div>
                             <div class="card-body">
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-md btn-primary" name="create-audit">Save Audit</button>
+                                <div class="form-group text-right">
+                                    <button type="submit" class="btn btn-md btn-icon icon-left btn-primary" name="create-audit"><i class='fas fa-check'></i> Save Audit</button>
                                     <button type="button" class="btn btn-md btn-warning" id="btn_cancel">Cancel</button>
 
                                 </div>
@@ -254,16 +255,16 @@
                     <form id="getSubControl" class="ajax-form">
                       <input type="hidden" name="selected" id="get_subcontrol">
                     </form>
-                  </div>
+                  <!--</div>-->
                 </div>
             </div>
             </section>
         </div>
-        <?php require '../../layout/footer.php' ?>
+        <?php require $file_dir.'layout/footer.php' ?>
         </footer>
         </div>
     </div>
-    <?php require '../../layout/general_js.php' ?>
+    <?php require $file_dir.'layout/general_js.php' ?>
     <script src="<?php echo $file_dir; ?>assets/bundles/bootstrap-timepicker/js/bootstrap-timepicker.min.js"></script>
     <script src="<?php echo $file_dir; ?>assets/bundles/bootstrap-daterangepicker/daterangepicker.js"></script>
     <style>

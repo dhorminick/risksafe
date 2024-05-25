@@ -4,13 +4,13 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/account/payment');
+        header('Location: '.$file_dir.'auth/sign-in?r=/account/payment');
         exit();
     }
     $message = [];
     
     include $file_dir.'layout/db.php';
-    include $file_dir.'layout/admin_config.php';
+    include $file_dir.'layout/admin__config.php';
     require_once $file_dir.'layout/stripe_config.php'; 
     
     

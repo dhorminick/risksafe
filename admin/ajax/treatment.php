@@ -112,5 +112,26 @@
 		
 		return $response;
 	}
-
+    
+    function getStatus($f){
+        switch ($f) {
+                    			case 1:
+                                                $status = 'Treatment In Progress';
+                                                break;
+                                            
+                                            case 2:
+                                                $status = 'Treatment Completed';
+                                                break;
+                                                
+                                            case 3:
+                                                $status = 'Treatment Cancelled';
+                                                break;
+                                            
+                                            default:
+                                                $status = 'Treatment In Progress';
+                                                break;
+                    		}
+                return $status;
+    }
+    
 ?>

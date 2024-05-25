@@ -5,13 +5,13 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'admin/tickets');
+        header('Location: '.$file_dir.'auth/sign-in?r=/admin/tickets');
         exit();
     }
   
     $message = [];
     include $file_dir.'layout/db.php';
-    include $file_dir.'layout/admin_config.php';
+    include $file_dir.'layout/admin__config.php';
     include '../ajax/ticket.php';
 
     $u_name = ucwords($_SESSION['u_name']);

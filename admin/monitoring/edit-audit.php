@@ -5,20 +5,17 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/monitoring/audits');
+        header('Location: '.$file_dir.'auth/sign-in?r=/monitoring/audits');
         exit();
     }
   
     $message = [];
-    include '../../layout/db.php';
+    include $file_dir.'layout/db.php';
     include '../ajax/audits.php';
-    include '../../layout/admin_config.php';
+    include $file_dir.'layout/admin__config.php';
     
-    if (isset($_GET['id']) && isset($_GET['id']) !== "") {
-        $toDisplay = true;   
-        $id = sanitizePlus($_GET['id']);
-        
-        if(isset($_POST["update-audit"])){
+        if(isset($_POST["update-audit"]) && isset($_POST['c__id'])){
+            $id = sanitizePlus($_POST["c__id"]);
               $company = sanitizePlus($_POST["company"]);
               $industry = sanitizePlus($_POST["industry"]);
               $team = sanitizePlus($_POST["team"]);
@@ -33,13 +30,10 @@
               $zipcode = sanitizePlus($_POST["zipcode"]);
               $state = sanitizePlus($_POST["state"]);
               $country = sanitizePlus($_POST["country"]);
-              #if(isset($_POST["control"])){$control = sanitizePlus($_POST["control"]);}else{$control = '';};
               $existing = sanitizePlus($_POST["existing"]);
               $audi_treatment = sanitizePlus($_POST["audi_treatment"]);
               $Effectivness = sanitizePlus($_POST["Effectivness"]);
               $freq = sanitizePlus($_POST["freq"]);
-              #if(isset($_POST["subControl"])){$subControl = sanitizePlus($_POST["subControl"]);}else{$subControl = $existing;};
-              #$subControl = sanitizePlus($_POST["subControl"]);
               $next = getNext($date, $freq);
               $next = date("Y-m-d", strtotime($next));
 
@@ -52,6 +46,11 @@
                 array_push($message, 'Error 502: Error Updating Audit!!');
               }
             }
+            
+    if (isset($_GET['id']) && isset($_GET['id']) !== "") {
+        $toDisplay = true;   
+        $id = sanitizePlus($_GET['id']);
+        
         $CheckIfAuditExist = "SELECT * FROM as_auditcontrols WHERE aud_id = '$id' AND c_id = '$company_id'";
         $AuditExist = $con->query($CheckIfAuditExist);
         if ($AuditExist->num_rows > 0) {	
@@ -73,7 +72,7 @@
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title>Edit Audit | <?php echo $siteEndTitle; ?></title>
-  <?php require '../../layout/general_css.php' ?>
+  <?php require $file_dir.'layout/general_css.php' ?>
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/admin.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/bundles/bootstrap-timepicker/css/bootstrap-timepicker.min.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/bundles/bootstrap-daterangepicker/daterangepicker.css">
@@ -84,8 +83,8 @@
     <div id="app">
         <div class="main-wrapper main-wrapper-1">
         <div class="navbar-bg"></div>
-        <?php require '../../layout/header.php' ?>
-        <?php require '../../layout/sidebar_admin.php' ?>
+        <?php require $file_dir.'layout/header.php' ?>
+        <?php require $file_dir.'layout/sidebar_admin.php' ?>
         <!-- Main Content -->
         <div class="main-content">
             <section class="section">
@@ -98,7 +97,7 @@
                             <a class="btn btn-primary btn-icon icon-left header-a" href="audits"><i class="fas fa-arrow-left"></i> Back</a>
                         </div>
                         <div class="card-body">
-                            <?php require '../../layout/alert.php' ?>
+                            <?php require $file_dir.'layout/alert.php' ?>
                             <div class="card-header"><h3 class="subtitle">Audited Control Details:</h3></div>
                             <div class="card-body">
                                 <div class="form-group">
@@ -112,6 +111,8 @@
                                     <label>Sub Control</label>
                                     <div id="sub-control"></div>
                                 </div>
+                                
+                                <input type='hidden' name='c__id' value='<?php echo $info['aud_id']; ?>' />
                                 
                                 <div class="form-group">
                                     <label>Control Rationale:</label>
@@ -190,19 +191,20 @@
                                   <input value="<?php echo $info["con_site"]; ?>" name="site" type="text" maxlength="255" class="form-control" placeholder="Site..." required>
                 
                                 </div>
-            
-                                <div class="form-group">
+                                
+                                <div class="row custom-row">
+                                    
+                                <div class="form-group col-12 col-lg-6">
                                   <label>Street Address:</label>
                                   <input value="<?php echo $info["con_street"]; ?>" name="street" type="text" maxlength="255" class="form-control" placeholder="Street Address..." required>
                 
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group col-12 col-lg-6">
                                   <label>Building:</label>
                                   <input value="<?php echo $info["con_building"]; ?>" name="building" type="text" maxlength="255" class="form-control" placeholder="Building..." required>
                                   
                                 </div>
                                 
-                                <div class="row custom-row">
                                   <div class="form-group col-12 col-lg-5">
                                     <label>Country:</label>
                                     <input value="<?php echo $info["con_country"]; ?>" name="country" type="text" maxlength="50" class="form-control" placeholder="Enter country name..." required>
@@ -266,11 +268,11 @@
             </div>
             </section>
         </div>
-        <?php require '../../layout/footer.php' ?>
+        <?php require $file_dir.'layout/footer.php' ?>
         </footer>
         </div>
     </div>
-    <?php require '../../layout/general_js.php' ?>
+    <?php require $file_dir.'layout/general_js.php' ?>
     <script src="<?php echo $file_dir; ?>assets/bundles/bootstrap-timepicker/js/bootstrap-timepicker.min.js"></script>
     <script src="<?php echo $file_dir; ?>assets/bundles/bootstrap-daterangepicker/daterangepicker.js"></script>
     <style>

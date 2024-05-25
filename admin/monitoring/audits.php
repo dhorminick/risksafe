@@ -4,13 +4,12 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/monitoring/audits');
+        header('Location: '.$file_dir.'auth/sign-in?r=/monitoring/audits');
         exit();
     }
     $message = [];
-    include '../../layout/db.php';
-    include '../../layout/admin_config.php';
-    #include '../ajax/audits.php';
+    include $file_dir.'layout/db.php';
+    include $file_dir.'layout/admin__config.php';
     function getNext($date, $freq){
 
 		if ($freq == 0) {
@@ -21,16 +20,7 @@
 		}
 		return $next;
 	}
-    
-    #confirm data
-    $querys = "SELECT * FROM as_auditcontrols WHERE c_id = '$company_id'";
-	$result = $con->query($querys);
-	if ($result->num_rows > 0) {
-		$hasData = true;
-	} else {
-		$hasData = false;
-	}
-
+	
     if (isset($_POST['delete-data'])){
         $type = sanitizePlus($_POST['data-type']);
         $id = sanitizePlus($_POST['data-id']);
@@ -51,11 +41,21 @@
         
     }
     
+    #confirm data
+    $querys = "SELECT * FROM as_auditcontrols WHERE c_id = '$company_id'";
+	$result = $con->query($querys);
+	if ($result->num_rows > 0) {
+		$hasData = true;
+	} else {
+		$hasData = false;
+	}
+
+    
     // Include pagination library file 
-    include_once '../../layout/pagination.class.php'; 
+    include_once $file_dir.'layout/pagination.class.php'; 
     
     // Include database configuration file 
-    require_once '../../layout/dbConfig.php'; 
+    require_once $file_dir.'layout/dbConfig.php'; 
     
     // Set some useful configuration 
     $limit = 10; 
@@ -75,7 +75,6 @@
     $pagination =  new Pagination($pagConfig); 
     
     // Fetch records based on the limit 
-    #$query = $db->query("SELECT * FROM as_cat ORDER BY id DESC LIMIT $limit");
     $query = $db->query("SELECT * FROM as_auditcontrols WHERE c_id = '$company_id' ORDER BY idcontrol DESC LIMIT $limit");
 		
 ?>
@@ -86,7 +85,7 @@
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title>Audit Of Controls | <?php echo $siteEndTitle ?></title>
-  <?php require '../../layout/general_css.php' ?>
+  <?php require $file_dir.'layout/general_css.php' ?>
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/sort.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/admin.custom.css">
 </head>
@@ -96,8 +95,8 @@
     <div id="app">
         <div class="main-wrapper main-wrapper-1">
         <div class="navbar-bg"></div>
-        <?php require '../../layout/header.php' ?>
-        <?php require '../../layout/sidebar_admin.php' ?>
+        <?php require $file_dir.'layout/header.php' ?>
+        <?php require $file_dir.'layout/sidebar_admin.php' ?>
         <!-- Main Content -->
         <div class="main-content">
             <section class="section">
@@ -111,7 +110,7 @@
                     <?php if($hasData == true) { ?>
                     <div class="datalist-wrapper">
                     <!-- Loading overlay -->
-                    <div class="loading-overlay"><div class="overlay-content"><?php require '../../layout/loading_data.php' ?></div></div>
+                    <div class="loading-overlay"><div class="overlay-content"><?php require $file_dir.'layout/loading_data.php' ?></div></div>
                     <div class="card-body">
                         <!-- Data list container -->
                         <div id="dataContainer">
@@ -119,7 +118,7 @@
                         <thead> 
                             <tr> 
                                 <th scope="col" class="sorting" coltype="idcontrol" colorder="">S/N</th>
-                                <th scope="col" style='width: 30%;' class="sorting" coltype="idcontrol" colorder="">Control</th>
+                                <th scope="col" class="sorting" coltype="idcontrol" colorder="" style='width: 30%;'>Control</th>
                                 <th scope="col" class="sorting" coltype="idcontrol" colorder="">Issued On</th>
                                 <th scope="col" class="sorting" coltype="idcontrol" colorder="">Effectiveness</th>
                                 <th scope="col" class="sorting" coltype="idcontrol" colorder="">Frequency</th>
@@ -164,7 +163,6 @@
                                     $viewLink = 'audit-details?id='.$item["aud_id"].'" data-toggle="tooltip" title="View Audit" data-placement="right"';
                                     $editLink = 'edit-audit?id='.$item["aud_id"].'" data-toggle="tooltip" title="Edit Audit" data-placement="right"';
                                     $deleteLink = 'javascript:void(0);" class="delete action-icons btn btn-danger btn-action mr-1" data-toggle="modal" data-target="#deleteModal" data-type="audit" data-id="'.$item["aud_id"];
-                                    // $downloadLink = 'download?download=audits&id='.$item["aud_id"].'" data-toggle="tooltip" title="Download Audit" data-placement="left"';
                                     $downloadLink = 'javascript:void(0);" data-toggle="modal" data-target="#exportModal" export-data="audit" export-id="'.$item["aud_id"];
                             ?> 
                                 <tr> 
@@ -206,11 +204,11 @@
             </div>
             </section>
         </div>
-        <?php require '../../layout/delete_data.php' ?>
-        <?php require '../../layout/footer.php' ?>
+        <?php require $file_dir.'layout/delete_data.php' ?>
+        <?php require $file_dir.'layout/footer.php' ?>
         </div>
         
-    <?php require '../../layout/general_js.php' ?>
+    <?php require $file_dir.'layout/general_js.php' ?>
     <script src="<?php echo $file_dir; ?>assets/js/admin/d_audit.js"></script>
     <style>
         textarea{

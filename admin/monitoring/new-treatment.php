@@ -4,16 +4,15 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/monitoring/new-treatment');
+        header('Location: '.$file_dir.'auth/sign-in?r=/monitoring/treatments');
         exit();
     }
     $message = [];
-    include '../../layout/db.php';
-    include '../../layout/admin_config.php';
-    #include '../../layout/user_details.php';
+    include $file_dir.'layout/db.php';
+    include $file_dir.'layout/admin__config.php';
 
     if(isset($_POST["create-treat"])){
-        $existing = sanitizePlus($_POST["existing"]);
+        #$existing = sanitizePlus($_POST["existing"]);
         
         $team = sanitizePlus($_POST["team"]); 
         $assessor = sanitizePlus($_POST["assessor"]); 
@@ -29,11 +28,24 @@
         $query = "INSERT INTO as_treatments (tre_user, tre_team, tre_assessor, tre_treatment, tre_cost_ben, tre_progress, tre_owner, tre_start, tre_due, tre_status, c_id, t_id) VALUES ('$userId', '$team', '$assessor', '$treatment', '$cost_ben', '$progress', '$owner','$start', '$due', '$status', '$company_id', '$tre_id')";
         $treCreated = $con->query($query);
         if ($treCreated) {
+            #send notification
+            $datetime = date("Y-m-d H:i:s");
+            $notification_message = 'New Audit Treatment Created';
+            $notifier = $userId;
+            $link = "admin/monitoring/audit-details?id=".$tre_id;
+            $type = 'audit-treatment';
+            $case = 'new';
+            $id = $tre_id;
+            $returnArray = createNotification($company_id, $notification_message, $datetime, $notifier, $link, $type, $case, $con, $sitee);
+            
             header("Location: treatments?id=".$tre_id);
+            exit();
         }else{
-            array_push($message, 'Error 502: Error!!');
+            array_push($message, 'Error 502: Error Creating Treatment!!');
         }	
     }
+    
+    $userName_audit = ucwords($_SESSION["u_name"]);
 
 ?>
 
@@ -43,7 +55,7 @@
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title>Create New Treatment | <?php echo $siteEndTitle; ?></title>
-  <?php require '../../layout/general_css.php' ?>
+  <?php require $file_dir.'layout/general_css.php' ?>
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/footer.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/admin.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/bundles/bootstrap-daterangepicker/daterangepicker.css">
@@ -54,8 +66,8 @@
     <div id="app">
         <div class="main-wrapper main-wrapper-1">
         <div class="navbar-bg"></div>
-        <?php require '../../layout/header.php' ?>
-        <?php require '../../layout/sidebar_admin.php' ?>
+        <?php require $file_dir.'layout/header.php' ?>
+        <?php require $file_dir.'layout/sidebar_admin.php' ?>
         <!-- Main Content -->
         <div class="main-content">
             <section class="section">
@@ -64,15 +76,15 @@
                     <form method="post" action=''>
                         <div class="card-header"></div>
                         <div class="card-body">
-                            <?php require '../../layout/alert.php' ?>
+                            <?php require $file_dir.'layout/alert.php' ?>
                             <div class="card-header">
                                 <h3 class="d-inline">Create New Treatment</h3>
-                                <a class="btn btn-primary btn-icon icon-left header-a" href="treatments"><i class="fas fa-arrow-left"></i> View All</a>
+                                <a class="btn btn-primary btn-icon icon-left header-a" href="treatments"><i class="fas fa-arrow-left"></i> Back</a>
                             </div>
                             <div class="card-body">
                                 
                                 <div class="form-group">
-                                    <label>Create Treatment :</label>
+                                    <label>Treatment :</label>
                                     <input name="treatment" type="text" id="createCustomControl" maxlength="255" class="form-control" placeholder="Enter treatment..." required>
                 
                                 </div>
@@ -121,14 +133,14 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Assessor name :</label>
-                                    <input id="assessor" name="assessor" type="text" maxlength="100" class="form-control" placeholder="Enter assessor name..." required>
+                                    <input id="assessor" name="assessor" type="text" maxlength="100" value='<?php echo $userName_audit; ?>' class="form-control" placeholder="Enter assessor name..." required>
                 
                                 </div>
                                 
                             </div>
                             <div class="card-body">
-                                <div class="form-group">
-									<button class="btn btn-md btn-primary" name="create-treat">Create Treatment</button>
+                                <div class="form-group text-right">
+									<button class="btn btn-md btn-primary btn-icon icol-left" name="create-treat"><i class='fas fa-check'></i> Create Treatment</button>
 									<button type="button" class="btn btn-md btn-warning" id="btn_cancel">Cancel</button>
 								</div>
                             </div>
@@ -139,11 +151,11 @@
             </div>
             </section>
         </div>
-        <?php require '../../layout/footer.php' ?>
+        <?php require $file_dir.'layout/footer.php' ?>
         </footer>
         </div>
     </div>
-    <?php require '../../layout/general_js.php' ?>
+    <?php require $file_dir.'layout/general_js.php' ?>
     <script src="<?php echo $file_dir; ?>assets/bundles/bootstrap-daterangepicker/daterangepicker.js"></script>
     <style>
         textarea{

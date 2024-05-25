@@ -4,12 +4,12 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/account/business-context');
+        header('Location: '.$file_dir.'auth/sign-in?r=/account/business-context');
         exit();
     }
     $message = [];
     include '../../layout/db.php';
-    include '../../layout/admin_config.php';
+    include '../../layout/admin__config.php';
     
     if (isset($_POST['save-context'])) {
        $context_objectives = sanitizePlus($_POST["objectives"]); 

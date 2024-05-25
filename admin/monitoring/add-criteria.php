@@ -5,14 +5,14 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/monitoring/add-criteria');
+        header('Location: '.$file_dir.'auth/sign-in?r=/monitoring/audits');
         exit();
     }
   
     $message = [];
-    include '../../layout/db.php';
+    include $file_dir.'layout/db.php';
     include '../ajax/audits.php';
-    include '../../layout/admin_config.php';
+    include $file_dir.'layout/admin__config.php';
 
 
     if (isset($_GET['id']) && isset($_GET['id']) !== "") {
@@ -62,7 +62,7 @@
   <meta
    content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title>Create New Audit Criteria Question | <?php echo $siteEndTitle; ?></title>
-  <?php require '../../layout/general_css.php' ?>
+  <?php require $file_dir.'layout/general_css.php' ?>
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/admin.custom.css">
 </head>
 
@@ -71,8 +71,8 @@
     <div id="app">
         <div class="main-wrapper main-wrapper-1">
         <div class="navbar-bg"></div>
-        <?php require '../../layout/header.php' ?>
-        <?php require '../../layout/sidebar_admin.php' ?>
+        <?php require $file_dir.'layout/header.php' ?>
+        <?php require $file_dir.'layout/sidebar_admin.php' ?>
         <!-- Main
          Content -->
         <div class="main-content">
@@ -82,7 +82,7 @@
                 <?php if ($aud_exist == true) { ?>
                 <div class="card">
                   <div class="card-body">
-                    <?php require '../../layout/alert.php' ?>
+                    <?php require $file_dir.'layout/alert.php' ?>
                     <form method="post">
                         <div class="card-header">
                             <h3 class="d-inline">Create Audit Criteria</h3>
@@ -113,7 +113,7 @@
                                 <label>Notes</label>
                                 <textarea rows="4" name="notes" class="form-control"></textarea>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group text-right">
                                 <button type="submit" class="btn btn-primary btn-icon icon-left" name="save-criteria"><i class="fas fa-check-circle"></i> Save Criteria Question</button>
                             </div>
                         </div>
@@ -128,7 +128,7 @@
                         <div style="width:100%;min-height:400px;display:flex;justify-content:center;align-items:center;">
                             <div style="text-align: center;"> 
                                  <h3>Empty Data!!</h3>
-                                 Audit Of Control Doesn't Exist!!,
+                                 Audit Of Control Doesn't Exist!!
                                  <p><a href="/help#data-error" class="btn btn-primary btn-icon icon-left mt-2"><i class="fas fa-arrow-left"></i> Help</a></p>
                              </div>
                          </div>
@@ -153,11 +153,11 @@
             </div>
             </section>
         </div>
-        <?php require '../../layout/footer.php' ?>
+        <?php require $file_dir.'layout/footer.php' ?>
         </footer>
         </div>
     </div>
-    <?php require '../../layout/general_js.php' ?>
+    <?php require $file_dir.'layout/general_js.php' ?>
     <style>
         textarea{
             min-height: 120px !important;

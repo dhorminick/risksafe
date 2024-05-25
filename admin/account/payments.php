@@ -4,14 +4,14 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/account/payments');
+        header('Location: '.$file_dir.'auth/sign-in?r=/account/payments');
         exit();
     }
     $message = [];
     $user__expired = false;
     $payment_countdown = false;
     include '../../layout/db.php';
-    include '../../layout/admin_config.php';
+    include '../../layout/admin__config.php';
     
     $CheckIfUserExist = "SELECT * FROM users WHERE company_id = '$company_id'";
     $UserExist = $con->query($CheckIfUserExist);

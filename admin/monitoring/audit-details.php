@@ -4,12 +4,12 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/monitoring/audits');
+        header('Location: '.$file_dir.'auth/sign-in?r=/monitoring/audits');
         exit();
     }
     $message = [];
-    include '../../layout/db.php';
-    include '../../layout/admin_config.php';
+    include $file_dir.'layout/db.php';
+    include $file_dir.'layout/admin__config.php';
     include '../ajax/audits.php';
 
     if (isset($_POST['delete-data'])){
@@ -78,7 +78,7 @@
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title>Audit Details | <?php echo $siteEndTitle ?></title>
-  <?php require '../../layout/general_css.php' ?>
+  <?php require $file_dir.'layout/general_css.php' ?>
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/admin.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/bundles/prism/prism.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/bundles/bootstrap-daterangepicker/daterangepicker.css">
@@ -89,8 +89,8 @@
     <div id="app">
         <div class="main-wrapper main-wrapper-1">
         <div class="navbar-bg"></div>
-        <?php require '../../layout/header.php' ?>
-        <?php require '../../layout/sidebar_admin.php' ?>
+        <?php require $file_dir.'layout/header.php' ?>
+        <?php require $file_dir.'layout/sidebar_admin.php' ?>
         <!-- Main Content -->
         <div class="main-content">
             <section class="section">
@@ -107,10 +107,14 @@
                         </div>
                         <?php }else{ ?>
                         <div class="card-body">
-                            <?php require '../../layout/alert.php' ?>
-                            <div class="card-header">
+                            <?php require $file_dir.'layout/alert.php' ?>
+                            <div class="card-header" style='display:flex;justify-content:space-between;'>
                                 <h3 class="d-inline">Audit Review:</h3>
-                                <a class="btn btn-primary btn-icon icon-left header-a" href="audits"><i class="fas fa-arrow-left"></i> Back</a>
+                                <div class='header-a'>
+                                    <a class="btn btn-primary btn-icon icon-left" href="audits" style='margin-right:5px;'><i class="fas fa-arrow-left"></i> Back</a>
+                                    <a href='edit-audit?id=<?php echo $audit['aud_id']; ?>' class="btn btn-md btn-outline-secondary">Edit Audit</a>
+                                </div>
+                                
                             </div>
                             <div class="card-body">
                                 <div class="row section-rows customs">
@@ -333,75 +337,12 @@
                                 </div>
                             </div>
                             <div class='card-footer'>
-                                <div class="form-group">
-                                    <a href='edit-audit?id=<?php echo $aud_Id; ?>' class="btn btn-md btn-primary">Edit Audit</a>
+                                <div class="form-group text-right">
+                                    <a href='edit-audit?id=<?php echo $aud_Id; ?>' class="btn btn-md btn-icon icon-left btn-primary"><i class='fas fa-pen'></i> Edit Audit Data</a>
                                     <button type="button" class="btn btn-md btn-warning" id="btn_cancel">Cancel</button>
 
                                 </div>  
                             </div>
-
-         <!--                   <div class="card-header">-->
-         <!--                       <h3 class="d-inline">Audited Control Details:</h3>-->
-         <!--                   </div>-->
-         <!--                   <div class="card-body">-->
-         <!--                       <form method="post">-->
-         <!--                       <div class="row section-rows customs">-->
-         <!--                           <div class="user-description col-12 col-lg-4">-->
-         <!--                               <label>Control Effectiveness :</label>-->
-         <!--                               <div class="description-text">-->
-         <!--                                   <select name="effect" class="form-control" required>-->
-         <!--                                       <option value="0" <?php if ($audit["con_effect"] == 0) echo 'selected'; ?>>Unaccessed</option>-->
-         <!--                                       <option value="1" <?php if ($audit["con_effect"] == 1) echo 'selected'; ?>> Ineffective</option>-->
-         <!--                                       <option value="2" <?php if ($audit["con_effect"] == 2) echo 'selected'; ?>> Effective</option>-->
-         <!--                                   </select>-->
-         <!--                               </div>-->
-         <!--                           </div>-->
-         <!--                           <div class="user-description col-12 col-lg-4">-->
-         <!--                               <label>Frequency :</label>-->
-         <!--                               <div class="description-text">-->
-         <!--                                   <select name="frequency" class="form-control" required>-->
-         <!--                                       <option value="1" <?php if ($audit["con_frequency"] == 1) echo "selected"; ?>>Daily Controls</option>-->
-         <!--                                       <option value="2" <?php if ($audit["con_frequency"] == 2) echo "selected"; ?>>Weekly Controls</option>-->
-         <!--                                       <option value="4" <?php if ($audit["con_frequency"] == 4) echo "selected"; ?>>Monthly Controls</option>-->
-         <!--                                       <option value="5" <?php if ($audit["con_frequency"] == 5) echo "selected"; ?>>Quaterly Controls</option>-->
-         <!--                                       <option value="6" <?php if ($audit["con_frequency"] == 6) echo "selected"; ?>>Annually Controls</option>-->
-         <!--                                       <option value="7" <?php if ($audit["con_frequency"] == 7) echo "selected"; ?>>As Required</option>-->
-         <!--                                   </select>-->
-         <!--                               </div>-->
-         <!--                           </div>-->
-         <!--                           <div class="user-description col-12 col-lg-4">-->
-         <!--                               <label>Next Audit :</label>-->
-         <!--                               <div class="description-text">-->
-         <!--                                   <input type="text" class="form-control readonly" value="<?php $nextAud = getNext($audit["con_date"], $audit["con_frequency"]); echo date('m-d-Y',  strtotime($nextAud)); ?>" readonly>-->
-         <!--                               </div>-->
-         <!--                           </div>-->
-         <!--                           <div class="user-description col-12 col-lg-4">-->
-         <!--                               <label>Rationale :</label>-->
-         <!--                               <div class="description-text">-->
-         <!--                                   <input type="text" class="form-control" name="observation" value="<?php echo $audit['con_observation']; ?>" required>-->
-         <!--                               </div>-->
-         <!--                           </div>-->
-         <!--                           <div class="user-description col-12 col-lg-4">-->
-         <!--                               <label>Root Cause :</label>-->
-         <!--                               <div class="description-text">-->
-         <!--                                   <input type="text" class="form-control" name="rootcause" value="<?php echo $audit['con_rootcause']; ?>" required>-->
-         <!--                               </div>-->
-         <!--                           </div>-->
-         <!--                           <div class="user-description col-12 col-lg-4">-->
-         <!--                               <label>Treatment :</label>-->
-         <!--                               <div class="description-text">-->
-         <!--                                   <input type="text" class="form-control" name="treatment" value="<?php echo $audit['con_treatment']; ?>" required>-->
-         <!--                               </div>-->
-         <!--                           </div>-->
-         <!--                           <input type="hidden" name="control-id" value="<?php echo $aud_Id; ?>">-->
-         <!--                           <div class="user-description col-12 col-lg-6" style='margin-top:10px;'>-->
-         <!--                               <input type="hidden" name="id" value="<?php echo $aud_Id; ?>">-->
-         <!--                               <button type="submit" class="btn btn-icon icon-left btn-primary" name="update-effectiveness">Update Control Effectiveness</button>-->
-									<!--</div>-->
-         <!--                       </div>-->
-         <!--                       </form>-->
-                                
-         <!--                   </div>-->
                         </div>
                         <?php } ?>
                     <?php }else{ ?>
@@ -417,11 +358,11 @@
             </div>
             </section>
         </div>
-        <?php require '../../layout/delete_data.php' ?>
-        <?php require '../../layout/footer.php' ?>
+        <?php require $file_dir.'layout/delete_data.php' ?>
+        <?php require $file_dir.'layout/footer.php' ?>
         </div>
         
-    <?php require '../../layout/general_js.php' ?>
+    <?php require $file_dir.'layout/general_js.php' ?>
     <script src="<?php echo $file_dir; ?>assets/bundles/prism/prism.js"></script>
     <script src="<?php echo $file_dir; ?>assets/bundles/bootstrap-daterangepicker/daterangepicker.js"></script>
     <style>

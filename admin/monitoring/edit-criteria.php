@@ -5,26 +5,18 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/monitoring/edit-criteria');
+        header('Location: '.$file_dir.'auth/sign-in?r=/monitoring/audits');
         exit();
     }
   
     $message = [];
-    include '../../layout/db.php';
+    include $file_dir.'layout/db.php';
     include '../ajax/audits.php';
-    include '../../layout/admin_config.php';
+    include $file_dir.'layout/admin__config.php';
 
-
-    if (isset($_GET['id']) && isset($_GET['id']) !== "") {
-        $toDisplay = true;   
-        $id = sanitizePlus($_GET['id']);
-        $CheckIfAuditExist = "SELECT * FROM as_auditcriteria WHERE cri_id = '$id' AND c_id = '$company_id'";
-        $AuditExist = $con->query($CheckIfAuditExist);
-        if ($AuditExist->num_rows > 0) {	
-            $aud_exist = true;
-			$info = $AuditExist->fetch_assoc();
-
-            if(isset($_POST["update-criteria"])){
+    
+    if(isset($_POST["update-criteria"]) && isset($_POST['c__id'])){
+        $id = sanitizePlus($_POST["c__id"]);
                 $question = sanitizePlus($_POST['question']);
                 $procedure = sanitizePlus($_POST['procedure']);
                 $expected = sanitizePlus($_POST['expected']);
@@ -37,12 +29,22 @@
                     # code...
                     $query = "UPDATE as_auditcriteria SET cri_question = '$question', cri_procedure = '$procedure', cri_expected = '$expected', cri_outcome = '$outcome', cri_notes = '$notes' WHERE cri_id = '$id' AND c_id = '$company_id'";
                     if ($con->query($query)) {
-                        array_push($message, 'Control Effectiveness Created Successfully!!');
+                        array_push($message, 'Criteria Updated Successfully!!');
                     } else {
-                        array_push($message, 'Error 502: Error Creating Data!!');
+                        array_push($message, 'Error 502: Error Updating Criteria Data!!');
                     }
                 }		
             }
+            
+    if (isset($_GET['id']) && isset($_GET['id']) !== "") {
+        $toDisplay = true;   
+        $id = sanitizePlus($_GET['id']);
+        $CheckIfAuditExist = "SELECT * FROM as_auditcriteria WHERE cri_id = '$id' AND c_id = '$company_id'";
+        $AuditExist = $con->query($CheckIfAuditExist);
+        if ($AuditExist->num_rows > 0) {	
+            $aud_exist = true;
+            
+            $info = $AuditExist->fetch_assoc();
         
         }else{
             $aud_exist = false;
@@ -59,7 +61,7 @@
   <meta
    content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title>Update Audit Criteria Question | <?php echo $siteEndTitle; ?></title>
-  <?php require '../../layout/general_css.php' ?>
+  <?php require $file_dir.'layout/general_css.php' ?>
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/footer.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/admin.custom.css">
 </head>
@@ -69,8 +71,8 @@
     <div id="app">
         <div class="main-wrapper main-wrapper-1">
         <div class="navbar-bg"></div>
-        <?php require '../../layout/header.php' ?>
-        <?php require '../../layout/sidebar_admin.php' ?>
+        <?php require $file_dir.'layout/header.php' ?>
+        <?php require $file_dir.'layout/sidebar_admin.php' ?>
         <!-- Main
          Content -->
         <div class="main-content">
@@ -80,17 +82,18 @@
                 <?php if ($aud_exist == true) { ?>
                 <div class="card">
                   <div class="card-body">
-                    <?php require '../../layout/alert.php' ?>
+                    <?php require $file_dir.'layout/alert.php' ?>
                     <form method="post">
                         <div class="card-header">
                             <h3 class="d-inline">Edit Audit Criteria</h3>
-                          <a href='audits' class="btn btn-primary btn-icon icon-left header-a"><i class="fas fa-arrow-left"></i> Back</a>
+                          <a href='audit-details?id=<?php echo $info['aud_id']; ?>' class="btn btn-primary btn-icon icon-left header-a"><i class="fas fa-arrow-left"></i> Back</a>
                         </div>
                         <div class="card-body">
                             <div class="form-group">
                                 <label>Test Question</label>
                                 <input name="question" value='<?php echo $info['cri_question']; ?>' type="text" maxlength="255" class="form-control" placeholder="Enter question..." required>
                             </div>
+                            <input type='hidden' name='c__id' value='<?php echo $info['cri_id']; ?>' />
                             <div class="form-group">
                                 <label>Test Procedure</label>
                                 <textarea rows="4" name="procedure" maxlength="255" class="form-control" placeholder="Enter test procedure..." required><?php echo $info['cri_procedure']; ?></textarea>
@@ -111,7 +114,7 @@
                                 <label>Notes</label>
                                 <textarea rows="4" name="notes" class="form-control"><?php echo $info['cri_notes']; ?></textarea>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group text-right">
                                 <button type="submit" class="btn btn-primary btn-icon icon-left" name="update-criteria"><i class="fas fa-check-circle"></i> Update Criteria Question</button>
                             </div>
                         </div>
@@ -126,7 +129,7 @@
                         <div style="width:100%;min-height:400px;display:flex;justify-content:center;align-items:center;">
                             <div style="text-align: center;"> 
                                  <h3>Empty Data!!</h3>
-                                 Audit Of Control Doesn't Exist!!,
+                                 Audit Criteria Doesn't Exist!!
                                  <p><a href="/help#data-error" class="btn btn-primary btn-icon icon-left mt-2"><i class="fas fa-arrow-left"></i> Help</a></p>
                              </div>
                          </div>
@@ -151,11 +154,11 @@
             </div>
             </section>
         </div>
-        <?php require '../../layout/footer.php' ?>
+        <?php require $file_dir.'layout/footer.php' ?>
         </footer>
         </div>
     </div>
-    <?php require '../../layout/general_js.php' ?>
+    <?php require $file_dir.'layout/general_js.php' ?>
     <style>
         textarea{
             min-height: 120px !important;

@@ -4,12 +4,12 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/monitoring/treatments');
+        header('Location: '.$file_dir.'auth/sign-in?r=/monitoring/treatments');
         exit();
     }
     $message = [];
-    include '../../layout/db.php';
-    include '../../layout/admin_config.php';
+    include $file_dir.'layout/db.php';
+    include $file_dir.'layout/admin_config.php';
     include '../ajax/treatment.php';
     
     if (isset($_POST['delete-data'])){
@@ -54,7 +54,7 @@
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title><?php echo $pagetitle.' | '.$siteEndTitle ?></title>
-  <?php require '../../layout/general_css.php' ?>
+  <?php require $file_dir.'layout/general_css.php' ?>
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/footer.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/admin.custom.css">
 </head>
@@ -64,8 +64,8 @@
     <div id="app">
         <div class="main-wrapper main-wrapper-1">
         <div class="navbar-bg"></div>
-        <?php require '../../layout/header.php' ?>
-        <?php require '../../layout/sidebar_admin.php' ?>
+        <?php require $file_dir.'layout/header.php' ?>
+        <?php require $file_dir.'layout/sidebar_admin.php' ?>
         <!-- Main Content -->
         <div class="main-content">
             <section class="section">
@@ -74,12 +74,14 @@
                 <?php if ($in_exist == true) { ?>
                 <div class="card">
                     <form method="post">
-                        <div class="card-header"></div>
                         <div class="card-body">
-                            <?php require '../../layout/alert.php' ?>
+                            <?php require $file_dir.'layout/alert.php' ?>
                             <div class="card-header">
                                 <h3 class="d-inline">Treatment Details</h3>
-                                <a class="btn btn-primary btn-icon icon-left header-a" href="treatments"><i class="fas fa-arrow-left"></i> View All</a>
+                                <div class='header-a'>
+                                    <a class="btn btn-primary btn-icon icon-left header-a" href="treatments"><i class="fas fa-arrow-left"></i> Back</a>
+                                    <a href='edit-treatment?id=<?php echo $info['t_id']; ?>' class="btn btn-md btn-outline-secondary">Edit Treatment</a>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <div class="row section-rows customs">
@@ -91,10 +93,7 @@
                                         <label>Cost / Benefits :</label>
                                         <div class="description-text"><?php echo $info['tre_cost_ben']; ?></div>
                                     </div>
-                                    <div class="user-description col-12">
-                                        <label>Owner :</label>
-                                        <div class="description-text"><?php echo $info['tre_owner']; ?></div>
-                                    </div>
+                                    
                                     <div class="user-description col-12 col-lg-4">
                                         <label>Start date :</label>
                                         <div class="description-text"><?php echo date("m/d/Y", strtotime($info["tre_start"])); ?></div>
@@ -103,26 +102,30 @@
                                         <label>Due date :</label>
                                         <div class="description-text"><?php echo date("m/d/Y", strtotime($info["tre_due"])); ?></div>
                                     </div>
+                                    
                                     <div class="user-description col-12 col-lg-4">
                                         <label>Status :</label>
-                                        <div class="description-text"><?php echo $status; ?></div>
+                                        <div class="description-text"><?php echo getStatus($info['tre_status']); ?></div>
                                     </div>
-                                    <div class="user-description col-12">
+                                    <div class="user-description col-12 col-lg-4">
                                         <label>Treatment Team :</label>
-                                        <div class="description-text"><?php echo $info['tre_team']; ?></div>
+                                        <div class="description-text"><?php echo ucwords($info['tre_team']); ?></div>
                                     </div>
-                                    <div class="user-description col-12">
+                                    <div class="user-description col-12 col-lg-4">
+                                        <label>Owner :</label>
+                                        <div class="description-text"><?php echo $info['tre_owner']; ?></div>
+                                    </div>
+                                    <div class="user-description col-12 col-lg-4">
                                         <label>Treatment Assessor :</label>
-                                        <div class="description-text"><?php echo $info['tre_assessor']; ?></div>
+                                        <div class="description-text"><?php echo ucwords($info['tre_assessor']); ?></div>
                                     </div>
                                     <div class="user-description col-12">
-                                        <label>Treatment Progress :</label>
+                                        <label>Treatment Progress Update :</label>
                                         <div class="description-text"><?php echo $info['tre_progress']; ?></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-footer"></div>
                     </form>
                 </div>
                 <style>.main-footer{margin-top:0px;}</style>
@@ -147,15 +150,42 @@
                         <a class="btn btn-primary btn-icon icon-left header-a" href="new-treatment"><i class="fas fa-plus"></i> New Treatment</a>
                     </div>
                     <div class='card-body'>
-                        <?php
-                            $list_one = listTreatments(0, 20, $company_id, $con);
-                            $details_count = $list_one;
-                            if(count($details_count) <= 1){$details[] = $list_one;}else{$details = $list_one;}
-                            
-                            if($list_one !== false){
+                        <?php 
+                            $CheckIfIncidentExist = "SELECT * FROM as_treatments WHERE c_id = '$company_id' ORDER BY idtreatment desc";
+                            $IncidentExist = $con->query($CheckIfIncidentExist);
+                            if ($IncidentExist->num_rows > 0) {	$i = 0;
                         ?>
-                        <?php if($on_mobile == false) { ?>
-                        <?php if ($details === 'a:0:{}') { #empty data?> 
+                        <table class="table table-striped table-bordered table-hover" id="table">
+                            <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th style='width:30%;'>Treatment</th>
+                                <th>Status </th>
+                                <th>...</th>
+                            </tr>
+                            </thead>
+                            
+                            <tbody>
+                            <?php 
+                                while($item = $IncidentExist->fetch_assoc()){ $i++;
+                                $editLink = 'edit-treatment?id='.$item['t_id'].'" data-toggle="tooltip" title="Edit Treatment" data-placement="right" class="action-icons btn btn-info btn-action mr-1"';
+                        		$viewLink = '?id='.$item['t_id'].'" data-toggle="tooltip" title="View Treatment" data-placement="right" class="action-icons btn btn-primary btn-action mr-1"';
+                        		$deleteLink = 'javascript:void(0);" data-placement="left" class="delete action-icons btn btn-danger btn-action mr-1" data-toggle="modal" data-target="#deleteModal" data-type="Treatment" data-id="'.$item["t_id"];
+                            ?>
+                            <tr>
+                                <td><?php echo $i; ?></td>
+                                <td><?php echo ucwords($item['tre_treatment']); ?></td>
+                                <td><?php echo getStatus($item['tre_status']); ?></td>
+                                <td>
+                                    <a href="<?php echo $viewLink; ?>"><i class="fas fa-eye"></i></a>
+                                    <a href="<?php echo $editLink; ?>"><i class="fas fa-edit"></i></a>
+                                    <a href="<?php echo $deleteLink; ?>"><i class="fas fa-trash-alt"></i></a>
+                                </td>
+                            </tr>
+                            <?php } ?>
+                            </tbody>
+                        </table>
+                        <?php }else{ ?>
                         <div style="width:100%;min-height:400px;display:flex;justify-content:center;align-items:center;">
                             <div style="text-align: center;"> 
                                 <h3>Empty Data!!</h3>
@@ -163,144 +193,21 @@
                                 <p><a href="new-treatment" class="btn btn-primary btn-icon icon-left mt-2"><i class="fas fa-plus"></i> Create New Treatment</a></p>
                             </div>
                         </div>
-                        <?php }else{ $arrcount = count($details); ?>
-                        <table class="table table-striped table-bordered table-hover" id="table">
-                            <tr>
-                                <th>S/N</th>
-                                <th>Treatment</th>
-                                <th>Cost / Benefits</th>
-                                <th>Start Date</th>
-                                <th>Due Date</th>
-                                <th>Status </th>
-                                <th>...</th>
-                            </tr>
-                        <?php 
-                            $i = 0;
-                            foreach ($list_one as $item) { $i++;
-                            
-                            //STATUS
-                    		switch ($item["tre_status"]) {
-                    			case 1:
-                    				$status = "In progress";
-                    				break;
-                    			case 2:
-                    				$status = "Completed";
-                    				break;
-                    			case 3:
-                    				$status = "Cancelled";
-                    				break;
-                    		}
-                    		
-                    		$editLink = 'edit-treatment?id='.$item['t_id'].'" data-toggle="tooltip" title="Edit Treatment" data-placement="right" class="action-icons btn btn-info btn-action mr-1"';
-                    		$viewLink = '?id='.$item['t_id'].'" data-toggle="tooltip" title="View Treatment" data-placement="right" class="action-icons btn btn-primary btn-action mr-1"';
-                    		$deleteLink = 'javascript:void(0);" data-placement="left" class="delete action-icons btn btn-danger btn-action mr-1" data-toggle="modal" data-target="#deleteModal" data-type="Treatment" data-id="'.$item["t_id"];
-                    		$downloadLink = 'download?download=treatment&id='.$item["t_id"].'" data-toggle="tooltip" title="Download Treatment" data-placement="left"  class="action-icons btn btn-success btn-action mr-1';   
-                        ?>
-                        <tr>
-                            <td><?php echo $i; ?></td>
-                            <td><?php echo ucwords($item['tre_treatment']); ?></td>
-                            <td><?php echo ucwords($item['tre_cost_ben']); ?></td>
-                            <td><?php echo date("m/d/Y", strtotime($item["tre_start"])); ?></td>
-                            <td><?php echo date("m/d/Y", strtotime($item["tre_due"])); ?></td>
-                            <td><?php echo $status; ?></td>
-                            <td>
-                                <a href="<?php echo $viewLink; ?>"><i class="fas fa-eye"></i></a>
-                                <a href="<?php echo $editLink; ?>"><i class="fas fa-edit"></i></a>
-                                <a href="<?php echo $deleteLink; ?>"><i class="fas fa-trash-alt"></i></a>
-                                <a href="<?php echo $downloadLink; ?>"><i class="fas fa-download"></i></a>
-                            </td>
-                        </tr>
-                        <?php }} if ($details !== 'a:0:{}') { echo '</table>'; } #closing tag for table ?>
-                        <?php }}else{ #empty data ?>
-                            <div style="width:100%;min-height:400px;display:flex;justify-content:center;align-items:center;">
-                               <div style="text-align: center;"> 
-                                    <h3>Empty Data!!</h3>
-                                    No Risk Treatment Created Yet,
-                                    <p><a href="new-treatment" class="btn btn-primary btn-icon icon-left mt-2"><i class="fas fa-plus"></i> Create New Treatment</a></p>
-                                </div>
-                            </div>
                         <?php } ?>
-                        
-                        <?php if($on_mobile == true) { ?>
-                        <?php if($details == []){ ?>
-                        <?php }else{ ?>
-                        <table class="risk-desc">
-                            <?php 
-                                $i = 0;
-                                foreach ($list_one as $item) { $i++;
-                                
-                                //STATUS
-                        		switch ($item["tre_status"]) {
-                        			case 1:
-                        				$status = "In progress";
-                        				break;
-                        			case 2:
-                        				$status = "Completed";
-                        				break;
-                        			case 3:
-                        				$status = "Cancelled";
-                        				break;
-                        		}
-                        		
-                        		$editLink = 'edit-treatment?id='.$item['t_id'].'" data-toggle="tooltip" title="Edit Treatment" data-placement="right" class="action-icons btn btn-info btn-action mr-1"';
-                        		$viewLink = '?id='.$item['t_id'].'" data-toggle="tooltip" title="View Treatment" data-placement="right" class="action-icons btn btn-primary btn-action mr-1"';
-                        		$deleteLink = 'javascript:void(0);" data-placement="left" class="delete action-icons btn btn-danger btn-action mr-1" data-toggle="modal" data-target="#deleteModal" data-type="Treatment" data-id="'.$item["t_id"];
-                        		$downloadLink = 'download?download=treatment&id='.$item["t_id"].'" data-toggle="tooltip" title="Download Treatment" data-placement="left"  class="action-icons btn btn-success btn-action mr-1';   
-                            ?>
-                            <tr>
-                                <th>S/N</th>
-                                <td><?php echo $i; ?></td>
-                            </tr>
-                            <tr>
-                                <th>Treatment</th>
-                                <td><?php echo ucwords($item['tre_treatment']); ?></td>
-                            </tr>
-                            <tr>
-                                <th>Cost / Benefits</th>
-                                <td><?php echo ucwords($item['tre_cost_ben']); ?></td>
-                            </tr>
-                            <tr>
-                                <th>Start Date</th>
-                                <td><?php echo date("m/d/Y", strtotime($item["tre_start"])); ?></td>
-                            </tr>
-                            <tr>
-                                <th>Due Date</th>
-                                <td><?php echo date("m/d/Y", strtotime($item["tre_due"])); ?></td>
-                            </tr>
-                            <tr>
-                                <th>Status</th>
-                                <td><?php echo $status; ?></td>
-                            </tr>
-                            <tr>
-                                <th>Action</th>
-                                <td>
-                                    <a href="<?php echo $viewLink; ?>"><i class="fas fa-eye"></i></a>
-                                    <a href="<?php echo $editLink; ?>"><i class="fas fa-edit"></i></a>
-                                    <a href="<?php echo $deleteLink; ?>"><i class="fas fa-trash-alt"></i></a>
-                                    <a href="<?php echo $downloadLink; ?>"><i class="fas fa-download"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th style="border:none !important;">&nbsp;</th>
-                                <td style="border:none !important;">&nbsp;</td>
-                            </tr>
-                            <?php } ?>
-                        </table>
-                        <?php }} ?>
-                            
                     </div>
+                    
                 </div>
                 <style>.main-footer{margin-top:0px;}</style>
                 <?php } ?>
             </div>
             </section>
         </div>
-        <?php require '../../layout/delete_data.php' ?>
-        <?php require '../../layout/footer.php' ?>
+        <?php require $file_dir.'layout/delete_data.php' ?>
+        <?php require $file_dir.'layout/footer.php' ?>
         </footer>
         </div>
     </div>
-    <?php require '../../layout/general_js.php' ?>
+    <?php require $file_dir.'layout/general_js.php' ?>
     <style>
         textarea{
             min-height: 120px !important;

@@ -4,14 +4,14 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/account/users');
+        header('Location: '.$file_dir.'auth/sign-in?r=/account/users');
         exit();
     }
     $message = [];
     $expired = false;
     $payment_countdown = false;
     include '../../layout/db.php';
-    include '../../layout/admin_config.php';
+    include '../../layout/admin__config.php';
     
     #$database_id = $_SESSION["userDatabaseId"];
     $CheckIfUserExist = "SELECT * FROM users WHERE company_id = '$company_id' LIMIT 1";
