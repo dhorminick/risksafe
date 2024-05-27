@@ -141,7 +141,7 @@
                     $case = 'new';
                     #$case_type = 'new-risk';
                     $id = $com_id;
-                    $returnArray = createNotification($company_id, $notification_message, $datetime, $notifier, $link, $type, $case, $id, $con, $sitee);
+                    $returnArray = createNotification($company_id, $notification_message, $datetime, $notifier, $link, $type, $case, $con, $sitee);
                 
                 header('Location: compliance-details?id='.$com_id);
             } else {
