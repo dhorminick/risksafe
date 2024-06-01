@@ -41,8 +41,8 @@
     	    $smallestNumber = 0;
     	}
     	
-    	$largestNumber_1 = DateTime::createFromFormat('Y-m-d', $largestNumber);
-        $smallestNumber_1 = DateTime::createFromFormat('Y-m-d', $smallestNumber);
+    	$largestNumber_1 = DateTime::createFromFormat('Y-m-d H:i:s', $largestNumber);
+        $smallestNumber_1 = DateTime::createFromFormat('Y-m-d H:i:s', $smallestNumber);
                 
         $largestNumber__1 = date_format($largestNumber_1, "Y-m-d");
         $smallestNumber__1 = date_format($smallestNumber_1, "Y-m-d");
