@@ -10,7 +10,7 @@
     $message = [];
     include '../../layout/db.php';
     include '../../layout/admin__config.php';
-    include '../ajax/customs.php';
+    // include '../ajax/customs.php';
     include_once 'summary.php';
     
     use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -219,7 +219,7 @@
                                     <th style="width: 5%;">S/N</th>
                                     <th style='width: 30%'>Title</th>
                                     <th>Description</th>
-                                    <thstyle='width: 10%'>Status</th>
+                                    <th style='width: 10%'>Status</th>
                                     <th style='width: 10%'>...</th>
                                 </tr>
                             </thead>
