@@ -11,6 +11,33 @@
     include $file_dir.'layout/db.php';
     include $file_dir.'layout/admin__config.php';
     include '../ajax/audits.php';
+    
+    function __getControl($s, $type, $con, $company_id){
+        
+        if($type == 'custom'){
+            $query = "SELECT * FROM as_customcontrols WHERE c_id = '$company_id' AND id = '$s' LIMIT 1";
+            $result=$con->query($query);
+            if ($result->num_rows > 0) {
+                $info = $result->fetch_assoc();
+                $response = ucwords($info['title']);
+            }else{
+                $response = 'Error 402: Control Not Found!!';	    
+            }
+        }else if($type == 'recommended'){
+            $query = "SELECT * FROM as_controls WHERE id = '$s' LIMIT 1";
+		    $result = $con->query($query);
+            if ($result->num_rows > 0) {
+                $info = $result->fetch_assoc();
+                $response = ucwords($info['control_name']);
+            }else{
+                $response = 'Error 402: Control Not Found!!';	    
+            }
+        }else{
+            $response = 'Error 402: Control Not Found!!';
+        }
+		
+		return $response;
+	}
 
     if (isset($_POST['delete-data'])){
         $type = sanitizePlus($_POST['data-type']);
@@ -63,6 +90,11 @@
         if ($AuditExist->num_rows > 0) {	
             $audit_exist = true;	
 			$audit = $AuditExist->fetch_assoc();
+			
+			$control_type = $audit['control_type'];
+            if($control_type == 'null' || $control_type == null){
+                $control_type = 'custom';
+            }
         }else{
             $audit_exist = false;
         }
@@ -146,11 +178,7 @@
                                         <label>Time :</label>
                                         <div class="description-text"><?php echo $audit['con_time']; ?></div>
                                     </div>
-                                    <div class="user-description col-12">
-                                        <label>Control :</label>
-                                        <div class="description-text"><?php echo $audit['con_control']; ?></div>
-                                    </div>
-                                    <div class="user-description col-12">
+                                     <div class="user-description col-12">
                                         <label>Site :</label>
                                         <div class="description-text"><?php echo $audit['con_site']; ?></div>
                                     </div>
@@ -314,6 +342,10 @@
                             <div class='card-header'><h3 class="d-inline">Audited Control Details:</h3></div>
                             <div class='card-body'>
                                 <div class="row section-rows customs">
+                                    <div class="user-description col-12">
+                                        <label>Control:</label>
+                                        <div class="description-text"><?php echo __getControl($audit['con_control'], $control_type, $con, $company_id) ?></div>
+                                    </div>
                                     <div class="user-description col-12">
                                         <label>Control Rationale:</label>
                                         <div class="description-text"><?php echo nl2br($audit['con_observation']); ?></div>

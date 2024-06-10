@@ -15,8 +15,9 @@
     include $file_dir.'layout/admin__config.php';
 
     if(isset($_POST["create-audit"])){
- 
-      $company = sanitizePlus($_POST["company"]);
+        $control_to_be_auditted = sanitizePlus($_POST["control_to_be_auditted"]);
+        if(isset($_POST["control_to_be_auditted"]) == 'custom' || isset($_POST["control_to_be_auditted"]) == 'recommended'){
+            $company = sanitizePlus($_POST["company"]);
 			$industry = sanitizePlus($_POST["industry"]);
 			$team = sanitizePlus($_POST["team"]);
 			$task = sanitizePlus($_POST["task"]);
@@ -36,27 +37,31 @@
 			$zipcode = sanitizePlus($_POST["zipcode"]);
 			$state = sanitizePlus($_POST["state"]);
 			$country = sanitizePlus($_POST["country"]);
-      if(isset($_POST["control"])){$control = sanitizePlus($_POST["control"]);}else{$control = '';};
-			$existing = sanitizePlus($_POST["existing"]);
-			#$audi_treatment = sanitizePlus($_POST["audi_treatment"]);
+			
 			$Effectivness = sanitizePlus($_POST["effectivness"]);
 			$freq = sanitizePlus($_POST["freq"]);
-      if(isset($_POST["subControl"])){$subControl = sanitizePlus($_POST["subControl"]);}else{$subControl = $existing;};
-      #$subControl = sanitizePlus($_POST["subControl"]);
-      $next = getNext($date, $freq);
-      $next = date("Y-m-d", strtotime($next));
-      $aud_id = secure_random_string(10);
-
-      $typeOfControl = '';
-      if ($control != '') {
-        $typeOfControl = $control;
-      } else {
-        $typeOfControl = $existing;
-      }
+     
+          $next = getNext($date, $freq);
+          $next = date("Y-m-d", strtotime($next));
+          $aud_id = secure_random_string(10);
+          
+          if($control_to_be_auditted == 'custom'){
+              $control = sanitizePlus($_POST["control"]);
+              $subControl = 'null';
+          }else if($control_to_be_auditted == 'recommended'){
+              $control = sanitizePlus($_POST["existing"]);
+              if(isset($_POST["subControl"])){
+                  $subControl = sanitizePlus($_POST["subControl"]);
+              }else{
+                  $subControl = 'null';
+              };
+          }
+			
+          $typeOfControl = $control;
 
       $queryAudit = "INSERT INTO as_auditcontrols 
-      (con_user, con_company, con_industry, con_team, con_task, con_assessor, con_site, con_date, con_time, con_street, con_building, con_zipcode, con_state, con_country, con_control, con_effect, subControl, con_next, con_observation, con_rootcause, con_frequency, c_id, aud_id) 
-      VALUES ('$userId', '$company', '$industry', '$team', '$task', '$assessor', '$site', '$date', '$time', '$street', '$building', '$zipcode', '$state', '$country', '$typeOfControl', '$Effectivness', '$subControl', '$next', '$rationale', '$root_cause', '$freq', '$company_id', '$aud_id')";
+      (con_user, con_company, con_industry, con_team, control_type, con_task, con_assessor, con_site, con_date, con_time, con_street, con_building, con_zipcode, con_state, con_country, con_control, con_effect, subControl, con_next, con_observation, con_rootcause, con_frequency, c_id, aud_id) 
+      VALUES ('$userId', '$company', '$industry', '$team', '$control_to_be_auditted', '$task', '$assessor', '$site', '$date', '$time', '$street', '$building', '$zipcode', '$state', '$country', '$typeOfControl', '$Effectivness', '$subControl', '$next', '$rationale', '$root_cause', '$freq', '$company_id', '$aud_id')";
       $auditCreated = $con->query($queryAudit);
         if ($auditCreated) {
           #send notification
@@ -74,6 +79,10 @@
         }else{
             array_push($message, 'Error 502: Error Creating Audit '.$con -> error);
         }
+    }else{
+        array_push($message, 'Error 402: Incomplete Data');
+    }
+    
     }
 
     $userName_audit = ucwords($_SESSION["u_name"]);
@@ -114,16 +123,42 @@
                                 <a href='audits' class="btn btn-primary btn-icon icon-left header-a"><i class="fas fa-arrow-left"></i> Back</a>
                             </div>
                             <div class="card-body">
-                                <div class="form-group">
-                                  <label>Type of Control</label>
+                                <div class="form-group __ss__">
+                                  <label>Select Control To Be Auditted:</label>
+                                  <div style='display:flex;'>
+                                  <div class='__ss_main'>
+                                  <input type='radio' id='custom_audit' value='custom' checked name='control_to_be_auditted' />
+                                  <label>Custom Controls</label>
+                                  </div>
+                                  <div class='__ss_main'>
+                                  <input type='radio' id='recommended_audit' value='recommended' name='control_to_be_auditted' />
+                                  <label>Recommended Controls</label>
+                                  </div>
+                                  </div>
+                                </div>
+                                <div class="form-group" id='form_reccommended'>
+                                  <label>Select Reccommended Control:</label>
                                   <select name="existing" id="control-type" class="form-control" required>
                                     <option value="0" selected>Please select type...</option>
                                     <?php echo listTypes(-1, $con); ?>
                                   </select>
                                 </div>
-                                <div class="form-group sub-control">
-                                    <label>Sub Control</label>
-                                    <div id="sub-control"></div>
+                                <div class="form-group" id='form_custom'>
+                                  <label>Select Custom Control:</label>
+                                    <?php 
+                                        $query = "SELECT * FROM as_customcontrols WHERE c_id = '$company_id' ORDER BY id DESC";
+                                        $result=$con->query($query);
+            		                      if ($result->num_rows > 0) { $i=0;
+                                    ?>
+                                    <select name="control" id="control-type" class="form-control" required>
+                                        <option value="0" selected>Please select type...</option>
+                                        <?php while($item = $result->fetch_assoc()){ $i++; ?>
+                                        <option value="<?php echo $item['id']; ?>"><?php echo $item['title'] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                    <?php }else{ ?>
+                                    <div>No Custom Control Created Yet!!</div>
+                                    <?php } ?>
                                 </div>
                                 
                                 <div class="form-group">
@@ -274,6 +309,27 @@
         .card{
           padding: 10px;
         }
+        .__ss__ div.__ss_main + div.__ss_main{
+         margin-left:20px;   
+        }
+        .__ss__ div.__ss_main label{
+         margin-right:10px;
+         margin-bottom:5px;
+         font-weight: 400;
+        }
+        .__ss__ div.__ss_main input{
+            margin-bottom: 6px;
+            margin-right: 7px;
+        }
+        
+        .__ss__ div.__ss_main{
+            display:flex;align-items:center;
+        }
+        
+        .__ss__{
+            display:flex;
+            flex-direction:column;
+        }
     </style>
     <script>
       $(".sub-control").hide();
@@ -306,7 +362,24 @@
             // alert('second stop!');
         });
       });
-      
+        $("input[type=radio]").click(function () {
+            var type = $(this).attr('id');
+            if($(this).prop("checked") && type == 'custom_audit') { 
+                $("#form_reccommended").hide();
+                $("#form_custom").show();
+                $('.sub-control').hide();
+            }else if($(this).prop("checked") && type == 'recommended_audit') { 
+                $("#form_reccommended").show();
+                $('.sub-control').show();
+                $("#form_custom").hide();
+            }else{
+                $("#form_reccommended").hide();
+                $("#form_custom").show();
+                $('.sub-control').hide();
+            }
+        });
+        $("#form_reccommended").hide();
+        $("#form_custom").show();
     </script>
 </body>
 </html>

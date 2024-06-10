@@ -8,7 +8,22 @@
         header('Location: '.$file_dir.'auth/sign-in?r=/monitoring/audits');
         exit();
     }
-  
+    
+    function _listTypes($selected, $conn){
+
+		$query = "SELECT * FROM as_controls ORDER BY id";
+		$result = $conn->query($query);
+		$response = "";
+		while ($row = $result->fetch_assoc()) {
+			$response .= '<option data-id="' . $row["id"] . '" value="' . $row["id"] . '"';
+			if ($selected == $row["id"]) $response .= ' selected';
+			$response .= '>' . $row["control_name"] . '</option>';
+		}
+
+		
+		return $response;
+	}
+	
     $message = [];
     include $file_dir.'layout/db.php';
     include '../ajax/audits.php';
@@ -56,6 +71,11 @@
         if ($AuditExist->num_rows > 0) {	
             $aud_exist = true;
             $info = $AuditExist->fetch_assoc();
+            
+            $control_type = $info['control_type'];
+            if($control_type == 'null' || $control_type == null){
+                $control_type = 'custom';
+            }
         }else{
           $aud_exist = false;
         }
@@ -100,16 +120,42 @@
                             <?php require $file_dir.'layout/alert.php' ?>
                             <div class="card-header"><h3 class="subtitle">Audited Control Details:</h3></div>
                             <div class="card-body">
-                                <div class="form-group">
-                                  <label>Type of Control</label>
+                                <div class="form-group __ss__">
+                                  <label>Select Control To Be Auditted:</label>
+                                  <div style='display:flex;'>
+                                  <div class='__ss_main'>
+                                  <input type='radio' id='custom_audit' value='custom' <?php if($control_type == 'custom'){ ?>checked <?php } ?> name='control_to_be_auditted' />
+                                  <label>Custom Controls</label>
+                                  </div>
+                                  <div class='__ss_main'>
+                                  <input type='radio' id='recommended_audit' value='recommended' <?php if($control_type == 'recommended'){ ?>checked <?php } ?> name='control_to_be_auditted' />
+                                  <label>Recommended Controls</label>
+                                  </div>
+                                  </div>
+                                </div>
+                                <div class="form-group" id='form_reccommended'>
+                                  <label>Select Reccommended Control:</label>
                                   <select name="existing" id="control-type" class="form-control" required>
-                                    <option value="0">Please select type...</option>
-                                    <?php echo listTypes(-1, $con); ?>
+                                    <option value="0" selected>Please select type...</option>
+                                    <?php if($control_type == 'recommended'){ echo _listTypes($info['con_control'], $con); }else{ echo _listTypes(-1, $con); } ?>
                                   </select>
                                 </div>
-                                <div class="form-group sub-control">
-                                    <label>Sub Control</label>
-                                    <div id="sub-control"></div>
+                                <div class="form-group" id='form_custom'>
+                                  <label>Select Custom Control:</label>
+                                    <?php 
+                                        $query = "SELECT * FROM as_customcontrols WHERE c_id = '$company_id' ORDER BY id DESC";
+                                        $result=$con->query($query);
+            		                      if ($result->num_rows > 0) { $i=0;
+                                    ?>
+                                    <select name="control" id="control-type" class="form-control" required>
+                                        <option value="0" selected>Please select type...</option>
+                                        <?php while($item = $result->fetch_assoc()){ $i++; ?>
+                                        <option value="<?php echo $item['id']; ?>" <?php if($control_type == 'custom'){if($item['id'] == $info['con_control']){ echo 'selected';}} ?>><?php echo $item['title'] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                    <?php }else{ ?>
+                                    <div>No Custom Control Created Yet!!</div>
+                                    <?php } ?>
                                 </div>
                                 
                                 <input type='hidden' name='c__id' value='<?php echo $info['aud_id']; ?>' />
@@ -279,6 +325,27 @@
         textarea{
             min-height: 120px !important;
         }
+        .__ss__ div.__ss_main + div.__ss_main{
+         margin-left:20px;   
+        }
+        .__ss__ div.__ss_main label{
+         margin-right:10px;
+         margin-bottom:5px;
+         font-weight: 400;
+        }
+        .__ss__ div.__ss_main input{
+            margin-bottom: 6px;
+            margin-right: 7px;
+        }
+        
+        .__ss__ div.__ss_main{
+            display:flex;align-items:center;
+        }
+        
+        .__ss__{
+            display:flex;
+            flex-direction:column;
+        }
     </style>
     <script>
       $(".sub-control").hide();
@@ -312,6 +379,30 @@
         });
       });
       
+      $("input[type=radio]").click(function () {
+            var type = $(this).attr('id');
+            if($(this).prop("checked") && type == 'custom_audit') { 
+                $("#form_reccommended").hide();
+                $("#form_custom").show();
+                $('.sub-control').hide();
+            }else if($(this).prop("checked") && type == 'recommended_audit') { 
+                $("#form_reccommended").show();
+                $('.sub-control').show();
+                $("#form_custom").hide();
+            }else{
+                $("#form_reccommended").hide();
+                $("#form_custom").show();
+                $('.sub-control').hide();
+            }
+        });
+        <?php if($control_type == 'custom'){ ?>
+        $("#form_reccommended").hide();
+        $("#form_custom").show();
+        <?php } ?>
+        <?php if($control_type == 'recommended'){ ?>
+        $("#form_reccommended").show();
+        $("#form_custom").hide();
+        <?php } ?>
     </script>
 </body>
 </html>

@@ -21,6 +21,33 @@ if(isset($_POST["export_data"]) && isset($_POST["export-type"]) && isset($_POST[
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
+        
+        function __getControl($s, $type, $con, $company_id){
+        
+            if($type == 'custom'){
+                $query = "SELECT * FROM as_customcontrols WHERE c_id = '$company_id' AND id = '$s' LIMIT 1";
+                $result=$con->query($query);
+                if ($result->num_rows > 0) {
+                    $info = $result->fetch_assoc();
+                    $response = ucwords($info['title']);
+                }else{
+                    $response = 'Error 402: Control Not Found!!';	    
+                }
+            }else if($type == 'recommended'){
+                $query = "SELECT * FROM as_controls WHERE id = '$s' LIMIT 1";
+    		    $result = $con->query($query);
+                if ($result->num_rows > 0) {
+                    $info = $result->fetch_assoc();
+                    $response = ucwords($info['control_name']);
+                }else{
+                    $response = 'Error 402: Control Not Found!!';	    
+                }
+            }else{
+                $response = 'Error 402: Control Not Found!!';
+            }
+    		
+    		return $response;
+    	}
 
         function sanitizePlus($data) {
           $data = trim($data);
@@ -205,14 +232,22 @@ if(isset($_POST["export_data"]) && isset($_POST["export-type"]) && isset($_POST[
     
             $sheet->getStyle('A'.$rowCount.':E'.$rowCount)->getFont()->setBold(true); #bold header values
             
+            $control_type = $data['control_type'];
+            if($control_type == 'null' || $control_type == null){
+                $control_type = 'custom';
+            }
+            
+            $c_control = __getControl($data['con_control'], $control_type, $con, $company_id);
+            
             $rowCount++; #new line before inserting data
-            $sheet->setCellValue('A'.$rowCount, $data['con_control']);
+            $sheet->setCellValue('A'.$rowCount, $c_control);
             $sheet->setCellValue('B'.$rowCount, $data['con_observation']);
             $sheet->setCellValue('C'.$rowCount, $data['con_rootcause']);
             $sheet->setCellValue('D'.$rowCount, getEffectiveness($data['con_effect']));
             $sheet->setCellValue('E'.$rowCount, get_Frequency($data['con_frequency']));
             
             $rowCount++; #increment row count to get a blank line as seperator
+            $rowCount++;
             
             $sheet->setCellValue('A'.$rowCount, 'Audit Criteria Questions:');
             $sheet->getStyle('A'.$rowCount)->getFont()->setBold(true); #bold header values

@@ -4,7 +4,7 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'auth/sign-in?r=/reports/audit-report');
+        header('Location: '.$file_dir.'login?r=/reports/risk-reports');
         exit();
     }
     $message = [];
@@ -21,6 +21,33 @@
     #params
     $export = false;
     $export__ = false;
+    
+    function __getControl($s, $type, $con, $company_id){
+        
+            if($type == 'custom'){
+                $query = "SELECT * FROM as_customcontrols WHERE c_id = '$company_id' AND id = '$s' LIMIT 1";
+                $result=$con->query($query);
+                if ($result->num_rows > 0) {
+                    $info = $result->fetch_assoc();
+                    $response = ucwords($info['title']);
+                }else{
+                    $response = 'Error 402: Control Not Found!!';	    
+                }
+            }else if($type == 'recommended'){
+                $query = "SELECT * FROM as_controls WHERE id = '$s' LIMIT 1";
+    		    $result = $con->query($query);
+                if ($result->num_rows > 0) {
+                    $info = $result->fetch_assoc();
+                    $response = ucwords($info['control_name']);
+                }else{
+                    $response = 'Error 402: Control Not Found!!';	    
+                }
+            }else{
+                $response = 'Error 402: Control Not Found!!';
+            }
+    		
+    		return $response;
+    }
     
     if(has_data('as_auditcontrols', 'c_id', $company_id, $con) == true){
         $query="SELECT MAX( con_date ) AS max FROM as_auditcontrols WHERE c_id = '$company_id'";
@@ -177,8 +204,15 @@
                                     $l_eff = getEffectiveness($data_3['con_effect']);
                                     $l_freq = get_Frequency($data_3['con_frequency']);
                                     $l_next = get_date($data_3['con_next']);
+                                    
+                                    $control_type = $data_3['control_type'];
+                                    if($control_type == 'null' || $control_type == null){
+                                        $control_type = 'custom';
+                                    }
+                                    
+                                    $c_control = __getControl($data_3['con_control'], $control_type, $con, $company_id);
             
-                                    $sheet->setCellValue('A'.$r, $data_3['con_control']);
+                                    $sheet->setCellValue('A'.$r, $c_control);
                                     $sheet->setCellValue('B'.$r, $data_3['con_observation']);
                                     $sheet->setCellValue('C'.$r, $data_3['con_rootcause']);
                                     $sheet->setCellValue('D'.$r, $l_eff);
