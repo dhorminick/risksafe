@@ -91,7 +91,36 @@
                 <?php if($toDisplay == true){ ?>
                 <?php if ($in_exist == true) { ?>
                 <div class="card">
-                    <form method="post"$file_dir.></form>
+                    <form method="post">
+                        <div class="card-body">
+                            <?php require $file_dir.'layout/alert.php' ?>
+                            <div class="card-header">
+                                <h3 class="d-inline">Treatment Details</h3>
+                                <a class="btn btn-primary btn-icon icon-left header-a" href="treatments"><i class="fas fa-arrow-left"></i> Back</a>
+                            </div>
+                            <div class="card-body">
+                                <div class="row section-rows customs">
+                                    <div class="user-description col-12 col-lg-8">
+                                        <label>Treatment Title :</label>
+                                        <div class="description-text"><?php echo $info['title']; ?></div>
+                                    </div>
+                                    <div class="user-description col-12 col-lg-4">
+                                        <label>Treatment Status :</label>
+                                        <div class="description-text"><?php echo $info['status']; ?></div>
+                                    </div>
+                                    <div class="user-description col-12">
+                                        <label>Treatment Description :</label>
+                                        <div class="description-text"><?php echo $info['description']; ?></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="form-group text-right">
+                                <a href="edit-treatment?id=<?php echo $info['treatment_id']; ?>" class="btn btn-md btn-primary btn-icon"> Update Treatment Details</a>
+                            </div>
+                        </div>
+                    </form>
                 </div>
                 <?php }else{ ?>
                 <div class="card">
