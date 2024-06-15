@@ -128,6 +128,26 @@
                         <tbody> 
                             <?php 
                             if($query->num_rows > 0){ $i = 0;
+                                function get_Frequencyis($freq){
+
+                                    if ($freq == 7) {
+                                        return "As Required";
+                                    } else if ($freq == 1) {
+                                        return "Daily Controls";
+                                    } else if ($freq == 2) {
+                                        return "Weekly Controls";
+                                    } else if ($freq == 3) {
+                                        return "Fort-Nightly Controls";
+                                    } else if ($freq == 4) {
+                                        return "Monthly Controls";
+                                    } else if ($freq == 5) {
+                                        return "Semi-Annually Controls";
+                                    } else if ($freq == 6) {
+                                        return "Annually Controls";
+                                    } else {
+                                        return "Un-Assessed";
+                                    }
+                                }
                                 while($item = $query->fetch_assoc()){ $i++;
                                     switch ($item["con_effect"]) {
                                         case 0:
@@ -139,26 +159,6 @@
                                         case 2:
                                             $effect="Effective";
                                             break;
-                                    }
-                                    function get_Frequencyis($freq){
-
-                                        if ($freq == 7) {
-                                            return "As Required";
-                                        } else if ($freq == 1) {
-                                            return "Daily Controls";
-                                        } else if ($freq == 2) {
-                                            return "Weekly Controls";
-                                        } else if ($freq == 3) {
-                                            return "Fort-Nightly Controls";
-                                        } else if ($freq == 4) {
-                                            return "Monthly Controls";
-                                        } else if ($freq == 5) {
-                                            return "Semi-Annually Controls";
-                                        } else if ($freq == 6) {
-                                            return "Annually Controls";
-                                        } else {
-                                            return "Un-Assessed";
-                                        }
                                     }
                                     $viewLink = 'audit-details?id='.$item["aud_id"].'" data-toggle="tooltip" title="View Audit" data-placement="right"';
                                     $editLink = 'edit-audit?id='.$item["aud_id"].'" data-toggle="tooltip" title="Edit Audit" data-placement="right"';
