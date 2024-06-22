@@ -135,11 +135,38 @@
             $saved_treatment = $info['saved_treatment'];	
             $custom_control = $info['custom_control'];	
             $custom_treatment = $info['custom_treatment'];
+            
+            if($info['type'] == 'imported' && $info['saved_control'] == null || $info['type'] == 'imported' && $info['saved_control'] == ''){
+                $saved_control = '1';
+            }
+            
+            if($info['type'] == 'imported' && $info['saved_treatment'] == null || $info['type'] == 'imported' && $info['saved_treatment'] == ''){
+                $saved_treatment = '1';
+            }
+            
+            if($info['type'] == 'imported' && $info['custom_control'] == null || $info['type'] == 'imported' && $info['custom_control'] == ''){
+                $custom_control = 'null';
+            }
+            
+            if($info['type'] == 'imported' && $info['custom_treatment'] == null || $info['type'] == 'imported' && $info['custom_treatment'] == ''){
+                $custom_treatment = 'null';
+            }
+            
             $existing_ct = $info['existing_ct'];
             $freq = $info['frequency'];
-
-            $un_custom_control = unserialize($custom_control);
-            $un_custom_treatment = unserialize($custom_treatment);
+            
+            if($custom_control == null || $custom_control == 'null'){
+                $un_custom_control = 'null';
+            }else{
+                $un_custom_control = unserialize($custom_control);
+            }
+            
+            if($custom_treatment == null || $custom_treatment == 'null'){
+                $un_custom_treatment = 'null';
+            }else{
+                $un_custom_treatment = unserialize($custom_treatment);
+            }
+            
             
             $hasCustomControl = is_array($un_custom_control);
             $hasCustomTreatment = is_array($un_custom_treatment);
@@ -195,7 +222,6 @@
         $toDisplay = false;
     }
     
-    #array_push($message, 'Error 502: Error!!');
 ?>
 
 <!DOCTYPE html>
@@ -269,12 +295,12 @@
 								<div class="form-group col-12 col-lg-3">
 									<label>Compliance Frequency: </label>
 									<select class="form-control" name="freq">
-										<option value="1" <?php if ($freq == 1) echo "selected"; ?>>Daily Controls</option>
-                                        <option value="2" <?php if ($freq == 2) echo "selected"; ?>>Weekly Controls</option>
+										<option value="1" <?php if ($freq == 1 || strtolower($freq) == 'daily') echo "selected"; ?>>Daily Controls</option>
+                                        <option value="2" <?php if ($freq == 2 || strtolower($freq) == 'weekly') echo "selected"; ?>>Weekly Controls</option>
                                         <option value="3" <?php if ($freq == 3) echo "selected"; ?>>Fort-Nightly Controls</option>
-                                        <option value="4" <?php if ($freq == 4) echo "selected"; ?>>Monthly Controls</option>
-                                        <option value="5" <?php if ($freq == 5) echo "selected"; ?>>Semi-Annually Controls</option>
-                                        <option value="6" <?php if ($freq == 6) echo "selected"; ?>>Annually Controls</option>
+                                        <option value="4" <?php if ($freq == 4 || strtolower($freq) == 'monthly') echo "selected"; ?>>Monthly Controls</option>
+                                        <option value="5" <?php if ($freq == 5 || strtolower($freq) == 'half yearly') echo "selected"; ?>>Semi-Annually Controls</option>
+                                        <option value="6" <?php if ($freq == 6 || strtolower($freq) == 'annually') echo "selected"; ?>>Annually Controls</option>
                                         <option value="7" <?php if ($freq == 7) echo "selected"; ?>>As Required</option>
 									</select>
 
@@ -329,7 +355,13 @@
                                         <div style='width:100%;margin-right:5px;' id='fh4nfve'>
                                         <select name="saved-control" class="form-control" required style='margin-right:5px;'>
                                             <!-- add none selected -->
-                                            <?php echo listCompanyControlSelected($company_id, $saved_control, $con); ?>
+                                            <?php 
+                                                if($saved_control == '1' || !$saved_control || $saved_control == null || $saved_control == 'null'){
+                                                    echo listCompanyControl($company_id, $con);
+                                                }else{
+                                                    echo listCompanyControlSelected($company_id, $saved_control, $con);
+                                                }
+                                            ?>
                                         </select>
                                         </div>
                                         <a href='../customs/new-control?redirect=true' target='_blank' id='fn4h9nf' class="btn btn-sm btn-primary" style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>
@@ -392,7 +424,13 @@
                                     <div class="add-customs">
                                         <div style='width:100%;margin-right:5px;' id='fh4nfvf'>
                                         <select name="saved-treatment" class="form-control" required style='margin-right:5px;'>
-                                            <?php echo listCompanyTreatmentSelected($company_id, $saved_treatment, $con); ?>
+                                            <?php 
+                                                if($saved_treatment == '1' || !$saved_treatment || $saved_treatment == null || $saved_treatment == 'null'){
+                                                    echo listCompanyTreatment($company_id, $con);
+                                                }else{
+                                                    echo listCompanyTreatmentSelected($company_id, $saved_treatment, $con); 
+                                                }
+                                            ?>
                                         </select>
                                         </div>
                                         <a href='../customs/new-treatment?redirect=true' target='_blank' class="btn btn-sm btn-primary" style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>

@@ -246,7 +246,7 @@
                 $response.='<option value="null">No Custom Treatment Selected!!</option>';
         		while ($row=$result->fetch_assoc()) {
         			$response.='<option value="' . $row["treatment_id"] . '"';
-                    if ($row["treatment_id"]==$selected) $response.=' selected';
+                    if ($row["treatment_id"]==$id) $response.=' selected';
     			    $response.='>' . $row["title"] . '</option>';
         		}   
     		}else{
