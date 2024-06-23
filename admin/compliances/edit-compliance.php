@@ -251,7 +251,6 @@
                 <?php if ($compli_exist == true) { ?>
                 <div class="card">
                     <form method="post" enctype="multipart/form-data">
-                        <div class="card-header"></div>
                         <div class="card-body">
                             <?php require '../../layout/alert.php' ?>
 

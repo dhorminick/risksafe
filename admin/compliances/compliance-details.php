@@ -4,13 +4,43 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/compliances/all');
+        header('Location: '.$file_dir.'auth/sign-in?r=/compliances/all');
         exit();
     }
     $message = [];
     include $file_dir.'layout/db.php';
     include $file_dir.'layout/admin__config.php';
     include '../ajax/compliances.php';
+    
+    function get__Frequency($freq){
+
+		if ($freq == 7) {
+			return "As Required";
+		} else if ($freq == 1) {
+			return "Daily Controls";
+		} else if ($freq == 2) {
+			return "Weekly Controls";
+		} else if ($freq == 3) {
+			return "Fort-Nightly Controls";
+		} else if ($freq == 4) {
+			return "Monthly Controls";
+		} else if ($freq == 5) {
+			return "Semi-Annually Controls";
+		} else if ($freq == 6) {
+			return "Annually Controls";
+		} else {
+			return "None Specified";
+		}
+	}
+	function check_null($data, $response, $param){
+	    if($data == '' || $data == null || $data == ' ' || $data == $param){
+	        $data = $response;
+	    }else{
+	        $data = $data;
+	    }
+	    
+	    return $data;
+	}
     
     if (isset($_GET['id']) && isset($_GET['id']) !== "") {
         $toDisplay = true;   
@@ -29,8 +59,33 @@
             $custom_control = $info['custom_control'];	
             $custom_treatment = $info['custom_treatment'];
             
-            $un_custom_control = unserialize($custom_control);
-            $un_custom_treatment = unserialize($custom_treatment);
+            if($info['type'] == 'imported' && $info['saved_control'] == null || $info['type'] == 'imported' && $info['saved_control'] == ''){
+                $saved_control = '1';
+            }
+            
+            if($info['type'] == 'imported' && $info['saved_treatment'] == null || $info['type'] == 'imported' && $info['saved_treatment'] == ''){
+                $saved_treatment = '1';
+            }
+            
+            if($info['type'] == 'imported' && $info['custom_control'] == null || $info['type'] == 'imported' && $info['custom_control'] == ''){
+                $custom_control = 'null';
+            }
+            
+            if($info['type'] == 'imported' && $info['custom_treatment'] == null || $info['type'] == 'imported' && $info['custom_treatment'] == ''){
+                $custom_treatment = 'null';
+            }
+            
+            if($custom_control == null || $custom_control == 'null'){
+                $un_custom_control = 'null';
+            }else{
+                $un_custom_control = unserialize($custom_control);
+            }
+            
+            if($custom_treatment == null || $custom_treatment == 'null'){
+                $un_custom_treatment = 'null';
+            }else{
+                $un_custom_treatment = unserialize($custom_treatment);
+            }
             
             $hasCustomControl = is_array($un_custom_control);
             $hasCustomTreatment = is_array($un_custom_treatment);
@@ -130,61 +185,34 @@
 								</div>
 								<div class="form-group">
 									<label>Reference / Legislation: </label>
-									<div class="r_desc"><?php echo nl2br($info['com_legislation']); ?></div>
+									<div class="r_desc"><?php echo check_null(nl2br($info['com_legislation']), 'None Specified', 'Error!!'); ?></div>
 								</div>
                                 
                                 <div class="form-group">
 									<label>Compliance Requirements:: </label>
-									<div class="r_desc"><?php echo nl2br($info['com_training']); ?></div>
+									<div class="r_desc"><?php echo check_null(nl2br($info['com_training']), 'None Specified', 'Error!!'); ?></div>
 								</div>
 								<div class='row custom-row'>
-								<div class="form-group col-12 col-lg-4">
+								<div class="form-group col-12 col-lg-3">
 									<label>Compliance Officer: </label>
-									<div class="r_desc"><?php echo $info['com_officer']; ?></div>
+									<div class="r_desc"><?php echo check_null($info['com_officer'], 'None Specified', 'Error!!'); ?></div>
 								</div>
                                 <div class="form-group col-12 col-lg-3">
 									<label>Compliance Status: </label>
 									<div class="r_desc"><?php echo $info['co_status']; ?></div>
 								</div>
-
-                                <div class="form-group col-12 col-lg-5">
+								
+								<div class="form-group col-12 col-lg-3">
+									<label>Compliance Frequency: </label>
+									<div class="r_desc"><?php echo get__Frequency($info['frequency']); ?></div>
+								</div>
+								
+                                <div class="form-group col-12 col-lg-3">
 									<label>Documentation & Evidence: </label>
 									<div class="r_desc"><?php echo $uploadedEvidence; ?></div>
 								</div>
 								</div>
 							</div>
-                            <?php if($info['type'] == 'imported'){ ?>
-                            <!-- Controls -->
-                            <div class="card-header">
-                                <h3 class="subtitle">Compliance Actions</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="form-group">
-                                    <label class="help-label">
-                                        Compliance Controls
-                                    </label>
-                                    <div class="r_desc"><?php echo str_replace("?", " - ", nl2br($info['imported_controls'])); ?></div>
-                                </div>
-                            </div>
-                            <?php if($info['imported_treatments'] === '' || $info['imported_treatments'] == null || $info['imported_treatments'] == ' '){ ?>
-                            <?php }else{ ?>
-                            <hr class="assessment-hr">
-
-                            <!-- Treatment -->
-                            <div class="card-header">
-                                <h3 class="card-header-h">Treatment Plans</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="form-group">
-                                    <label class="help-label">
-                                        Compliance Treatments
-                                    </label>
-                                    <div class="r_desc" <?php if(strlen($info['imported_treatments'] >= 100)){ ?>style='margin-top:-20px; !important'<?php } ?>><?php echo str_replace("?", " - ", nl2br($info['imported_treatments'])); ?></div>
-                                </div>
-                            </div>
-                            <?php } ?>
-                            
-                            <?php }else{ ?>
                             
                             <div class='div_divider'></div>
 
@@ -198,14 +226,14 @@
                                     <label class="help-label">
                                         RiskSafe Recommended Controls
                                     </label>
-                                    <div class="r_desc"><?php echo getControlSelected($recommended_control, $con); ?></div>
+                                    <div class="r_desc"><?php echo check_null(getControlSelected($recommended_control, $con), 'No Recommended COntrol Selected', 'Error!'); ?></div>
                                 </div>
                                 <div class="form-group">
                                     <label class="help-label">
                                         Saved Custom Controls
                                     </label>
                                     <div class="add-customs">
-                                        <div class="r_desc"><?php echo getCompanyControlSelected($company_id, $saved_control, $con); ?></div>
+                                        <div class="r_desc"><?php echo check_null(getCompanyControlSelected($company_id, $saved_control, $con), 'No Custom Control Added', 'Error!'); ?></div>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -229,7 +257,7 @@
                                 </div>
                                 <div class="form-group">
 									<label>Control Requirements: </label>
-									<div class="r_desc"><?php echo $info['com_controls']; ?></div>
+									<div class="r_desc"><?php echo check_null($info['com_controls'], 'None Specified', 'Error!'); ?></div>
 								</div>
                             </div>
                             
@@ -248,7 +276,7 @@
                                         Saved Custom Treatments
                                     </label>
                                     <div class="add-customs">
-                                        <div class="r_desc"><?php echo getCompanyTreatmentSelected($company_id, $saved_treatment, $con); ?></div>
+                                        <div class="r_desc"><?php echo check_null(getCompanyTreatmentSelected($company_id, $saved_treatment, $con), 'No Treatment Process Specified', 'Error!'); ?></div>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -271,7 +299,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <?php } ?>
                         </div>
                         <div class="card-footer">
                             <div class="card-body">

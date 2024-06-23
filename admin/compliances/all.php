@@ -125,7 +125,7 @@
                                     $deleteLink = 'javascript:void(0);" class="delete action-icons btn btn-danger btn-action mr-1" data-toggle="modal" data-target="#deleteModal" data-type="compliance" data-id="'.$item["compli_id"];
                                     $downloadLink = 'download?download=compliance&file=xls&id='.$item["compli_id"].'" data-toggle="tooltip" title="Download Compliance" data-placement="left"';
                                     
-                                    if($item['type'] == 'imported'){$c_control = $item['imported_controls'];}else{$c_control = $item['com_controls'];}
+                                    if($item['type'] == 'imported'){$c_control = $item['imported_controls'];}else{$c_control = $item['com_controls'];} if($c_control == '' || $c_control == null){$c_control = 'None Documented!!';}
                             ?> 
                                 <tr> 
                                     <td><?php echo $i; ?></td>
