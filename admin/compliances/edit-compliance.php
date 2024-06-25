@@ -69,13 +69,6 @@
                 	if (in_array($file_ext,$allowed_file_types) && ($filesize < 5000000)) {	
                 		// Rename file
                 		$newfilename = 'compliance_evidence_'.$com_id . $file_ext;
-                			
-                // 		if (file_exists("upload/" . $newfilename)) {
-                // 			// file already exists error
-                // 			echo "You have already uploaded this file.";
-                // 		} else {		
-                			
-                // 		}
                 
                         if(move_uploaded_file($_FILES["file"]["tmp_name"], "evidence/" . $newfilename)){
                             
@@ -261,8 +254,7 @@
                             <div class="card-body">
                                 <div class="form-group">
 									<label>Compliance Obligation: </label>
-									<input name="compliancestandard" value='<?php echo $info['com_compliancestandard']; ?>' type="text" maxlength="100" class="form-control" placeholder="Enter Compliance Standard..." required>
-
+									<textarea name="compliancestandard" class="form-control" placeholder="Enter Compliance Task Or Obligation..." required><?php echo str_replace("<br />", ",", nl2br($info['com_compliancestandard'])); ?></textarea>
 								</div>
 								<input name='id' value='<?php echo $info['compli_id']; ?>' type='hidden' />
 								<div class='row custom-row'>
@@ -284,6 +276,7 @@
 							<div class='row custom-row'>
 								<div class="form-group col-12 col-lg-3">
 									<label>Compliance Status: </label>
+									<?php if($info['co_status'] == null || $info['co_status'] == ''){$info['co_status'] = 'Un-Assessed';} ?>
 									<select class="form-control" name="compliancestatus">
 										<option <?php if($info['co_status'] == "Effective") echo 'selected ';?>value="Effective">Effective</option>
 										<option <?php if($info['co_status'] == "Ineffective") echo 'selected ';?>value="Ineffective">Ineffective</option>

@@ -181,7 +181,7 @@
                             <div class="card-body">
                                 <div class="form-group">
 									<label>Compliance Task or Obligation: </label>
-									<div class="r_desc"><?php echo $info['com_compliancestandard']; ?></div>
+									<div class="r_desc"><?php echo check_null($info['com_compliancestandard'], 'None Specified', 'Error!!'); ?></div>
 								</div>
 								<div class="form-group">
 									<label>Reference / Legislation: </label>
@@ -199,7 +199,7 @@
 								</div>
                                 <div class="form-group col-12 col-lg-3">
 									<label>Compliance Status: </label>
-									<div class="r_desc"><?php echo $info['co_status']; ?></div>
+									<div class="r_desc"><?php echo check_null($info['co_status'], 'Un-Assessed', 'Error!!'); ?></div>
 								</div>
 								
 								<div class="form-group col-12 col-lg-3">
@@ -226,7 +226,7 @@
                                     <label class="help-label">
                                         RiskSafe Recommended Controls
                                     </label>
-                                    <div class="r_desc"><?php echo check_null(getControlSelected($recommended_control, $con), 'No Recommended COntrol Selected', 'Error!'); ?></div>
+                                    <div class="r_desc"><?php echo check_null(getControlSelected($recommended_control, $con), 'No Recommended Control Selected', 'Error!'); ?></div>
                                 </div>
                                 <div class="form-group">
                                     <label class="help-label">

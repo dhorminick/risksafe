@@ -141,7 +141,7 @@
                     $case = 'new';
                     #$case_type = 'new-risk';
                     $id = $com_id;
-                    $returnArray = createNotification($company_id, $notification_message, $datetime, $notifier, $link, $type, $case, $con, $sitee);
+                    $returnArray = createNotification($company_id, $notification_message, $datetime, $notifier, $link, $type, $case, $id, $con, $sitee);
                 
                 header('Location: compliance-details?id='.$com_id);
             } else {
@@ -189,7 +189,7 @@
                             <div class="card-body">
                                 <div class="form-group">
 									<label>Compliance Standard: </label>
-									<input name="compliancestandard" type="text" maxlength="100" class="form-control" placeholder="Enter Compliance Standard..." required>
+									<textarea name="compliancestandard" class="form-control" placeholder="Enter Compliance Task or Obligation..." required></textarea>
 
 								</div>
 								<div class='row custom-row'>

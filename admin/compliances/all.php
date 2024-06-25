@@ -126,6 +126,7 @@
                                     $downloadLink = 'download?download=compliance&file=xls&id='.$item["compli_id"].'" data-toggle="tooltip" title="Download Compliance" data-placement="left"';
                                     
                                     if($item['type'] == 'imported'){$c_control = $item['imported_controls'];}else{$c_control = $item['com_controls'];} if($c_control == '' || $c_control == null){$c_control = 'None Documented!!';}
+                                    if($item["co_status"] == null || $item["co_status"] == ''){$item["co_status"] = 'Un-Assessed';}
                             ?> 
                                 <tr> 
                                     <td><?php echo $i; ?></td>
