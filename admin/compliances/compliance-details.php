@@ -16,17 +16,17 @@
 
 		if ($freq == 7) {
 			return "As Required";
-		} else if ($freq == 1) {
+		} else if ($freq == 1 || strtolower($freq) == 'daily') {
 			return "Daily Controls";
-		} else if ($freq == 2) {
+		} else if ($freq == 2 || strtolower($freq) == 'weekly') {
 			return "Weekly Controls";
 		} else if ($freq == 3) {
 			return "Fort-Nightly Controls";
-		} else if ($freq == 4) {
+		} else if ($freq == 4 || strtolower($freq) == 'monthly') {
 			return "Monthly Controls";
 		} else if ($freq == 5) {
 			return "Semi-Annually Controls";
-		} else if ($freq == 6) {
+		} else if ($freq == 6 || strtolower($freq) == 'annually') {
 			return "Annually Controls";
 		} else {
 			return "None Specified";
@@ -222,6 +222,12 @@
                                 <i class="fas fa-question btn btn-primary btn-icon btn-small btn-help header-a" id="swal-custom-2"></i>
                             </div>
                             <div class="card-body">
+                                <?php if($info['type'] == 'imported' && $info['imported_controls'] != null){ ?>
+                                <div class="form-group">
+                                    <label class="help-label"> Imported Controls </label>
+                                    <div class="r_desc"><?php echo check_null($info['imported_controls'], 'No Control Imported', 'Error!'); ?></div>
+                                </div>
+                                <?php } ?>
                                 <div class="form-group">
                                     <label class="help-label">
                                         RiskSafe Recommended Controls
@@ -271,6 +277,12 @@
                                 <i class="fas fa-question btn btn-primary btn-icon btn-small btn-help header-a" id="swal-custom-1"></i>
                             </div>
                             <div class="card-body">
+                                <?php if($info['type'] == 'imported' && $info['imported_treatments'] != null){ ?>
+    							<div class="form-group">
+                                    <label class="help-label"> Imported Treatments: </label>
+                                    <div class="r_desc"><?php echo check_null($info['imported_treatments'], 'No Treatment Imported', 'Error!'); ?></div>
+                                </div>
+                                <?php } ?>
                                 <div class="form-group">
                                     <label class="help-label">
                                         Saved Custom Treatments

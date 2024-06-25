@@ -22,6 +22,20 @@
                 $compliancestatus = sanitizePlus($_POST["compliancestatus"]);
                 $officer = sanitizePlus($_POST["officer"]);
                 
+                if(isset($_POST['imported_control'])){
+                    $imported_control = sanitizePlus($_POST['imported_control']);
+                }else{
+                    $imported_control = null;
+                }
+                
+                if(isset($_POST['imported_treatment'])){
+                    $imported_treatment = sanitizePlus($_POST['imported_treatment']);
+                }else{
+                    $imported_treatment = null;
+                }
+                
+                
+                
                 if (isset($_POST["custom-control"]) && $_POST["custom-control"] != null) {
                     $custom_control = serialize($_POST["custom-control"]);
                 }else{
@@ -69,13 +83,19 @@
                 	if (in_array($file_ext,$allowed_file_types) && ($filesize < 5000000)) {	
                 		// Rename file
                 		$newfilename = 'compliance_evidence_'.$com_id . $file_ext;
+                			
+                // 		if (file_exists("upload/" . $newfilename)) {
+                // 			// file already exists error
+                // 			echo "You have already uploaded this file.";
+                // 		} else {		
+                			
+                // 		}
                 
                         if(move_uploaded_file($_FILES["file"]["tmp_name"], "evidence/" . $newfilename)){
                             
                             $targetFilePath = $newfilename;
-                            #$com_id = secure_random_string(10);
                             $date = date("Y-m-d");
-                            $query = "UPDATE as_compliancestandard SET com_compliancestandard = '$compliancestandard', com_legislation = '$legislation', com_controls = '$control', com_training = '$training', co_status = '$compliancestatus', com_officer = '$officer', com_documentation = '$targetFilePath', existing_ct = '$existing_ct', saved_control = '$saved_control', saved_treatment = '$saved_treatment', custom_control = '$custom_control', custom_treatment = '$custom_treatment', frequency = '$freq' WHERE c_id = '$company_id' AND compli_id = '$id'";               
+                            $query = "UPDATE as_compliancestandard SET com_compliancestandard = '$compliancestandard', imported_controls = '$imported_control', imported_treatments = '$imported_treatment', com_legislation = '$legislation', com_controls = '$control', com_training = '$training', co_status = '$compliancestatus', com_officer = '$officer', com_documentation = '$targetFilePath', existing_ct = '$existing_ct', saved_control = '$saved_control', saved_treatment = '$saved_treatment', custom_control = '$custom_control', custom_treatment = '$custom_treatment', frequency = '$freq' WHERE c_id = '$company_id' AND compli_id = '$id'";               
                             $sql = mysqli_query($con, $query);
                             if ($sql) {
                                 header('Location: compliance-details?id='.$com_id);
@@ -103,11 +123,10 @@
                     $fileWasUploaded = false;
                     $targetFilePath = 'null';
                     $date = date("Y-m-d");
-                    $query = "UPDATE as_compliancestandard SET com_compliancestandard = '$compliancestandard', com_legislation = '$legislation', com_controls = '$control', com_training = '$training', co_status = '$compliancestatus', com_officer = '$officer', existing_ct = '$existing_ct', saved_control = '$saved_control', saved_treatment = '$saved_treatment', custom_control = '$custom_control', custom_treatment = '$custom_treatment' WHERE c_id = '$company_id' AND compli_id = '$id'";               
+                    $query = "UPDATE as_compliancestandard SET com_compliancestandard = '$compliancestandard', imported_controls = '$imported_control', imported_treatments = '$imported_treatment', com_legislation = '$legislation', com_controls = '$control', com_training = '$training', co_status = '$compliancestatus', com_officer = '$officer', com_documentation = '$targetFilePath', existing_ct = '$existing_ct', saved_control = '$saved_control', saved_treatment = '$saved_treatment', custom_control = '$custom_control', custom_treatment = '$custom_treatment', frequency = '$freq' WHERE c_id = '$company_id' AND compli_id = '$id'";              
                     $sql = mysqli_query($con, $query);
                     if ($sql) {
                         array_push($message, 'Compliance Values Updated Successfully!!');
-                        // header('Location: compliance-details?id='.$com_id);
                     } else {
                         array_push($message, 'Error 502: Error!!');
                     }
@@ -254,7 +273,7 @@
                             <div class="card-body">
                                 <div class="form-group">
 									<label>Compliance Obligation: </label>
-									<textarea name="compliancestandard" class="form-control" placeholder="Enter Compliance Task Or Obligation..." required><?php echo str_replace("<br />", ",", nl2br($info['com_compliancestandard'])); ?></textarea>
+									<textarea name="compliancestandard" class="form-control" placeholder="Enter Compliance Task Or Obligation..." required><?php echo str_replace("?", " - ", preg_replace('#<br\s*/?>#i', ' ', $info['com_compliancestandard'])); ?></textarea>
 								</div>
 								<input name='id' value='<?php echo $info['compli_id']; ?>' type='hidden' />
 								<div class='row custom-row'>
@@ -330,6 +349,12 @@
                             </div>
                         
                             <div class="card-body">
+                                <?php if($info['type'] == 'imported' && $info['imported_controls'] != null ){ ?>
+    							<div class="form-group">
+    								<label>Imported Controls: </label>
+    								<textarea name="imported_control" class="form-control" placeholder="Imported Controls..." required><?php echo $info['imported_controls']; ?></textarea>
+    							</div> 
+                                <?php } ?>
                                 <div class="form-group">
                                     <label class="help-label">
                                         RiskSafe Recommended Controls
@@ -409,6 +434,12 @@
                                 <i class="fas fa-question btn btn-primary btn-icon btn-small btn-help header-a" id="swal-custom-1"></i>
                             </div>
                             <div class="card-body">
+                                <?php if($info['type'] == 'imported' && $info['imported_treatments'] != null ){ ?>
+    							<div class="form-group">
+    								<label>Imported Treatments: </label>
+    								<textarea name="imported_treatment" class="form-control" placeholder="Imported Treatments..." required><?php echo $info['imported_treatments']; ?></textarea>
+    							</div> 
+                                <?php } ?>
                                 <div class="form-group">
                                     <label class="help-label">
                                         Saved Custom Treatments
