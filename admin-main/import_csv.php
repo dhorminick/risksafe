@@ -27,6 +27,18 @@
         $evidence = intval(sanitizePlus($_POST["evidence"]));
         $control = intval(sanitizePlus($_POST["control"]));
         $treatment = intval(sanitizePlus($_POST["treatment"]));
+        #validate section
+        if(isset($_POST["section"]) == false || $_POST["section"] == '' || $_POST["section"] == null){
+            $section = 'null';
+        }else{
+            $section = intval(sanitizePlus($_POST["section"])); 
+        }
+        #validate status
+        if(isset($_POST["status"]) == false || $_POST["status"] == '' || $_POST["status"] == null){
+            $status = 'Un-Assessed';
+        }else{
+            $status = intval(sanitizePlus($_POST["status"])); 
+        }
         #optional
         $o_frequency = sanitizePlus($_POST["frequency"]); 
         $o_reference = sanitizePlus($_POST["reference"]);
@@ -56,6 +68,9 @@
                         #compliance id
                         $compli_id = secure_random_string(10);
                         // Get row data
+                        
+                        $s_section = sanitizePlus($line[intval($section)]);
+                        $s_status = sanitizePlus($line[intval($status)]);
                         
                         $s_task = sanitizePlus($line[intval($task)]);
                         $s_requirement = sanitizePlus($line[intval($requirement)]);
@@ -89,8 +104,8 @@
                             $s_frequency = sanitizePlus($line[intval($frequency)]);
                         }
                         
-                        if($db->query("INSERT INTO as_compliancestandard (c_id, compli_id, com_user_id, com_officer, frequency, com_legislation, com_documentation, type, action_type, action, imported_controls, imported_treatments, com_training, com_compliancestandard, co_status) 
-                            VALUES ('$company', '$compli_id', 'Admin', '".$s_officer."', '".$s_frequency."', '".$s_reference."', '".$s_evidence."', 'imported', '".$action_type."', '".$s_action."', '".$s_control."', '".$s_treatment."', '".$s_requirement."', '".$s_task."', 'Un-Assessed')")){
+                        if($db->query("INSERT INTO as_compliancestandard (c_id, compli_id, section, com_user_id, com_officer, frequency, com_legislation, com_documentation, type, action_type, action, imported_controls, imported_treatments, com_training, com_compliancestandard, co_status) 
+                            VALUES ('$company', '$compli_id', '".$s_section."', 'Admin', '".$s_officer."', '".$s_frequency."', '".$s_reference."', '".$s_evidence."', 'imported', '".$action_type."', '".$s_action."', '".$s_control."', '".$s_treatment."', '".$s_requirement."', '".$s_task."', '".$s_status."')")){
                             $dataImported = true;
                         }else{
                             $dataImported = false;
@@ -154,7 +169,11 @@
                             <fieldset class="row">
                                 <legend>Compliance CSV Data Row Arrangement</legend>
                                 <div class="form-group col-lg-3 col-12">
-                                    <label>Task:</label>
+                                    <label>Section:</label>
+                                    <input type="text" name="section" class="form-control">
+                                </div>
+                                <div class="form-group col-lg-3 col-12">
+                                    <label>Task or Obligation:</label>
                                     <input type="text" name="task" class="form-control" required>
                                 </div>
                                 <div class="form-group col-lg-3 col-12">
@@ -176,6 +195,10 @@
                                 <div class="form-group col-lg-3 col-12">
                                     <label>Evidence:</label>
                                     <input type="text" name="evidence" class="form-control" required>
+                                </div>
+                                <div class="form-group col-lg-3 col-12">
+                                    <label>Status:</label>
+                                    <input type="text" name="status" class="form-control">
                                 </div>
                                 <div class="form-group col-lg-3 col-12"><label>Controls:</label><input type="text" name="control" class="form-control" required></div>
                                 <div class="form-group col-lg-3 col-12"><label>Treatments:</label><input type="text" name="treatment" class="form-control" required></div>
