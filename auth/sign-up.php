@@ -77,8 +77,8 @@
                           VALUES (0, '$email', '$password', '$name', '', '', '$company', '', '', '', '', '', 'false', '$otp', '$datetime', '$expire', 'admin', 0, '$u_id', 'a:0:{}', '$company_id', '$company_details', '$user_details', 'free', 'trial')";
                         $userCreated = $con->query($createNewUser);
                         if ($userCreated) {
-                            $createContext = "INSERT INTO `as_context`(`cx_user`, `cx_objectives`, `cx_processes`, `cx_products`, `cx_projects`, `cx_systems`, `cx_relation`, `cx_internallosses`, `cx_externallosses`, `cx_competitors`, `cx_environment`, `cx_regulatory`) VALUES ('$u_id','','','','','','','','','','','')";
-                            $contextCreated = $con->query($createContext);
+                            #$createContext = "INSERT INTO `as_context`(`cx_user`, `cx_objectives`, `cx_processes`, `cx_products`, `cx_projects`, `cx_systems`, `cx_relation`, `cx_internallosses`, `cx_externallosses`, `cx_competitors`, `cx_environment`, `cx_regulatory`) VALUES ('$u_id','','','','','','','','','','','')";
+                            #$contextCreated = $con->query($createContext);
                             
                             array_push($message, 'Account Details Registered Successfully, Login To "'.$email.'" To Authenticate The Account!! ');
                         }else{

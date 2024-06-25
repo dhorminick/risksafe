@@ -23,8 +23,20 @@
        $context_competitors = sanitizePlus($_POST["competitors"]); 
        $context_environment = sanitizePlus($_POST["environment"]); 
        $context_regulatory = sanitizePlus($_POST["regulatory"]);
-
-       $UpdateContext = "UPDATE as_context SET cx_objectives= '$context_objectives', cx_processes= '$context_processes', cx_products= '$context_products', cx_projects= '$context_projects', cx_systems= '$context_systems', cx_relation= '$context_relationships', cx_internallosses= '$context_internallosses', cx_externallosses= '$context_externallosses', cx_competitors= '$context_competitors', cx_environment= '$context_environment',cx_regulatory= '$context_regulatory' WHERE cx_user = '$userId'";
+       
+        $ConfirmUserExist = "SELECT * FROM as_context WHERE c_id = '$company_id'";
+        $ConfirmedUser = $con->query($ConfirmUserExist);
+        if ($ConfirmedUser->num_rows > 0) {
+           $hasContext = true;
+        }else{
+           $hasContext = false;
+        }
+        
+       if($hasContext == true){
+        $UpdateContext = "UPDATE as_context SET cx_objectives= '$context_objectives', cx_processes= '$context_processes', cx_products= '$context_products', cx_projects= '$context_projects', cx_systems= '$context_systems', cx_relation= '$context_relationships', cx_internallosses= '$context_internallosses', cx_externallosses= '$context_externallosses', cx_competitors= '$context_competitors', cx_environment= '$context_environment',cx_regulatory= '$context_regulatory' WHERE c_id = '$company_id'";
+       }else{
+        $UpdateContext = "INSERT INTO as_context (cx_objectives, cx_processes, cx_products, cx_projects, cx_systems, cx_relation, cx_internallosses, cx_externallosses, cx_competitors, cx_environment, cx_regulatory, c_id) VALUES ('$context_objectives', '$context_processes', '$context_products', '$context_projects', '$context_systems', '$context_relationships', '$context_internallosses', '$context_externallosses', '$context_competitors', '$context_environment', '$context_regulatory', '$company_id')";
+       }
        $ContextUpdated = $con->query($UpdateContext);
        if ($ContextUpdated) {
            array_push($message, 'Context Updated Successfully!!');
@@ -33,16 +45,14 @@
        }
     }
 
-    $ConfirmUserExist = "SELECT * FROM as_context WHERE cx_user = '$userId'";
+    $ConfirmUserExist = "SELECT * FROM as_context WHERE c_id = '$company_id'";
     $ConfirmedUser = $con->query($ConfirmUserExist);
     if ($ConfirmedUser->num_rows > 0) {
        $row = $ConfirmedUser->fetch_assoc();
-       $filtered = array_map('htmlspecialchars', array_map('stripslashes', $row));
-       $datainfo = $filtered;
+       #$filtered = array_map('htmlspecialchars', array_map('stripslashes', $row));
+       $datainfo = $row;
     }else{
        $datainfo = [];
-       echo 'Error';
-       exit();
     }
 
     
@@ -55,7 +65,7 @@
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-  <title>RiskSafe Manual | <?php echo $siteEndTitle; ?></title>
+  <title>Business Context | <?php echo $siteEndTitle; ?></title>
   <?php require '../../layout/general_css.php' ?>
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/footer.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/admin.custom.css">
@@ -72,12 +82,13 @@
         <div class="main-content">
             <section class="section">
             <div class="section-body">
-                <div class="card">
+                <div class="card" style='padding:10px;'>
+                    <?php include '../../layout/alert.php'; ?>
                     <div class="card-header">
-                        <h3 class="card-header-h">RiskSafe Risk Assessment Manual</h3>
+                        <h3 class="d-inline">Business Context</h3>
+                        <a class="btn btn-primary btn-icon icon-left header-a" href="/admin"><i class="fas fa-arrow-left"></i> Back</a>
                     </div>
-                    <div class="card-body custom-p">
-                        <?php include '../../layout/alert.php'; ?>
+                    <div class="card-body">
                         <form method="post">
                             <div class="form-group">
                               <label>Business Strategies and Objectives</label>
@@ -123,7 +134,7 @@
                               <label>Regulatory Environment</label>
                               <textarea name="regulatory" class="form-control" placeholder="Enter regulatory environment..."><?php echo isset($datainfo["cx_regulatory"])? $datainfo["cx_regulatory"]:'';?></textarea>            
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" style='margin-top:10px;'>
                               <button type="submit" class="btn btn-md btn-primary" name="save-context">Save Business Context</button>
                             </div>
                           </form>
