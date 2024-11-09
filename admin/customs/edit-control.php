@@ -5,7 +5,7 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'auth/sign-in?r=/customs/controls');
+        header('Location: '.$file_dir.'login?r=/customs/controls');
         exit();
     }
   
@@ -100,7 +100,7 @@
 
                                 <div class="form-group">
                                     <label>Control Description:</label>
-                                    <textarea name="description" class="form-control" placeholder="Enter Control Description">
+                                    <textarea rows='3' class="form-control" name="description" class="form-control"  placeholder="Enter Control Description">
                                         <?php echo html_entity_decode($info["description"]); ?>
                                     </textarea>
                                 </div>

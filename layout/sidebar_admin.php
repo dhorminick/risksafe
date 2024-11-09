@@ -11,6 +11,7 @@
         }
         
     ?>
+    <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/admin.custom.css">
     <div class="main-sidebar sidebar-style-2">
         <aside id="sidebar-wrapper">
             <div class="sidebar-brand">
@@ -90,6 +91,8 @@
                 <a href="#" class="menu-toggle nav-link has-dropdown"><i
                     data-feather="shopping-bag"></i><span>Customs</span></a>
                 <ul class="dropdown-menu">
+                    <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>customs/new-risk">Create Custom Risks</a></li>
+                    <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>customs/risks">All Custom Risks</a></li>
                     <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>customs/new-control">Create Custom Controls</a></li>
                     <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>customs/controls">All Custom Controls</a></li>
                     <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>customs/new-treatment">Create Customs Treatment</a></li>
@@ -102,15 +105,12 @@
                 <a href="#" class="menu-toggle nav-link has-dropdown"><i
                     data-feather="shopping-bag"></i><span>RiskSafe Reports</span></a>
                 <ul class="dropdown-menu">
-                    <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>reports/risk-report">Risks Report</a></li>
-                    <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>reports/compliance-report">Compliances Report</a></li>
-                    <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>reports/audit-report">Audits Report</a></li>
-                    <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>reports/control-report">Controls Report</a></li>
-                    <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>reports/incident-report">Incidents Report</a></li>
+                    <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>reports/risk-reports">Risk Reports</a></li>
+                    <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>reports/control-reports">Controls Report</a></li>
+                    <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>reports/incident-report">Incident Report</a></li>
                     <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>reports/business-impact-analysis-report">BIA Reports</a></li>
                     <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>reports/treatment-report">Treatments Report</a></li>
-                    <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>reports/policy-report">Policies Report</a></li>
-                    <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>reports/procedure-report">Procedures Report</a></li>
+                    <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>reports/policy-report">Policy Report</a></li>
                 </ul>
             </li>
 

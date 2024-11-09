@@ -4,14 +4,15 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'auth/sign-in?r=/reports/incident-report');
-        exit();
+        header('Location: '.$file_dir.'login?r=/reports/incident-report');
     }
     $message = [];
     include '../../layout/db.php';
-    include '../../layout/admin__config.php';
+    include '../../layout/admin_config.php';
     include '../ajax/incidents.php';
+    // require_once $file_dir.'classes/PHPExcel.php';
     include_once 'summary.php';
+    // require '../_external/v/vendor/autoload.php';
     
     use PhpOffice\PhpSpreadsheet\Spreadsheet;
     use PhpOffice\PhpSpreadsheet\Writer\Xlsx;

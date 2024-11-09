@@ -6,13 +6,22 @@
     } else {
         header('Location: '.$file_dir.'auth/sign-in?r=/business/insurances');
         exit();
-    } 
+    }
     $message = [];
     include $file_dir.'layout/db.php';
     include $file_dir.'layout/admin__config.php';
 
-    if (isset($_POST['update-insurance']) && isset($_POST['c__id'])) {
-                $id = sanitizePlus($_POST["c__id"]);
+    if (isset($_GET['id']) && isset($_GET['id']) !== "") {
+        $toDisplay = true;   
+        $id = sanitizePlus($_GET['id']);
+        $CheckIfInsuranceExist = "SELECT * FROM as_insurance WHERE in_id = '$id' AND c_id = '$company_id'";
+        $InsuranceExist = $con->query($CheckIfInsuranceExist);
+        if ($InsuranceExist->num_rows > 0) {	
+            $in_exist = true;
+			$info = $InsuranceExist->fetch_assoc();
+
+            if (isset($_POST['update-insurance'])) {
+                
                 $type = sanitizePlus($_POST["type"]);
                 $coverage = sanitizePlus($_POST["coverage"]);
                 $exclusions = sanitizePlus($_POST["exclusions"]);
@@ -29,15 +38,6 @@
                     array_push($message, 'Error Updating Insurance Details!!');
                 }	
             }
-
-    if (isset($_GET['id']) && isset($_GET['id']) !== "") {
-        $toDisplay = true;   
-        $id = sanitizePlus($_GET['id']);
-        $CheckIfInsuranceExist = "SELECT * FROM as_insurance WHERE in_id = '$id' AND c_id = '$company_id'";
-        $InsuranceExist = $con->query($CheckIfInsuranceExist);
-        if ($InsuranceExist->num_rows > 0) {	
-            $in_exist = true;
-			$info = $InsuranceExist->fetch_assoc();
         }else{
             $in_exist = false;
         }
@@ -75,7 +75,7 @@
                         <div class="card-header"></div>
                         <div class="card-body">
                             <?php require $file_dir.'layout/alert.php' ?>
-                            <div class="card-header" style='display:flex;justify-content:space-between;'>
+                            <div class="card-header">
                                 <h3 class="d-inline">Edit Insurance</h3>
                                 <a class="btn btn-primary btn-icon icon-left header-a" href="insurances?id=<?php echo $info['in_id']; ?>"><i class="fas fa-arrow-left"></i> Back</a>
                             </div>
@@ -83,7 +83,7 @@
                                 <div class="form-group">
                                     <label>Insurance Type</label>
                                     <input name="type" value="<?php echo $info['is_type']; ?>" type="text" id="control" maxlength="255" class="form-control" placeholder="Enter insurance type..." required>
-                                    <input type='hidden' name='c__id' value='<?php echo $info['in_id']; ?>' />
+                                
                                 </div>
                                 <div class="form-group">
                                     <label>Policy Coverage</label>

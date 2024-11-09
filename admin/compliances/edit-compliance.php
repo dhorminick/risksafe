@@ -12,11 +12,16 @@
     include '../../layout/admin__config.php';
     include '../ajax/compliances.php';
     
+    // $module_id = 'wnpzc2gqu7';
+    
     if(isset($_POST["update-compliance"]) && isset($_POST["id"])){
+        $error = false;
+        
                 $id = sanitizePlus($_POST["id"]);
+                $module = sanitizePlus($_POST["module"]);
                 $compliancestandard = sanitizePlus($_POST["compliancestandard"]);
                 $legislation = sanitizePlus($_POST["legislation"]);
-                $control = sanitizePlus($_POST["control"]);
+                $control_req = sanitizePlus($_POST["control"]);
                 $training = sanitizePlus($_POST["training"]);
                 $freq = sanitizePlus($_POST["freq"]);
                 $compliancestatus = sanitizePlus($_POST["compliancestatus"]);
@@ -36,36 +41,60 @@
                 
                 
                 
-                if (isset($_POST["custom-control"]) && $_POST["custom-control"] != null) {
-                    $custom_control = serialize($_POST["custom-control"]);
+                // if (isset($_POST["custom-control"]) && $_POST["custom-control"] != null) {
+                //     $custom_control = serialize($_POST["custom-control"]);
+                // }else{
+                //     $custom_control = 'null'; #empty array
+                // }
+                
+                
+                // if (isset($_POST["custom-treatment"]) && $_POST["custom-treatment"] != null) {
+                //     $custom_treatment = serialize($_POST["custom-treatment"]);
+                // }else{
+                //     $custom_treatment = 'null'; #empty array
+                // }
+                
+                
+                // if (isset($_POST["existing_ct"]) && $_POST["existing_ct"] == 0) {
+                //     $existing_ct = 'null'; #empty array
+                // }else{
+                //     $existing_ct = sanitizePlus($_POST["existing_ct"]); 
+                // }
+                
+                // if (isset($_POST["saved-control"]) && $_POST["saved-control"] == 'null') {
+                //     $saved_control = 'null'; #empty array
+                // }else{
+                //     $saved_control = sanitizePlus($_POST["saved-control"]);
+                // }
+                
+                // if (isset($_POST["saved-treatment"]) && $_POST["saved-treatment"] == 'null') {
+                //     $saved_treatment = 'null'; #empty array
+                // }else{
+                //     $saved_treatment = sanitizePlus($_POST["saved-treatment"]);
+                // }
+                
+                
+                $control_type = sanitizePlus($_POST["control-type"]);
+                $treatment_type = sanitizePlus($_POST["treatment-type"]);
+                
+                if($control_type == 'recommended'){
+                    $control = serialize($_POST["existing_ct"]);
+                }else if($control_type == 'saved'){
+                    $control = serialize($_POST["saved-control"]);
+                }else if($control_type == 'custom'){
+                    $control = serialize($_POST["custom-control"]);
                 }else{
-                    $custom_control = 'null'; #empty array
+                    $error = true;
+                    array_push($message, 'Error 402: Control Type Error!!');
                 }
                 
-                
-                if (isset($_POST["custom-treatment"]) && $_POST["custom-treatment"] != null) {
-                    $custom_treatment = serialize($_POST["custom-treatment"]);
+                if($treatment_type == 'saved'){
+                    $treatment = serialize($_POST["saved-treatment"]);
+                }else if($treatment_type == 'custom'){
+                    $treatment = serialize($_POST["custom-treatment"]);
                 }else{
-                    $custom_treatment = 'null'; #empty array
-                }
-                
-                
-                if (isset($_POST["existing_ct"]) && $_POST["existing_ct"] == 0) {
-                    $existing_ct = 'null'; #empty array
-                }else{
-                    $existing_ct = sanitizePlus($_POST["existing_ct"]); 
-                }
-                
-                if (isset($_POST["saved-control"]) && $_POST["saved-control"] == 'null') {
-                    $saved_control = 'null'; #empty array
-                }else{
-                    $saved_control = sanitizePlus($_POST["saved-control"]);
-                }
-                
-                if (isset($_POST["saved-treatment"]) && $_POST["saved-treatment"] == 'null') {
-                    $saved_treatment = 'null'; #empty array
-                }else{
-                    $saved_treatment = sanitizePlus($_POST["saved-treatment"]);
+                    $error = true;
+                    array_push($message, 'Error 402: Treatment Type Error!!');
                 }
                 
                 $com_id = $id;
@@ -83,47 +112,41 @@
                 	if (in_array($file_ext,$allowed_file_types) && ($filesize < 5000000)) {	
                 		// Rename file
                 		$newfilename = 'compliance_evidence_'.$com_id . $file_ext;
-                			
-                // 		if (file_exists("upload/" . $newfilename)) {
-                // 			// file already exists error
-                // 			echo "You have already uploaded this file.";
-                // 		} else {		
-                			
-                // 		}
-                
-                        if(move_uploaded_file($_FILES["file"]["tmp_name"], "evidence/" . $newfilename)){
-                            
+                		
+                		if(move_uploaded_file($_FILES["file"]["tmp_name"], "evidence/" . $newfilename)){
+                            $error = false;
                             $targetFilePath = $newfilename;
-                            $date = date("Y-m-d");
-                            $query = "UPDATE as_compliancestandard SET com_compliancestandard = '$compliancestandard', imported_controls = '$imported_control', imported_treatments = '$imported_treatment', com_legislation = '$legislation', com_controls = '$control', com_training = '$training', co_status = '$compliancestatus', com_officer = '$officer', com_documentation = '$targetFilePath', existing_ct = '$existing_ct', saved_control = '$saved_control', saved_treatment = '$saved_treatment', custom_control = '$custom_control', custom_treatment = '$custom_treatment', frequency = '$freq' WHERE c_id = '$company_id' AND compli_id = '$id'";               
-                            $sql = mysqli_query($con, $query);
-                            if ($sql) {
-                                header('Location: compliance-details?id='.$com_id);
-                            } else {
-                                array_push($message, 'Error 502: Error!!');
-                            }
+                            
                         }else{
+                            $error = true;
                             array_push($message, 'Error 502: Error Uploading Evidence!!');
                         }
                 	} elseif (empty($file_basename)) {	
                 		// file selection error
                 		#echo "Please select a file to upload.";
+                		$error = true;
                 		array_push($message, "Error Uploading File: Please Select A File For Upload!!");
                 	} elseif ($filesize > 5000000) {	
                 		// file size error
                 		#echo "The file you are trying to upload is too large.";
+                		$error = true;
                 		array_push($message, "Error Uploading File: File Too Large, Maximum Allowed - 5MB!!");
                 	} else {
                 		// file type error
                 		#echo "Only these file typs are allowed for upload: " . implode(', ',$allowed_file_types);
+                		$error = true;
                 		array_push($message, "Error Uploading File: Only these file types are allowed: " . implode(', ',$allowed_file_types));
                 		unlink($_FILES["file"]["tmp_name"]);
                 	}
                 }else{
                     $fileWasUploaded = false;
                     $targetFilePath = 'null';
+                    
+                }
+                
+                if($error === false){
                     $date = date("Y-m-d");
-                    $query = "UPDATE as_compliancestandard SET com_compliancestandard = '$compliancestandard', imported_controls = '$imported_control', imported_treatments = '$imported_treatment', com_legislation = '$legislation', com_controls = '$control', com_training = '$training', co_status = '$compliancestatus', com_officer = '$officer', com_documentation = '$targetFilePath', existing_ct = '$existing_ct', saved_control = '$saved_control', saved_treatment = '$saved_treatment', custom_control = '$custom_control', custom_treatment = '$custom_treatment', frequency = '$freq' WHERE c_id = '$company_id' AND compli_id = '$id'";              
+                    $query = "UPDATE as_compliancestandard SET control_type = '$control_type', treatment_type = '$treatment_type', module = '$module', com_compliancestandard = '$compliancestandard', imported_controls = '$imported_control', imported_treatments = '$imported_treatment', com_legislation = '$legislation', com_controls = '$control_req', com_training = '$training', co_status = '$compliancestatus', com_officer = '$officer', com_documentation = '$targetFilePath', existing_ct = '$control', existing_tr = '$treatment', frequency = '$freq' WHERE c_id = '$company_id' AND compli_id = '$id'";              
                     $sql = mysqli_query($con, $query);
                     if ($sql) {
                         array_push($message, 'Compliance Values Updated Successfully!!');
@@ -165,23 +188,23 @@
             }
             
             $existing_ct = $info['existing_ct'];
-            $freq = $info['frequency'];
+            $freq = $info['frequency']; # unused
             
-            if($custom_control == null || $custom_control == 'null'){
-                $un_custom_control = 'null';
-            }else{
-                $un_custom_control = unserialize($custom_control);
-            }
+            // if($custom_control == null || $custom_control == 'null'){
+            //     $un_custom_control = 'null';
+            // }else{
+            //     $un_custom_control = unserialize($custom_control);
+            // }
             
-            if($custom_treatment == null || $custom_treatment == 'null'){
-                $un_custom_treatment = 'null';
-            }else{
-                $un_custom_treatment = unserialize($custom_treatment);
-            }
+            // if($custom_treatment == null || $custom_treatment == 'null'){
+            //     $un_custom_treatment = 'null';
+            // }else{
+            //     $un_custom_treatment = unserialize($custom_treatment);
+            // }
             
             
-            $hasCustomControl = is_array($un_custom_control);
-            $hasCustomTreatment = is_array($un_custom_treatment);
+            // $hasCustomControl = is_array($un_custom_control);
+            // $hasCustomTreatment = is_array($un_custom_treatment);
             
             $evidence = $info['com_documentation'];
             
@@ -191,41 +214,41 @@
                 $uploadedEvidence = '<a href="evidence/'.$evidence.'" target="_blank">View File</a>';
             }
 
-            if ($hasCustomControl == true) {
-                #if value in db is array
-                $customControlArrayStatus = 'true';
-                if ($custom_control == 'a:1:{i:0;s:0:"";}') {
-                    #empty array
-                    $customControlValuesStatus = 'empty';
-                    #show a single empty textbox
-                } else if ($custom_control == null){
-                    $customControlValuesStatus = 'empty';
-                    #show all details
-                } else {
-                    $customControlValuesStatus = 'not-empty';
-                    #show all details
-                }
-            } else {
-                $customControlArrayStatus = 'false';
-            }
+            // if ($hasCustomControl == true) {
+            //     #if value in db is array
+            //     $customControlArrayStatus = 'true';
+            //     if ($custom_control == 'a:1:{i:0;s:0:"";}') {
+            //         #empty array
+            //         $customControlValuesStatus = 'empty';
+            //         #show a single empty textbox
+            //     } else if ($custom_control == null){
+            //         $customControlValuesStatus = 'empty';
+            //         #show all details
+            //     } else {
+            //         $customControlValuesStatus = 'not-empty';
+            //         #show all details
+            //     }
+            // } else {
+            //     $customControlArrayStatus = 'false';
+            // }
 
-            if ($hasCustomTreatment == true) {
-                #if value in db is array
-                $customTreatmentArrayStatus = 'true';
-                if ($custom_treatment == 'a:1:{i:0;s:0:"";}') {
-                    #empty array
-                    $customTreatmentValuesStatus = 'empty';
-                    #show a single empty textbox
-                } else if ($custom_treatment == null) {
-                    $customTreatmentValuesStatus = 'empty';
-                    #show all details
-                } else {
-                    $customTreatmentValuesStatus = 'not-empty';
-                    #show all details
-                }   
-            } else {
-                $customTreatmentArrayStatus = 'false';
-            }
+            // if ($hasCustomTreatment == true) {
+            //     #if value in db is array
+            //     $customTreatmentArrayStatus = 'true';
+            //     if ($custom_treatment == 'a:1:{i:0;s:0:"";}') {
+            //         #empty array
+            //         $customTreatmentValuesStatus = 'empty';
+            //         #show a single empty textbox
+            //     } else if ($custom_treatment == null) {
+            //         $customTreatmentValuesStatus = 'empty';
+            //         #show all details
+            //     } else {
+            //         $customTreatmentValuesStatus = 'not-empty';
+            //         #show all details
+            //     }   
+            // } else {
+            //     $customTreatmentArrayStatus = 'false';
+            // }
             
         }else{
             $compli_exist = false;
@@ -271,48 +294,58 @@
                                 <a class="btn btn-primary btn-icon icon-left header-a" href="compliance-details?id=<?php echo $info['compli_id']; ?>"><i class="fas fa-arrow-left"></i> Back</a>
                             </div>
                             <div class="card-body">
+                                
+                                <div class="form-group">
+									<label>Compliance: </label>
+									<select class="form-control" name="module" id="module">
+										<?php echo listModuleCompliance($info['module'], $info['compliance_module'], $con); ?>
+									</select>
+								</div>
+								
                                 <div class="form-group">
 									<label>Compliance Obligation: </label>
-									<textarea name="compliancestandard" class="form-control" placeholder="Enter Compliance Task Or Obligation..." required><?php echo str_replace("?", " - ", preg_replace('#<br\s*/?>#i', ' ', $info['com_compliancestandard'])); ?></textarea>
+									<textarea name="compliancestandard" class="form-control" id='compliance__obligation' placeholder="Enter Compliance Task Or Obligation..." required><?php echo str_replace("?", " - ", preg_replace('#<br\s*/?>#i', ' ', $info['com_compliancestandard'])); ?></textarea>
 								</div>
+								
+								<div class="form-group">
+									<label>Compliance Requirements: </label>
+									<textarea name="training" class="form-control lg" id='compliance__requirements' placeholder="Enter Compliance Requirements..." required><?php echo $info['com_training']; ?></textarea>
+								</div>
+								
 								<input name='id' value='<?php echo $info['compli_id']; ?>' type='hidden' />
+								
 								<div class='row custom-row'>
 								<div class="form-group col-12 col-lg-4">
-									<label>Compliance Officer: </label>
-									<input name="officer" value='<?php echo $info['com_officer']; ?>' type="text" maxlength="255" class="form-control" placeholder="Enter Compliance Officer..." required>
+									<label for='com_officer'>Compliance Officer: </label>
+									<input name="officer" id="com_officer" value='<?php echo $info['com_officer']; ?>' type="text" maxlength="255" class="form-control" placeholder="Enter Compliance Officer..." required>
 								</div>
 								<div class="form-group col-12 col-lg-8">
-									<label>Legislation: </label>
-									<input name="legislation" class="form-control" placeholder="Enter Legislation..." value='<?php echo str_replace("<br />", ",", nl2br($info['com_legislation'])); ?>' required />
+									<label for='reference'>Legislation: </label>
+									<input name="legislation" id='reference' class="form-control" placeholder="Enter Legislation..." value='<?php echo str_replace("<br />", ",", nl2br($info['com_legislation'])); ?>' required />
 								</div>
 								</div>
                                 
-                                <div class="form-group">
-									<label>Compliance Requirements: </label>
-									<textarea name="training" class="form-control lg" placeholder="Enter Compliance Requirements..." required><?php echo $info['com_training']; ?></textarea>
-								</div>
-								
 							<div class='row custom-row'>
 								<div class="form-group col-12 col-lg-3">
-									<label>Compliance Status: </label>
+									<label for='com_status'>Compliance Status: </label>
 									<?php if($info['co_status'] == null || $info['co_status'] == ''){$info['co_status'] = 'Un-Assessed';} ?>
-									<select class="form-control" name="compliancestatus">
-										<option <?php if($info['co_status'] == "Effective") echo 'selected ';?>value="Effective">Effective</option>
-										<option <?php if($info['co_status'] == "Ineffective") echo 'selected ';?>value="Ineffective">Ineffective</option>
-										<option <?php if($info['co_status'] == "Un-Assessed") echo 'selected ';?>value="Un-Assessed">Un-Assessed</option>
+									<select class="form-control" name="compliancestatus" id='com_status'>
+										<?php 
+    										if($info['co_status'] == "Un-Assessed" || strtolower($info['co_status']) == "un-assessed" || strtolower($info['co_status']) == "unassessed"){
+    										    $effect = 'unaccessed';
+    										}else{
+    										    $effect = $info['co_status'];
+    										}
+    										
+										    echo listEffectiveness($effect);
+										?>
 									</select>
 
 								</div>
 								<div class="form-group col-12 col-lg-3">
-									<label>Compliance Frequency: </label>
-									<select class="form-control" name="freq">
-										<option value="1" <?php if ($freq == 1 || strtolower($freq) == 'daily') echo "selected"; ?>>Daily Controls</option>
-                                        <option value="2" <?php if ($freq == 2 || strtolower($freq) == 'weekly') echo "selected"; ?>>Weekly Controls</option>
-                                        <option value="3" <?php if ($freq == 3) echo "selected"; ?>>Fort-Nightly Controls</option>
-                                        <option value="4" <?php if ($freq == 4 || strtolower($freq) == 'monthly') echo "selected"; ?>>Monthly Controls</option>
-                                        <option value="5" <?php if ($freq == 5 || strtolower($freq) == 'half yearly') echo "selected"; ?>>Semi-Annually Controls</option>
-                                        <option value="6" <?php if ($freq == 6 || strtolower($freq) == 'annually') echo "selected"; ?>>Annually Controls</option>
-                                        <option value="7" <?php if ($freq == 7) echo "selected"; ?>>As Required</option>
+									<label for='com_freq'>Compliance Frequency: </label>
+									<select class="form-control" name="freq" id='com_freq'>
+                                        <?php echo listFrequencies($info['frequency']); ?>
 									</select>
 
 								</div>
@@ -341,7 +374,25 @@
                             </div> <!-- Close Card Body -->
                             
                             <div class='div_divider'></div>
-
+                            <style>
+                                <?php if($info['control_type'] == 'recommended'){ ?>
+                                #saved_type,
+                                #custom_type{
+                                    display:none;
+                                }
+                                <?php }else if($info['control_type'] == 'saved'){ ?>
+                                #recommended_type,
+                                #custom_type{
+                                    display:none;
+                                }
+                                <?php }else if($info['control_type'] == 'custom'){ ?>
+                                #recommended_type,
+                                #saved_type{
+                                    display:none;
+                                }
+                                <?php } ?>
+                            </style>
+                        
                             <!-- Controls -->
                             <div class="card-header hh">
                                 <h3 class="d-inline">Control Actions</h3>
@@ -355,71 +406,174 @@
     								<textarea name="imported_control" class="form-control" placeholder="Imported Controls..." required><?php echo $info['imported_controls']; ?></textarea>
     							</div> 
                                 <?php } ?>
-                                <div class="form-group">
-                                    <label class="help-label">
-                                        RiskSafe Recommended Controls
-                                    </label>
-                                    <select name="existing_ct" id="existing_ct" class="form-control" required>
-                                        <option value="0">None Selected</option>
-                                        <?php echo listControlSelected($existing_ct, $con); ?>
-                                    </select>
+                                <div class="form-group" style='display:flex;gap:50px;'>
+                                    <div>
+                                        <input type='radio' id='recommended' value='recommended' name='control-type' <?php if($info['control_type'] == 'recommended'){ echo 'checked'; } ?> />
+                                        <label for='recommended'>Recommended Controls</label>
+                                    </div>
+                                    <div>
+                                        <input type='radio' id='saved' value='saved' name='control-type' <?php if($info['control_type'] == 'saved'){ echo 'checked'; } ?> />
+                                        <label for='saved'>Saved Custom Controls</label>
+                                    </div>
+                                    <div>
+                                        <input type='radio' id='assessment-specific' value='custom' name='control-type' <?php if($info['control_type'] == 'custom'){ echo 'checked'; } ?> />
+                                        <label for='assessment-specific'>Assessment Specific Controls</label>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="help-label">
-                                        Saved Custom Controls
-                                    </label>
-                                    <div class="add-customs">
-                                        <div style='width:100%;margin-right:5px;' id='fh4nfve'>
-                                        <select name="saved-control" class="form-control" required style='margin-right:5px;'>
-                                            <!-- add none selected -->
+                            
+                                <div id='control_type'>
+                                    <?php if($info['control_type'] == 'recommended'){ ?>
+                                    <div class="form-group" id='recommended_type'>
+                                        <label class="help-label">
+                                            RiskSafe Recommended Controls
+                                        </label>
+                                        
+                                        <div class='c_type' id='control_selctor'>
+                                            <div id='fetchControls' style='width:100%;'>
                                             <?php 
-                                                if($saved_control == '1' || !$saved_control || $saved_control == null || $saved_control == 'null'){
-                                                    echo listCompanyControl($company_id, $con);
-                                                }else{
-                                                    echo listCompanyControlSelected($company_id, $saved_control, $con);
+                                                $controls = unserialize($info['existing_ct']);
+                                                $controls_more = $controls;
+                                                $c_count = 0;
+                                                foreach($controls as $control){
+                                                    $c_count++;
+                                                    echo listComplianceRecommendedControl_Selected($info['module'], $control, $con);
+                                                    break;
                                                 }
                                             ?>
-                                        </select>
-                                        </div>
-                                        <a href='../customs/new-control?redirect=true' target='_blank' id='fn4h9nf' class="btn btn-sm btn-primary" style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>
-                                        <buttton id='f93nfo0' class="btn btn-sm btn-primary" type='button' data-toggle="tooltip" title="Refresh Customs List" data-placement="left" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="help-label">
-                                        Compliance Specific Controls
-                                    </label>
-                                    
-                                    <?php if($custom_control == 'null'){ ?>
-                                    <div class="add-customs">
-                                        <input type="text" class="form-control" placeholder="Enter custom control description..." name='custom-control[]'>
-                                        <button type="button" class="btn btn-sm btn-primary" id="btn-append-custom-control">+ Add</button>
-                                    </div>
-                                    <div id='add-customs-control'></div>
-                                    <?php }else{ ?>
-                                    
-                                    <?php foreach(unserialize($custom_control) as $value){ ?>
-                                    <div class="add-customs">
-                                        <input type="text" class="form-control" placeholder="Enter custom control description..." name='custom-control[]' value='<?php echo $value; ?>'/>
-                                        <button type="button" class="btn btn-sm btn-primary" id="btn-append-custom-control">+ Add</button>
-                                    </div>
-                                    <?php break; ?>
-                                    <?php } ?>
-                                    
-                                    <div id='add-customs-control'>
-                                        <?php foreach(unserialize($custom_control) as $k => $value){ ?>
-                                        <?php if($k){ ?>
-                                            <div style="display:flex;justify-content:center;align-items:center;">
-                                                <input type="text" class="form-control" value='<?php echo $value; ?>' placeholder="Enter Custom control Description..." style="margin-top:5px;margin-right:5px;" name="custom-control[]" />
-                                                <buttton class="btn btn-sm btn-primary remove_button r" type="button"><i class="fas fa-minus"></i></buttton>
                                             </div>
-                                        <?php } ?>
-                                        <?php } ?>
+                                            <button type="button" class="btn btn-sm btn-primary" id="btn-append-rec-control">+ Add</button>
+                                        </div>
+                                        
+                                        <div id='add-rec-control'>
+                                            <?php 
+                                                unset($controls_more[0]);
+                                                foreach($controls_more as $_control){
+                                            ?>
+                                            <div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;">
+                                                <?php echo listComplianceRecommendedControl_Selected($info['module'], $_control, $con); ?>
+                                                <buttton class="btn btn-sm btn-primary remove_button_t rmv_btn" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;' type="button"><i class="fas fa-minus"></i></buttton>
+                                            </div>
+                                            <?php } ?>
+                                        </div>
+                                        
+                                    </div> 
+                                    <?php }else{ ?>
+                                    <div class="form-group" id='recommended_type'>
+                                        <label class="help-label">
+                                            RiskSafe Recommended Controls
+                                        </label>
+                                        
+                                        <div class='c_type' id='control_selctor'>
+                                            <div id='fetchControls' style='width:100%;'>
+                                            <?php echo listComplianceRecommendedControl_Selected($info['module'], 'null', $con); ?>
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-primary" id="btn-append-rec-control">+ Add</button>
+                                        </div>
+                                            
+                                        <div id='add-rec-control'></div>
+                                    </div> 
+                                    <?php } ?>
+                                    
+                                    <?php if($info['control_type'] == 'saved'){ ?>
+                                    <div class="form-group" id='saved_type'>
+                                        <label class="help-label">
+                                            Saved Custom Controls
+                                        </label>
+                                        <div class="add-customs">
+                                            <?php 
+                                                $controls = unserialize($info['existing_ct']);
+                                                $controls_more = $controls;
+                                                $c_count = 0;
+                                                foreach($controls as $control){
+                                                    $c_count++;
+                                                    echo "<div style='width:100%;margin-right:5px;' id='fh4nfve_11'>";
+                                                    echo listCompanyControlSelected_New($company_id, $control, $con);
+                                                    echo "</div>";
+                                                    break;
+                                                }
+                                            ?>
+                                            
+                                            <a href='../customs/new-control?redirect=true' target='_blank' class="btn btn-sm btn-primary" id='fn4h9nf' style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>
+                                            <buttton id='f93nfo0_11' class="btn btn-sm btn-primary" type='button' data-toggle="tooltip" title="Refresh Customs List" data-placement="left" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
+                                            <button type="button" class="btn btn-sm btn-primary" id="btn-append-saved-control" style='margin-left:5px;'>+ Add</button>
+                                        </div>
+                                        
+                                        <div id='add-saved-control' style='margin-top:5px;'>
+                                            <?php 
+                                                unset($controls_more[0]);
+                                                foreach($controls_more as $_control){
+                                            ?>
+                                            <div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> 
+                                                <?php echo listCompanyControlSelected_New($company_id, $_control, $con); ?>
+                                                <buttton class="btn btn-sm btn-primary remove_button_t rmv_btn" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;' type="button"><i class="fas fa-minus"></i></buttton>
+                                            </div>
+                                            <?php } ?>
+                                        </div>
+                                    </div>
+                                    <?php }else{ ?>
+                                    <div class="form-group" id='saved_type'>
+                                        <label class="help-label">
+                                            Saved Custom Controls
+                                        </label>
+                                        <div class="add-customs">
+                                            <div style='width:100%;margin-right:5px;' id='fh4nfve_11'>
+                                                <select name="saved-control[]" class="form-control" required>
+                                                    <?php echo listCompanyControl($company_id, $con); ?>
+                                                </select>
+                                            </div>
+                                            <a href='../customs/new-control?redirect=true' target='_blank' class="btn btn-sm btn-primary" id='fn4h9nf' style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>
+                                            <buttton id='f93nfo0_11' class="btn btn-sm btn-primary" type='button' data-toggle="tooltip" title="Refresh Customs List" data-placement="left" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
+                                            <button type="button" class="btn btn-sm btn-primary" id="btn-append-saved-control" style='margin-left:5px;'>+ Add</button>
+                                        </div>
+                                        
+                                        <div id='add-saved-control' style='margin-top:5px;'></div>
                                     </div>
                                     <?php } ?>
                                     
-                                    <div class="custom-controls"></div>
+                                    <?php if($info['control_type'] == 'custom'){ ?>
+                                    <div class="form-group" id='custom_type'>
+                                        <label class="help-label">
+                                            Assessment Specific Controls
+                                        </label>
+                                        <div class="add-customs">
+                                            <?php 
+                                                $controls = unserialize($info['existing_ct']);
+                                                $controls_more = $controls;
+                                                $c_count = 0;
+                                                foreach($controls as $control){
+                                                    $c_count++;
+                                            ?>
+                                            <input type="text" class="form-control" placeholder="Enter custom control description..." value='<?php echo $control; ?>' name='custom-control[]'>
+                                            <button type="button" class="btn btn-sm btn-primary" id="btn-append-custom-control">+ Add</button>
+                                            <?php break; } ?>
+                                        </div>
+                                        <div id='add-customs-control'>
+                                            <?php 
+                                                unset($controls_more[0]);
+                                                foreach($controls_more as $_control){
+                                            ?>
+                                            <div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> 
+                                                <input type='text' class='form-control' placeholder='Enter custom control description...' value='<?php echo $control; ?>' style='margin-top:5px;' name='custom-control[]'>
+                                                <buttton class="btn btn-sm btn-primary remove_button" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;' type="button"><i class="fas fa-minus"></i></buttton>
+                                            </div>
+                                            <?php } ?>
+                                        </div>
+                                    </div>
+                                    <?php }else{ ?>
+                                    <div class="form-group" id='custom_type'>
+                                        <label class="help-label">
+                                            Assessment Specific Controls
+                                        </label>
+                                        <div class="add-customs">
+                                            <input type="text" class="form-control" placeholder="Enter custom control description..." name='custom-control[]'>
+                                            <button type="button" class="btn btn-sm btn-primary" id="btn-append-custom-control">+ Add</button>
+                                        </div>
+                                        <div id='add-customs-control'></div>
+                                    </div>
+                                    <?php } ?>
                                 </div>
+                                
+                                
                                 <div class="form-group">
 									<label>Control Requirements: </label>
 									<input name="control" value='<?php echo $info['com_controls']; ?>' type="text" maxlength="255" class="form-control" placeholder="Type Something..." required>
@@ -440,60 +594,131 @@
     								<textarea name="imported_treatment" class="form-control" placeholder="Imported Treatments..." required><?php echo $info['imported_treatments']; ?></textarea>
     							</div> 
                                 <?php } ?>
-                                <div class="form-group">
+                                
+                                <div class="form-group" style='display:flex;gap:50px;'>
+                                <div>
+                                    <input type='radio' id='assessment-specific-t' value='custom' name='treatment-type' <?php if($info['treatment_type'] == 'custom'){ echo 'checked'; } ?> />
+                                    <label for='assessment-specific-t'>Assessment Specific Treatments</label>
+                                </div>
+                                <div>
+                                    <input type='radio' id='saved-t' value='saved' name='treatment-type' <?php if($info['treatment_type'] == 'saved'){ echo 'checked'; } ?> />
+                                    <label for='saved-t'>Saved Custom Controls</label>
+                                </div>
+                            </div>
+                            
+                            <style>
+                                <?php if($info['treatment_type'] == 'custom'){ ?>
+                                #saved_type_t{
+                                    display:none;
+                                }
+                                <?php }else if($info['treatment_type'] == 'saved'){ ?>
+                                #custom_type_t{
+                                    display:none;
+                                }
+                                <?php } ?>
+                            </style>
+                            
+                                <?php if($info['treatment_type'] == 'saved'){ ?>
+                                <div class="form-group" id='saved_type_t'>
+                                    <label class="help-label">
+                                        Saved Custom Treatments
+                                    </label>
+                                    <div class="add-customs">
+                                        <?php 
+                                            $treatments = unserialize($info['existing_tr']);
+                                            $treatment_more = $treatments;
+                                            $t_count = 0;
+                                            foreach($treatments as $treatment){
+                                                $t_count++;
+                                                echo "<div style='width:100%;margin-right:5px;' id='fh4nfvf'>";
+                                                echo listCompanyTreatmentSelected_New($company_id, $treatment, $con);
+                                                echo "</div>";
+                                                break;
+                                            }
+                                        ?>
+                                        
+                                        <a href='../customs/new-treatment?redirect=true' target='_blank' class="btn btn-sm btn-primary" style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>
+                                        <buttton id='f93nfo1' class="btn btn-sm btn-primary" type='button' data-toggle="tooltip" title="Refresh Customs List" data-placement="left" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
+                                        <button type="button" class="btn btn-sm btn-primary" id="btn-append-saved-treatment" style='margin-left:5px;'>+ Add</button>
+                                    </div>
+                                    
+                                    <div id='add-saved-treatment' style='margin-top:5px;'>
+                                        <?php 
+                                            unset($treatment_more[0]);
+                                            foreach($treatment_more as $_treatment){
+                                        ?>
+                                        <div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> 
+                                            <?php echo listCompanyTreatmentSelected_New($company_id, $_treatment, $con); ?>
+                                            <buttton class="btn btn-sm btn-primary remove_button_t rmv_btn" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;' type="button"><i class="fas fa-minus"></i></buttton>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                                <?php }else{ ?>
+                                <div class="form-group" id='saved_type_t'>
                                     <label class="help-label">
                                         Saved Custom Treatments
                                     </label>
                                     <div class="add-customs">
                                         <div style='width:100%;margin-right:5px;' id='fh4nfvf'>
-                                        <select name="saved-treatment" class="form-control" required style='margin-right:5px;'>
-                                            <?php 
-                                                if($saved_treatment == '1' || !$saved_treatment || $saved_treatment == null || $saved_treatment == 'null'){
-                                                    echo listCompanyTreatment($company_id, $con);
-                                                }else{
-                                                    echo listCompanyTreatmentSelected($company_id, $saved_treatment, $con); 
-                                                }
-                                            ?>
+                                        <select name="saved-treatment[]" class="form-control" required style='margin-right:5px;'>
+                                            <?php echo listCompanyTreatment($company_id, $con); ?>
                                         </select>
                                         </div>
                                         <a href='../customs/new-treatment?redirect=true' target='_blank' class="btn btn-sm btn-primary" style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>
                                         <buttton id='f93nfo1' class="btn btn-sm btn-primary" type='button' data-toggle="tooltip" title="Refresh Customs List" data-placement="left" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
+                                        <button type="button" class="btn btn-sm btn-primary" id="btn-append-saved-treatment" style='margin-left:5px;'>+ Add</button>
                                     </div>
+                                    
+                                    <div id='add-saved-treatment' style='margin-top:5px;'></div>
                                 </div>
-                                <div class="form-group">
+                                <?php } ?>
+                                
+                                <?php if($info['treatment_type'] == 'custom'){ ?>
+                                <div class="form-group" id='custom_type_t'>
                                     <label class="help-label">
                                         Compliance Specific Treatments
                                     </label>
-                                    
-                                    <?php if($custom_treatment == 'null'){ ?>
                                     <div class="add-customs">
-                                        <input type="text" class="form-control" placeholder="Enter custom Treatment description..." name='custom-treatment[]'>
+                                        <?php 
+                                            $treatments = unserialize($info['existing_tr']);
+                                            $treatment_more = $treatments;
+                                            $t_count = 0;
+                                            foreach($treatments as $treatment){
+                                                $t_count++;
+                                                echo "<div class='add-customs' style='width:100%;'>";
+                                                echo '<input type="text" class="form-control" value='.ucfirst($treatment).' placeholder="Enter custom control description..." name="custom-treatment[]">';
+                                                echo '<button type="button" class="btn btn-sm btn-primary" id="btn-append-custom-treatment">+ Add</button>';
+                                                echo "</div>";
+                                                break;
+                                            }
+                                        ?>
+                                    </div>
+                                    <div id='add-customs-treatment'>
+                                        <?php 
+                                            unset($treatment_more[0]);
+                                            foreach($treatment_more as $_treatment){
+                                        ?>
+                                        <div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> 
+                                            <input type="text" class="form-control" value='<?php echo ucfirst($_treatment); ?>' placeholder="Enter Custom Treatment Description..." style="margin-top:5px;" name="custom-treatment[]"  required/>
+                                            <buttton class="btn btn-sm btn-primary remove_button_t rmv_btn" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;' type="button"><i class="fas fa-minus"></i></buttton>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                                <?php }else{ ?>
+                                <div class="form-group" id='custom_type_t'>
+                                    <label class="help-label">
+                                        Assessment Specific Treatments
+                                    </label>
+                                    <div class="add-customs">
+                                        <input type="text" class="form-control" placeholder="Enter custom control description..." name='custom-treatment[]'>
                                         <button type="button" class="btn btn-sm btn-primary" id="btn-append-custom-treatment">+ Add</button>
                                     </div>
                                     <div id='add-customs-treatment'></div>
-                                    <?php }else{ ?>
-                                    
-                                    <?php foreach(unserialize($custom_treatment) as $value){ ?>
-                                    <div class="add-customs">
-                                        <input type="text" class="form-control" placeholder="Enter custom Treatment description..." name='custom-treatment[]' value='<?php echo $value; ?>'/>
-                                        <button type="button" class="btn btn-sm btn-primary" id="btn-append-custom-treatment">+ Add</button>
-                                    </div>
-                                    <?php break; ?>
-                                    <?php } ?>
-                                    
-                                    <div id='add-customs-treatment'>
-                                        <?php foreach(unserialize($custom_treatment) as $k => $value){ ?>
-                                        <?php if($k){ ?>
-                                            <div style="display:flex;justify-content:center;align-items:center;">
-                                                <input type="text" class="form-control" value='<?php echo $value; ?>' placeholder="Enter Custom Treatment Description..." style="margin-top:5px;margin-right:5px;" name="custom-treatment[]" />
-                                                <buttton class="btn btn-sm btn-primary remove_button_t r" type="button"><i class="fas fa-minus"></i></buttton>
-                                            </div>
-                                        <?php } ?>
-                                        <?php } ?>
-                                    </div>
-                                    <?php } ?>
-                                
                                 </div>
+                                <?php } ?>
+                                
                             </div>
                             <?php } ?>
                             
@@ -505,6 +730,10 @@
                             </div>
                         </div>
                         <div class="card-footer"></div>
+                    </form>
+                    
+                    <form id='getModule'>
+                        <input type='hidden' name='module_id' id='module_id' />
                     </form>
                 </div>
                 <?php }else{ ?>
@@ -540,6 +769,13 @@
     <script src="<?php echo $file_dir; ?>assets/js/page/sweetalert.js"></script>
     <script src="<?php echo $file_dir; ?>assets/js/admin.custom.js"></script>
     <style>
+    .c_type{
+            display:flex;
+            gap:10px;
+        }
+        .c_type button{
+            width:10% !important;
+        }
         textarea{
             min-height: 120px !important;
         }
@@ -554,5 +790,190 @@
             justify-content:space-between;
         }
     </style>
+    <script>
+        <?php if($toDisplay === true && $info !== null && $info['module'] !== null){ ?>
+        let fieldHTMLTreatent = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> <?php echo listComplianceRecommendedControl_Selected($info["module"], "null", $con); ?> <buttton class="btn btn-sm btn-primary remove_button_t" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
+        <?php }else{ ?>
+        let fieldHTMLTreatent = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> <select name="existing_ct[]" class="form-control" required> <option value="null" selected>None Selected</option> <option>Error</option> </select> <buttton class="btn btn-sm btn-primary remove_button_t" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
+        <?php } ?>
+
+        $("#module").change(function (e) {
+            var moduleValue = $("#module").val();
+            $('#add-rec-control').html(null);
+            
+            if (moduleValue == "none") {
+                $("#compliance__obligation").val('');
+                $("#compliance__requirements").val('');
+            } else {
+                $("#compliance__obligation").val('Fetching Compliance Obligation...');
+                $("#compliance__requirements").val('Fetching Compliance Requirements...');
+                
+                $("#module_id").val('');
+                $("#module_id").val(moduleValue);
+                    
+                    
+                $("#getModule").submit();
+            }
+            
+        });
+        
+        $("#getModule").submit(function (event) {
+          event.preventDefault();
+        
+          var formValues = $(this).serialize();
+          $.post("../ajax/compliances", {
+            getModule: formValues,
+          }).done(function (data) {
+            const jsonObject = JSON.parse(data);
+            $("#compliance__obligation").val(jsonObject.obligation);
+            $("#compliance__requirements").val(jsonObject.requirements);
+            $("#com_officer").val(jsonObject.officers);
+            $("#reference").val(jsonObject.reference);
+            $("#com_freq").html(jsonObject.frequency);
+            $("#com_status").html(jsonObject.effectiveness);
+                $("#existing_ct").html(jsonObject.controls);
+            
+            
+            if(jsonObject.hasData === true){
+                $('#btn-append-rec-control').show();
+            }
+            
+            if(jsonObject.hasControl === true){
+                $('#btn-append-rec-control').show();
+                fieldHTMLTreatent = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> <select name="existing_ct[]" class="form-control" required> <option value="null" selected>None Selected</option> '+jsonObject.controls+'</select> <buttton class="btn btn-sm btn-primary remove_button_t" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
+            }else{
+                fieldHTMLTreatent = '';
+                $('#btn-append-rec-control').hide();
+                // $("#existing_ct").html(jsonObject.controls);
+            }
+            
+            
+            setTimeout(function () {
+              $("#getModule input").val("");
+            }, 0);
+          });
+        });
+        
+        $("input[type='radio'][name='control-type']") // select the radio by its id
+        .change(function(){ // bind a function to the change event
+            if( $(this).is(":checked") ){ // check if the radio is checked
+                var val = $(this).val(); // retrieve the value
+                // alert(val);
+                if(val == 'recommended_type'){
+                    $('#recommended').show();
+                    $('#custom_type').hide();
+                    $('#saved_type').hide();
+                    
+                }else if(val == 'saved'){
+                    $('#recommended_type').hide();
+                    $('#custom_type').hide();
+                    $('#saved_type').show();
+                }else if(val == 'custom'){
+                    $('#recommended_type').hide();
+                    $('#custom_type').show();
+                    $('#saved_type').hide();
+                }else{
+                    $('#recommended_type').show();
+                    $('#custom_type').hide();
+                    $('#saved_type').hide();
+                }
+                // alert('works');
+            }
+        });
+        
+        $("input[type='radio'][name='treatment-type']") // select the radio by its id
+        .change(function(){ // bind a function to the change event
+            if( $(this).is(":checked") ){ // check if the radio is checked
+                var val = $(this).val(); // retrieve the value
+                // alert(val);
+                if(val == 'saved'){
+                    $('#custom_type_t').hide();
+                    $('#saved_type_t').show();
+                }else if(val == 'custom'){
+                    $('#custom_type_t').show();
+                    $('#saved_type_t').hide();
+                }else{
+                    $('#custom_type_t').hide();
+                    $('#saved_type_t').show();
+                }
+            }
+        });
+        
+        var maxFieldTreatmnt = 10; //Input fields increment limitation
+            var addButtonTreament = $('#btn-append-rec-control'); //Add button selector
+            var wrapperTreatent = $('#add-rec-control'); //Input field wrapperTreatent
+            // var fieldHTMLTreatent = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"><select name="existing_ct[]" class="form-control" required> <option value="null" selected>None Selected</option> <?php echo listControl($company_id, $con); ?> </select> <buttton class="btn btn-sm btn-primary remove_button_t" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
+            var x_Treatmnt = 1; //Initial field counter is 1
+            
+            // Once add button is clicked
+            $(addButtonTreament).click(function(){
+                //Check maximum number of input fields
+                if(x_Treatmnt < maxFieldTreatmnt){ 
+                    alert('reached here');
+                    
+                    x_Treatmnt++; //Increase field counter
+                    $(wrapperTreatent).append(fieldHTMLTreatent); //Add field html
+                }else{
+                    alert('A maximum of '+maxFieldTreatmnt+' fields are allowed to be added. ');
+                }
+            });
+            
+            // Once remove button is clicked
+            $(wrapperTreatent).on('click', '.remove_button_t', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove(); //Remove field html
+                x_Treatmnt--; //Decrease field counter
+            });
+            
+            //saved
+            var maxFieldTreatmen = 10; //Input fields increment limitation
+            var addButtonTreatmen = $('#btn-append-saved-control'); //Add button selector
+            var wrapperTreatmen = $('#add-saved-control'); //Input field wrapperTreatment
+            var fieldHTMLTreatmen = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> <select name="saved-control[]" class="form-control" required> <?php echo listCompanyControl($company_id, $con); ?></select> <buttton class="btn btn-sm btn-primary remove_button_t" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
+            var x_Treatmen = 1; //Initial field counter is 1
+            
+            // Once add button is clicked
+            $(addButtonTreatmen).click(function(){
+                //Check maximum number of input fields
+                if(x_Treatmen < maxFieldTreatmen){ 
+                    x_Treatmen++; //Increase field counter
+                    $(wrapperTreatmen).append(fieldHTMLTreatmen); //Add field html
+                }else{
+                    alert('A maximum of '+maxFieldTreatmen+' fields are allowed to be added. ');
+                }
+            });
+            
+            // Once remove button is clicked
+            $(wrapperTreatmen).on('click', '.remove_button_t', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove(); //Remove field html
+                x_Treatmen--; //Decrease field counter
+            });
+            
+            // saved treatments
+            var maxFieldTeatmen = 10; //Input fields increment limitation
+            var adButtonTreatmen = $('#btn-append-saved-treatment'); //Add button selector
+            var wraperTreatmen = $('#add-saved-treatment'); //Input field wrapperTreatment
+            var fieldHTLTreatmen = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> <select name="saved-treatment[]" class="form-control" required> <?php echo listCompanyTreatment($company_id, $con); ?></select> <buttton class="btn btn-sm btn-primary remove_button_t" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
+            var x_Treatmens = 1; //Initial field counter is 1
+            
+            // Once add button is clicked
+            $(adButtonTreatmen).click(function(){
+                //Check maximum number of input fields
+                if(x_Treatmens < maxFieldTeatmen){ 
+                    x_Treatmens++; //Increase field counter
+                    $(wraperTreatmen).append(fieldHTLTreatmen); //Add field html
+                }else{
+                    alert('A maximum of '+maxFieldTeatmen+' fields are allowed to be added. ');
+                }
+            });
+            
+            // Once remove button is clicked
+            $(wraperTreatmen).on('click', '.remove_button_t', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove(); //Remove field html
+                x_Treatmens--; //Decrease field counter
+            });
+    </script>
 </body>
 </html>

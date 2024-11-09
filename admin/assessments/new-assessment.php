@@ -4,14 +4,30 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        $signedIn = false;
-        header('Location: '.$file_dir.'auth/sign-in?r=/assessments/new-assessment');
+        header('Location: '.$file_dir.'login?r=/assessments/new-assessment');
         exit();
     }
     $message = [];
     include '../../layout/db.php';
     include '../../layout/admin__config.php';
-    #include '../../layout/user_details.php';
+    
+    function getIndustryTitle($id, $con){
+        if($id == ''){
+           $response = 'None Selected'; 
+        }else{
+            $query="SELECT * FROM as_newrisk_industry WHERE industry_id = '$id'";
+    		$result=$con->query($query);
+    		if ($result->num_rows > 0) {	
+    			$row=$result->fetch_assoc();
+    			$response = $row['title'];
+    		}else{
+    			$response = 'Error!!';
+    		}
+        }
+		return $response;
+    }
+    
+    $risk__industry = $_SESSION['risk_industry'];
 
     function calculateRating($like, $consequence, $conn) {
 	
@@ -45,7 +61,7 @@
 
     if(isset($_POST["create-assessment"])){
         // $insert_userid = $_SESSION["userid"];
-        $type = sanitizePlus($_POST["type"]);
+        $type = ucwords(getIndustryTitle($risk__industry, $con));
         $team = sanitizePlus($_POST["team"]);
         $task = sanitizePlus($_POST["task"]);
         $descript = sanitizePlus($_POST["description"]);
@@ -60,8 +76,8 @@
 		$next = date("Y-m-d", strtotime($next));
         $as_id = secure_random_string(10);
 
-        $query = "INSERT INTO as_assessment (as_user, as_type, as_team, as_task, as_descript, as_number, as_owner, as_next, as_assessor, as_approval, as_completed, as_date, as_id, has_values, c_id, export_date) 
-        VALUES ('$userId', '$type', '$team', '$task', '$descript', '$number', '$owner', '$next', '$assessor', '$approval', '0', '$next', '$as_id', 'false', '$company_id', '$date')";
+        $query = "INSERT INTO as_assessment (industry, as_user, as_type, as_team, as_task, as_descript, as_number, as_owner, as_next, as_assessor, as_approval, as_completed, as_date, as_id, has_values, c_id, export_date) 
+        VALUES ('$risk__industry', '$userId', '$type', '$team', '$task', '$descript', '$number', '$owner', '$next', '$assessor', '$approval', '0', '$next', '$as_id', 'false', '$company_id', '$date')";
         $assessmentCreated = $con->query($query);
         if ($assessmentCreated) {
                 # code...
@@ -122,27 +138,16 @@
                             <div class="card-header"><h3 class="subtitle">Select Assessment Type</h3></div>
                             <div class="card-body">
                                 <div class="form-group">
-									<label>Type of Risk Assessment: </label>
-									<select name="type" class="form-control" required>
-										<option value='0'>Please select type...</option>
-                                        <?php
-                                            if(isset($_GET['type']) && $_GET['type'] == 'aml'){
-                                                $selected = 5;
-                                            }else{
-                                                $selected = -1;
-                                            }
-                                            $query="SELECT * FROM as_types ORDER BY idtype";
-                                            $result=$con->query($query);
-                                            $response="";
-                                            while ($row=$result->fetch_assoc()) {
-                                                $response.='<option value="' . $row["idtype"] . '"';
-                                                if ($selected==$row["idtype"]) $response.=' selected';
-                                                $response.='>' . $row["ty_name"] . '</option>';
-                                            }
+									<label>Selected Risk Industry: </label>
+									<div class='form-control' style='border:none !important;padding:10px 0px !important;font-size:16px;font-weight:400;'><?php echo $getIndustry = ucwords(getIndustryTitle($risk__industry, $con)); ?></div>
 									
-                                            echo $response;
-										?>
-									</select>
+									<div style='margin-top:20px;'>
+									<?php if($getIndustry == 'None Selected'){ ?>
+									<a href='industry' class='btn btn-primary btn-icon icon-left'>Select Industry</a>
+									<?php }else{ ?>
+									<a href='industry' class='btn btn-primary btn-icon icon-left'>Update Industry</a>
+									<?php } ?>
+									</div>
 								</div>
                             </div>
                             <div class="card-body"></div>

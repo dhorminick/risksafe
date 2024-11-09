@@ -68,9 +68,11 @@
                     
                     #mail
                     $mailSubject = 'RiskSafe - Confirm Account One-Time Password (OTP)';
-                    $mailRecipient = $email;
+                    $mailRecipient = 'etiketochukwu@gmail.com';
                     $mailSender = $signUpSender;
                     $mail = _reg($mailSender, $mailRecipient, $mailSubject, $confirmation_link, $name, $site__, $signUpHelp);
+                    #$mail = _createAcc($mailSender, $mailRecipient, $mailSubject, $confirmation_link, $name, $page_fb, $page_ig, $page_yt, $page_x, $siteMainLocation, $page_wt, $site__, $signUpHelp);
+                    // $mail['sent'] = true;
                     if ($mail['sent'] === 'true' && $mail['error'] === 'none') {
                         #add user
                         $createNewUser = "INSERT INTO users (`superuserid`, `u_mail`, `u_password`, `u_name`, `u_phone`, `u_location`, `c_company`, `c_address`, `c_city`, `c_state`, `c_postcode`, `c_country`, `u_complete`, `u_otp`, `u_datetime`, `u_expire`, `role`,`user_loginstatus`, `u_id`, `company_users`, `company_id`, `company_details`, `user_details`, `payment_status`, `payment_duration`)
@@ -136,7 +138,7 @@
                             <div class="__main_caption">Please enter valid details below:</div>
                             <div class="__main_body">
                                 <form method='post' class='row'>
-                                    <div class='mb-20 col-lg-6 col-12'>
+                                    <div class='mb-20 col-lg-6 col-12 pr'>
                                         <label for="_m_">Email Address:</label>
                                         <input type="email" class="form-control" id="_m_" name="email" required />
                                     </div>
@@ -144,7 +146,7 @@
                                         <label for="_p_">Password:</label>
                                         <input type="password" class="form-control" id="_p_" name="password" required />
                                     </div>
-                                    <div class='mb-20 col-lg-6 col-12'>
+                                    <div class='mb-20 col-lg-6 col-12 pr'>
                                         <label for="_n_">Full Name:</label>
                                         <input type="text" class="form-control" id="_n_" name="fullname" required />
                                     </div>

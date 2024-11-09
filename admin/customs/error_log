@@ -1,0 +1,5 @@
+[07-Aug-2024 16:55:02 Africa/Lagos] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function getIndustryTitle(), 1 passed in /home/portfol1/public_html/admin/customs/risks.php on line 104 and exactly 2 expected in /home/portfol1/public_html/admin/ajax/customs.php:14
+Stack trace:
+#0 /home/portfol1/public_html/admin/customs/risks.php(104): getIndustryTitle('9qe2ft110k')
+#1 {main}
+  thrown in /home/portfol1/public_html/admin/ajax/customs.php on line 14

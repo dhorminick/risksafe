@@ -4,7 +4,7 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'auth/sign-in?r=/assessments/all');
+        header('Location: '.$file_dir.'login?r=/assessments/all');
         exit();
     }
     $message = [];
@@ -26,20 +26,20 @@
             break;
     }
     
-    if (isset($_POST['delete-data'])){
-        $type = sanitizePlus($_POST['data-type']);
+    if (isset($_POST['delete-data']) && isset($_POST['data-id'])){
+        // $type = sanitizePlus($_POST['data-type']);
         $id = sanitizePlus($_POST['data-id']);
 
-        if (!$id || $id == null || $id == '' || !$type || $type == null || $type == '') {
+        if (!$id || $id == null || $id == '') {
             array_push($message, 'Error While Deleting Data: Missing Parameters!!');
         } else {
-            $query="DELETE FROM as_details WHERE ri_id = '$id' AND c_id = '$company_id'";
+            $query="DELETE FROM as_assessment_new WHERE risk_id = '$id' AND c_id = '$company_id'";
             $dataDeleted = $con->query($query);
                     
             if ($dataDeleted) {
                 array_push($message, 'Risk Deleted Successfully!!');
             }else{
-                array_push($message, 'Error 502: Error Deleting Assessment!!');
+                array_push($message, 'Error 502: Error Deleting Risk!!');
             }
         }
         
@@ -56,7 +56,7 @@
             $ass_exist = true;	
 			$assessment_details = $AssessmentExist->fetch_assoc();
 			$assess_id = $ass_Id;
-            
+			
             $user = $assessment_details['as_user'];
             $type = $assessment_details['as_type'];
             $team = $assessment_details['as_team'];
@@ -69,17 +69,10 @@
             $approval = $assessment_details['as_approval'];
             $completed = $assessment_details['as_completed'];
             $date = $assessment_details['as_date'];
+            $riskType = $assessment_details['industry'];
             
             $editLink = "edit-assessment?id=".$ass_Id;
-
-            $query="SELECT * FROM as_types WHERE idtype = '$type'";
-            $result = $con->query($query);
-            if ($row = $result->fetch_assoc()) {
-                $type = $row["ty_name"];
-            }else{
-                $type = 'Error';
-            }
-
+            
             switch ($approval) {
 
                 case 1:
@@ -95,7 +88,7 @@
                     break;
             }
 
-            $totalrisks = rowCountTotal($con, "as_details", "as_assessment", $ass_Id, "as_details_has_value", "true");
+            $totalrisks = rowCountTotal($con, "as_assessment_new", "assessment", $ass_Id, "c_id", $company_id);
             
 		} else {
 			$ass_exist = false;	
@@ -104,7 +97,6 @@
     } else {
         $toDisplay = false;
     }
-
 
 ?>
 
@@ -140,14 +132,11 @@
                     </div>
                     <div class="card-body">
                         <div class="row section-rows customs">
-                            <div class="user-description col-12 col-lg-7">
-                                <label>Assessment Type :</label>
-                                <div class="description-text"><?php echo $type; ?></div>
+                            <div class="user-description col-12 col-lg-12">
+                                <label>Assessment Industry :</label>
+                                <div class="description-text"><?php echo ucwords(getIndustryTitle($riskType, $con)); ?></div>
                             </div>
-                            <div class="user-description col-12 col-lg-4">
-                                <label>Issued On :</label>
-                                <div class="description-text"><?php echo $date; ?></div>
-                            </div>
+                            
                             <hr>
                             <div class="user-description col-12">
                                 <label>Assessment Team :</label>
@@ -165,13 +154,17 @@
                                 <label>Process Owner :</label>
                                 <div class="description-text"><?php echo $owner; ?></div>
                             </div>
-                            <div class="user-description col-12 col-lg-7">
+                            <div class="user-description col-12 col-lg-4">
                                 <label>Assessor :</label>
                                 <div class="description-text"><?php echo $assessor; ?></div>
                             </div>
                             <div class="user-description col-12 col-lg-4">
                                 <label>Assessment Approval :</label>
                                 <div class="description-text"><?php echo $approval; ?></div>
+                            </div>
+                            <div class="user-description col-12 col-lg-4">
+                                <label>Issued On :</label>
+                                <div class="description-text"><?php echo $date; ?></div>
                             </div>
                         </div>
                     </div>
@@ -183,7 +176,7 @@
                     <div class="card-body">
                         
                         <?php
-                            $CheckIfAssessmentExist = "SELECT * FROM as_details LEFT JOIN as_risks ON as_risks.idrisk=as_details.as_risk LEFT JOIN as_cat ON as_cat.idcat=as_details.as_hazard WHERE as_details.as_id= '$ass_Id' AND as_details_has_value = 'true' ORDER BY as_details.iddetail";
+                            $CheckIfAssessmentExist = "SELECT * FROM as_assessment_new WHERE assessment = '$ass_Id' ORDER BY id";
                             $AssessmentExist = $con->query($CheckIfAssessmentExist);
                             if ($AssessmentExist->num_rows > 0) { $ass_has_data = true; $i = 0;
                         ?>
@@ -197,14 +190,14 @@
                         <?php 
                             while($item = $AssessmentExist->fetch_assoc()){ 
                                 $i++;
-                                $viewLink = 'risks?id='.$item["ri_id"].'" data-toggle="tooltip" title="View Risk" data-placement="right"';
-                                $editLink = 'edit-risks?id='.$item["ri_id"].'" data-toggle="tooltip" title="Edit Risk" data-placement="right"';
-                                $deleteLink = 'javascript:void(0);" class="delete action-icons btn btn-danger btn-action mr-1" data-toggle="modal" data-target="#deleteModal" data-type="risks" data-id="'.$item["ri_id"];
+                                $viewLink = 'risks?id='.$item["risk_id"].'"';
+                                $editLink = 'edit-risks?id='.$item["risk_id"].'"';
+                                $deleteLink = 'javascript:void(0);" class="delete action-icons btn btn-danger btn-action mr-1" data-toggle="modal" data-target="#deleteModal" data-type="risks" data-id="'.$item["risk_id"];
                         ?>
                             <tr>
                                 <td><?php echo $i; ?></td>
-                                <td><?php echo ucwords(getRisks($item['as_risk'], $con)); ?></td>
-                                <td><?php echo ucwords(getHazards($item['as_hazard'], $con)); ?></td>
+                                <td><?php if($item['risk_type'] == 'custom'){echo ucwords(getCustomRisks_New($item['risk'], $con));}else{ echo ucwords(getRisks_New($item['risk'], $con)); }; ?></td>
+                                <td><?php if($item['risk_type'] == 'custom'){echo ucwords($item['sub_risk']);}else{ echo ucwords(getHazards_New($item['risk'], $item['sub_risk'], $con)); }; ?></td>
                                 <td>
                                     <a href="<?php echo $viewLink; ?>" class="action-icons btn btn-primary btn-action mr-1"><i class="fas fa-eye"></i></a>
                                     <a href="<?php echo $editLink; ?>" class="action-icons btn btn-info btn-action mr-1"><i class="fas fa-edit"></i></a>
@@ -251,84 +244,84 @@
                                             <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Almost
                                                 certain</td>
                                             <td width="14%" align="center" valign="middle" class='c-b' bgcolor="#FFFF00">
-                                                <?php echo countChart($assess_id, $company_id, 1, 1, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 1, 1, $con); ?></td>
                                             <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF9900">
-                                                <?php echo countChart($assess_id, $company_id, 1, 2, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 1, 2, $con); ?></td>
                                             <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF0000">
-                                                <?php echo countChart($assess_id, $company_id, 1, 3, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 1, 3, $con); ?></td>
                                             <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF0000">
-                                                <?php echo countChart($assess_id, $company_id, 1, 4, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 1, 4, $con); ?></td>
                                             <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF0000">
-                                                <?php echo countChart($assess_id, $company_id, 1, 5, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 1, 5, $con); ?></td>
                                             <td width="12%" align="center" valign="middle">
-                                                <strong><?php echo countLikelihood($assess_id, $company_id, 1, $con); ?></strong>
+                                                <strong><?php echo countLikelihood_New($assess_id, $company_id, 1, $con); ?></strong>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Likely
                                             </td>
                                             <td width="14%" align="center" valign="middle" class='c-b' bgcolor="#FFFF00">
-                                                <?php echo countChart($assess_id, $company_id, 2, 1, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 2, 1, $con); ?></td>
                                             <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF9900">
-                                                <?php echo countChart($assess_id, $company_id, 2, 2, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 2, 2, $con); ?></td>
                                             <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF9900">
-                                                <?php echo countChart($assess_id, $company_id, 2, 3, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 2, 3, $con); ?></td>
                                             <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF0000">
-                                                <?php echo countChart($assess_id, $company_id, 2, 4, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 2, 4, $con); ?></td>
                                             <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF0000">
-                                                <?php echo countChart($assess_id, $company_id, 2, 5, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 2, 5, $con); ?></td>
                                             <td width="12%" align="center" valign="middle">
-                                                <strong><?php echo countLikelihood($assess_id, $company_id, 2, $con); ?></strong>
+                                                <strong><?php echo countLikelihood_New($assess_id, $company_id, 2, $con); ?></strong>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Possible
                                             </td>
                                             <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#00FF00">
-                                                <?php echo countChart($assess_id, $company_id, 3, 1, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 3, 1, $con); ?></td>
                                             <td width="14%" align="center" valign="middle" class='c-b' bgcolor="#FFFF00">
-                                                <?php echo countChart($assess_id, $company_id, 3, 2, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 3, 2, $con); ?></td>
                                             <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF9900">
-                                                <?php echo countChart($assess_id, $company_id, 3, 3, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 3, 3, $con); ?></td>
                                             <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF9900">
-                                                <?php echo countChart($assess_id, $company_id, 3, 4, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 3, 4, $con); ?></td>
                                             <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF0000">
-                                                <?php echo countChart($assess_id, $company_id, 3, 5, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 3, 5, $con); ?></td>
                                             <td width="12%" align="center" valign="middle">
-                                                <strong><?php echo countLikelihood($assess_id, $company_id, 3, $con); ?></strong>
+                                                <strong><?php echo countLikelihood_New($assess_id, $company_id, 3, $con); ?></strong>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Unlikely
                                             </td>
                                             <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#00FF00">
-                                                <?php echo countChart($assess_id, $company_id, 4, 1, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 4, 1, $con); ?></td>
                                             <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#00FF00">
-                                                <?php echo countChart($assess_id, $company_id, 4, 2, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 4, 2, $con); ?></td>
                                             <td width="14%" align="center" valign="middle" class='c-b' bgcolor="#FFFF00">
-                                                <?php echo countChart($assess_id, $company_id, 4, 3, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 4, 3, $con); ?></td>
                                             <td width="14%" align="center" valign="middle" class='c-b' bgcolor="#FFFF00">
-                                                <?php echo countChart($assess_id, $company_id, 4, 4, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 4, 4, $con); ?></td>
                                             <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF9900">
-                                                <?php echo countChart($assess_id, $company_id, 4, 5, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 4, 5, $con); ?></td>
                                             <td width="12%" align="center" valign="middle">
-                                                <strong><?php echo countLikelihood($assess_id, $company_id, 4, $con); ?></strong>
+                                                <strong><?php echo countLikelihood_New($assess_id, $company_id, 4, $con); ?></strong>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Rare</td>
                                             <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#00FF00">
-                                                <?php echo countChart($assess_id, $company_id, 5, 1, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 5, 1, $con); ?></td>
                                             <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#00FF00">
-                                                <?php echo countChart($assess_id, $company_id, 5, 2, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 5, 2, $con); ?></td>
                                             <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#00FF00">
-                                                <?php echo countChart($assess_id, $company_id, 5, 3, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 5, 3, $con); ?></td>
                                             <td width="14%" align="center" valign="middle" class='c-b' bgcolor="#FFFF00">
-                                                <?php echo countChart($assess_id, $company_id, 5, 4, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 5, 4, $con); ?></td>
                                             <td width="14%" align="center" valign="middle" class='c-b' bgcolor="#FFFF00">
-                                                <?php echo countChart($assess_id, $company_id, 5, 5, $con); ?></td>
+                                                <?php echo countChart_New($assess_id, $company_id, 5, 5, $con); ?></td>
                                             <td width="12%" align="center" valign="middle">
-                                                <strong><?php echo countLikelihood($assess_id, $company_id, 5, $con); ?></strong>
+                                                <strong><?php echo countLikelihood_New($assess_id, $company_id, 5, $con); ?></strong>
                                             </td>
                                         </tr>
                                         <tr>
@@ -336,19 +329,19 @@
                                                 <strong>Totals</strong>
                                             </td>
                                             <td width="14%" align="center" valign="middle">
-                                                <strong><?php echo countConsequence($assess_id, $company_id, 1, $con); ?></strong>
+                                                <strong><?php echo countConsequence_New($assess_id, $company_id, 1, $con); ?></strong>
                                             </td>
                                             <td width="14%" align="center" valign="middle">
-                                                <strong><?php echo countConsequence($assess_id, $company_id, 2, $con); ?></strong>
+                                                <strong><?php echo countConsequence_New($assess_id, $company_id, 2, $con); ?></strong>
                                             </td>
                                             <td width="14%" align="center" valign="middle">
-                                                <strong><?php echo countConsequence($assess_id, $company_id, 3, $con); ?></strong>
+                                                <strong><?php echo countConsequence_New($assess_id, $company_id, 3, $con); ?></strong>
                                             </td>
                                             <td width="14%" align="center" valign="middle">
-                                                <strong><?php echo countConsequence($assess_id, $company_id, 4, $con); ?></strong>
+                                                <strong><?php echo countConsequence_New($assess_id, $company_id, 4, $con); ?></strong>
                                             </td>
                                             <td width="14%" align="center" valign="middle">
-                                                <strong><?php echo countConsequence($assess_id, $company_id, 5, $con); ?></strong>
+                                                <strong><?php echo countConsequence_New($assess_id, $company_id, 5, $con); ?></strong>
                                             </td>
                                             <td width="12%" align="center" valign="middle">
                                                 <strong><?php echo $totalrisks; ?></strong>
@@ -368,25 +361,25 @@
                                         <tr>
                                             <td width="60%" align="left" valign="middle">&nbsp;Extreme risks</td>
                                             <td align="center" valign="middle" bgcolor="#FF0000" class='c-w'>
-                                                <strong><?php echo countRisks($assess_id, $company_id, 4, $con); ?></strong>
+                                                <strong><?php echo countRisks_New($assess_id, $company_id, 4, $con); ?></strong>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="60%" align="left" valign="middle">&nbsp;High risks</td>
                                             <td align="center" valign="middle" bgcolor="#FF9900" class='c-w'>
-                                                <strong><?php echo countRisks($assess_id, $company_id, 3, $con); ?></strong>
+                                                <strong><?php echo countRisks_New($assess_id, $company_id, 3, $con); ?></strong>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="60%" align="left" valign="middle">&nbsp;Medium risks</td>
                                             <td align="center" valign="middle c-b" bgcolor="#FFFF00" class='c-b'>
-                                                <strong><?php echo countRisks($assess_id, $company_id, 2, $con); ?></strong>
+                                                <strong><?php echo countRisks_New($assess_id, $company_id, 2, $con); ?></strong>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td width="60%" align="left" valign="middle">&nbsp;Low risks</td>
                                             <td align="center" valign="middle" bgcolor="#00FF00" class='c-w'>
-                                                <strong><?php echo countRisks($assess_id, $company_id, 1, $con); ?></strong>
+                                                <strong><?php echo countRisks_New($assess_id, $company_id, 1, $con); ?></strong>
                                             </td>
                                         </tr>
                                     </table>
@@ -417,7 +410,30 @@
             </div>
             </section>
         </div>
-        <?php require '../../layout/delete_data.php' ?>
+        
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirm Action</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="font-weight: 400;">
+                    Are You Sure You Want To Delete This Risk?
+                </div>
+                <div class="modal-footer bg-whitesmoke">
+                    <form id='deleteData' style="width:100%;" method='post' action=''>
+                        <input type="hidden" name="data-id" id="data-id" required>
+                        <input type="hidden" name="data-type" id="data-type" required>
+                        <button type="submit" class="btn btn-primary btn-icon icon-left" name="delete-data" style="width:100%;"><i class="fas fa-trash-alt"></i> Delete <span class="view-type" style="text-transform: capitalize;"></span></button>
+                    </form>
+                </div>
+            </div>
+          </div>
+    </div>
+        <?php #require '../../layout/delete_data.php' ?>
         <?php require '../../layout/footer.php' ?>
         </footer>
         </div>
@@ -440,6 +456,9 @@
         }
         .user-description + .user-description{
             margin-top: 10px;
+        }
+        .title_text{
+            
         }
         table#table{
             border-radius: 5px !important;

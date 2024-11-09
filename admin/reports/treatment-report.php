@@ -4,13 +4,12 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'auth/sign-in?r=/reports/treatment-reports');
-        exit();
+        header('Location: '.$file_dir.'login?r=/reports/control-reports');
     }
     $message = [];
     include '../../layout/db.php';
-    include '../../layout/admin__config.php';
-    // include '../ajax/customs.php';
+    include '../../layout/admin_config.php';
+    include '../ajax/customs.php';
     include_once 'summary.php';
     
     use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -41,8 +40,8 @@
     	    $smallestNumber = 0;
     	}
     	
-    	$largestNumber_1 = DateTime::createFromFormat('Y-m-d H:i:s', $largestNumber);
-        $smallestNumber_1 = DateTime::createFromFormat('Y-m-d H:i:s', $smallestNumber);
+    	$largestNumber_1 = DateTime::createFromFormat('Y-m-d', $largestNumber);
+        $smallestNumber_1 = DateTime::createFromFormat('Y-m-d', $smallestNumber);
                 
         $largestNumber__1 = date_format($largestNumber_1, "Y-m-d");
         $smallestNumber__1 = date_format($smallestNumber_1, "Y-m-d");
@@ -219,7 +218,7 @@
                                     <th style="width: 5%;">S/N</th>
                                     <th style='width: 30%'>Title</th>
                                     <th>Description</th>
-                                    <th style='width: 10%'>Status</th>
+                                    <thstyle='width: 10%'>Status</th>
                                     <th style='width: 10%'>...</th>
                                 </tr>
                             </thead>

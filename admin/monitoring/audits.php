@@ -128,26 +128,6 @@
                         <tbody> 
                             <?php 
                             if($query->num_rows > 0){ $i = 0;
-                                function get_Frequencyis($freq){
-
-                                    if ($freq == 7) {
-                                        return "As Required";
-                                    } else if ($freq == 1) {
-                                        return "Daily Controls";
-                                    } else if ($freq == 2) {
-                                        return "Weekly Controls";
-                                    } else if ($freq == 3) {
-                                        return "Fort-Nightly Controls";
-                                    } else if ($freq == 4) {
-                                        return "Monthly Controls";
-                                    } else if ($freq == 5) {
-                                        return "Semi-Annually Controls";
-                                    } else if ($freq == 6) {
-                                        return "Annually Controls";
-                                    } else {
-                                        return "Un-Assessed";
-                                    }
-                                }
                                 while($item = $query->fetch_assoc()){ $i++;
                                     switch ($item["con_effect"]) {
                                         case 0:
@@ -160,6 +140,26 @@
                                             $effect="Effective";
                                             break;
                                     }
+                                    function get_Frequency($freq){
+
+                                        if ($freq == 7) {
+                                            return "As Required";
+                                        } else if ($freq == 1) {
+                                            return "Daily Controls";
+                                        } else if ($freq == 2) {
+                                            return "Weekly Controls";
+                                        } else if ($freq == 3) {
+                                            return "Fort-Nightly Controls";
+                                        } else if ($freq == 4) {
+                                            return "Monthly Controls";
+                                        } else if ($freq == 5) {
+                                            return "Semi-Annually Controls";
+                                        } else if ($freq == 6) {
+                                            return "Annually Controls";
+                                        } else {
+                                            return "Un-Assessed";
+                                        }
+                                    }
                                     $viewLink = 'audit-details?id='.$item["aud_id"].'" data-toggle="tooltip" title="View Audit" data-placement="right"';
                                     $editLink = 'edit-audit?id='.$item["aud_id"].'" data-toggle="tooltip" title="Edit Audit" data-placement="right"';
                                     $deleteLink = 'javascript:void(0);" class="delete action-icons btn btn-danger btn-action mr-1" data-toggle="modal" data-target="#deleteModal" data-type="audit" data-id="'.$item["aud_id"];
@@ -170,7 +170,7 @@
                                     <td><?php echo ucwords($item["con_control"]); ?></td>
                                     <td><?php echo date("m-d-Y", strtotime($item["con_date"])); ?></td>
                                     <td><?php echo ucwords($effect); ?></td>
-                                    <td><?php echo get_Frequencyis($item["con_frequency"]); ?></td>
+                                    <td><?php echo get_Frequency($item["con_frequency"]); ?></td>
                                     <td>
                                         <a href="<?php echo $viewLink; ?>" class="action-icons btn btn-primary btn-action mr-1"><i class="fas fa-eye"></i></a>
                                         <a href="<?php echo $editLink; ?>" class="action-icons btn btn-info btn-action mr-1"><i class="fas fa-edit"></i></a>
@@ -178,7 +178,12 @@
                                         <a href="<?php echo $downloadLink; ?>" class="export__data action-icons btn btn-success btn-action "><i class="fas fa-download"></i></a>
                                     </td>
                                 </tr> 
-                            <?php }}  ?> 
+                            <?php 
+                                } 
+                            }else{ 
+                                echo '<tr><td colspan="6">No Records found...</td></tr>'; 
+                            } 
+                            ?> 
                         </tbody> 
                         </table> 
                         <!-- Display pagination links -->

@@ -35,7 +35,7 @@ if(isset($_POST["export_data"]) && isset($_POST["export-type"]) && isset($_POST[
                 }
             }else if($type == 'recommended'){
                 $query = "SELECT * FROM as_controls WHERE id = '$s' LIMIT 1";
-    		    $result = $con->query($query);
+    		    $result = $conn->query($query);
                 if ($result->num_rows > 0) {
                     $info = $result->fetch_assoc();
                     $response = ucwords($info['control_name']);

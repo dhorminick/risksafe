@@ -65,7 +65,8 @@
                 $mailSubject = 'RiskSafe - Confirm Account One-Time Password (OTP)';
                 $mailRecipient = $email;
                 $mailSender = $signUpSender;
-                $mail = _createAcc($mailSender, $mailRecipient, $mailSubject, $confirmation_link, $name, $page_fb, $page_ig, $page_yt, $page_x, $siteMainLocation, $page_wt, $site__, $signUpHelp);
+                $mail = _reg($mailSender, $mailRecipient, $mailSubject, $confirmation_link, $name, $site__, $signUpHelp);
+                #$mail = _createAcc($mailSender, $mailRecipient, $mailSubject, $confirmation_link, $name, $page_fb, $page_ig, $page_yt, $page_x, $siteMainLocation, $page_wt, $site__, $signUpHelp);
                 // $mail['sent'] = true;
                 if ($mail['sent'] === 'true' && $mail['error'] === 'none') {
                     #add user
@@ -75,9 +76,7 @@
                     if ($userCreated) {
                         $createContext = "INSERT INTO `as_context`(`cx_user`, `cx_objectives`, `cx_processes`, `cx_products`, `cx_projects`, `cx_systems`, `cx_relation`, `cx_internallosses`, `cx_externallosses`, `cx_competitors`, `cx_environment`, `cx_regulatory`) VALUES ('$u_id','','','','','','','','','','','')";
                         $contextCreated = $con->query($createContext);
-                        if ($contextCreated) {}else{
-                            array_push($message, "Error 502: Server Error!! Contact Our Support Team For More Info.");
-                        }
+                        
                         array_push($message, 'Account Details Registered Successfully, Login To "'.$email.'" To Authenticate The Account!! ');
                     }else{
                         array_push($message, "Error 502: Server Error!! Contact Our Support Team For More Info.");

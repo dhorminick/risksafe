@@ -4,7 +4,7 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: /auth/sign-in');
+        header('Location: /login');
         exit();
     }
     $message = [];

@@ -10,6 +10,49 @@
 		}
 	
 	}
+	
+	function getIndustryTitle($id, $con){
+        if($id == ''){
+           $response = 'None Selected'; 
+        }else{
+            $query="SELECT * FROM as_newrisk_industry WHERE industry_id = '$id'";
+    		$result=$con->query($query);
+    		if ($result->num_rows > 0) {	
+    			$row=$result->fetch_assoc();
+    			$response = $row['title'];
+    		}else{
+    			$response = 'Error!!';
+    		}
+        }
+		return $response;
+    }
+	
+	function getIndustries($id, $con){
+        if($id == ''){
+           $selected = 'null'; 
+        }else{
+            $selected = $id;
+        }
+            
+    		$query="SELECT * FROM as_newrisk_industry ORDER BY id";
+    		$result=$con->query($query);
+    		if ($result->num_rows > 0) {	
+    			$response='<select name="industry" class="form-control" required>';
+    			while ($row=$result->fetch_assoc()) {
+    				$response.='<option value="' . $row["industry_id"] . '"';
+    				if ($row["industry_id"]==$selected) $response.=' selected';
+    				$response.='>' . ucwords($row["title"]) . '</option>';
+    			}
+    			$response.="</select>";
+    		}else{
+    			$response = 'Error!!';
+    		}
+    		
+        
+
+		return $response;
+    }
+    
     function listCustomControls($start, $end, $company_id, $conn) {
 	
 		$query="SELECT * FROM as_customcontrols WHERE c_id = '$company_id' ORDER BY id DESC LIMIT $start, $end";
@@ -98,6 +141,23 @@
 		if($result->num_rows > 0){
 		    $row=$result->fetch_assoc();
 		    $response = $row['control_name'];
+		}else{
+		    $response = 'Error!';
+		}
+	    }
+	    
+	    return $response;
+	}
+	
+	function listTreatmentCategory($id, $con) {
+	    if ($id == 'null'){
+	        $response = 'No Category Selected';
+	    }else{
+		$query="SELECT * FROM as_customtreatments WHERE treatment_id = '$id'";
+		$result = $con->query($query);
+		if($result->num_rows > 0){
+		    $row=$result->fetch_assoc();
+		    $response = $row['title'];
 		}else{
 		    $response = 'Error!';
 		}

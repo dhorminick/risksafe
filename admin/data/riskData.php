@@ -56,12 +56,7 @@ if(isset($_POST['page'])){
         <?php 
         if($_query->num_rows > 0){ $i = 0;
                                 while($item = $_query->fetch_assoc()){ $i++;
-                                    $id = $item['as_type'];
-                                    $q_uery = "SELECT ty_name FROM as_types WHERE idtype='$id'";
-                                    $r_esult = $db->query($q_uery);
-                                    if ($row = $r_esult->fetch_assoc()) {
-                                        $response["type"] = $row["ty_name"];
-                                    }
+                                    
                                     $as_HasValue = $item["has_values"];
                                     if($as_HasValue == 'true'){
                                         $_editLink = "edit-assessment?id=".$item["as_id"];
@@ -79,7 +74,7 @@ if(isset($_POST['page'])){
                                     <td><?php echo $i; ?></td>
                                     <td><?php echo ucwords($item['as_team']); ?></td>
                                     <td><?php echo ucwords($item['as_task']); ?></td>
-                                    <th><?php echo ucwords($row["ty_name"]); ?></th>
+                                    <th><?php echo ucwords(getIndustryTitle($item["industry"], $con)); ?></th>
                                     <td><?php echo date("m-d-Y", strtotime($item["as_date"])); ?></td>
                                     <td>
                                         <a href="<?php echo $viewLink; ?>" class="action-icons btn btn-primary btn-action mr-1"><i class="fas fa-eye"></i></a>

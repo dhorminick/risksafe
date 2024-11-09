@@ -4,7 +4,7 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'auth/sign-in?r=/assessments/all');
+        header('Location: '.$file_dir.'login?r=/assessments/all');
         exit();
     }
     $message = [];
@@ -15,13 +15,14 @@
     $ass_exist = false;
     $noValue = true;
     #$toEdit = false;
+    $risk__industry = $_SESSION['risk_industry'];
 
     if (isset($_GET['id']) && isset($_GET['id']) !== "") {
         $assess_id = sanitizePlus($_GET['id']);
         $toDisplay = true;
         
         if(isset($_POST["update-assessment"])){
-                $type = sanitizePlus($_POST["type"]);
+                // $type = sanitizePlus($_POST["type"]);
                 $team = sanitizePlus($_POST["team"]);
                 $task = sanitizePlus($_POST["task"]);
                 $descript = sanitizePlus($_POST["description"]);
@@ -104,11 +105,9 @@
                     <div class="card-body">
                         <?php include '../../layout/alert.php'; ?>
                         <div class="form-group">
-                            <label>Type of Risk Assessment: </label>
-                            <select name="type" class="form-control" required>
-                                <option value="0">Please select type...</option>
-                                <?php echo listTypesAssessment($info['as_type'], $con); ?>
-                            </select>
+							<label>Selected Risk Industry: </label>
+							<div class='form-control' style='font-weight:400;border:none !important;padding:10px 0px !important;'><?php echo ucwords(getIndustryTitle($risk__industry, $con)); ?></div>
+						    <div style='margin-top:20px;'>NOTE: Industry type cannot be modified after risk have been created!!</div>
 						</div>
                     </div>
                     

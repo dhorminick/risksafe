@@ -51,13 +51,13 @@
             $compli_exist = true;
 			$info = $ProcedureExist->fetch_assoc();
 			
-			$compliance_type = $info['type'];
+// 			$compliance_type = $info['type'];
 			
-			$recommended_control = $info['existing_ct'];
-            $saved_control = $info['saved_control'];	
-            $saved_treatment = $info['saved_treatment'];	
-            $custom_control = $info['custom_control'];	
-            $custom_treatment = $info['custom_treatment'];
+// 			$recommended_control = $info['existing_ct'];
+//             $saved_control = $info['saved_control'];	
+//             $saved_treatment = $info['saved_treatment'];	
+//             $custom_control = $info['custom_control'];	
+//             $custom_treatment = $info['custom_treatment'];
             
             if($info['type'] == 'imported' && $info['saved_control'] == null || $info['type'] == 'imported' && $info['saved_control'] == ''){
                 $saved_control = '1';
@@ -75,20 +75,20 @@
                 $custom_treatment = 'null';
             }
             
-            if($custom_control == null || $custom_control == 'null'){
-                $un_custom_control = 'null';
-            }else{
-                $un_custom_control = unserialize($custom_control);
-            }
+            // if($custom_control == null || $custom_control == 'null'){
+            //     $un_custom_control = 'null';
+            // }else{
+            //     $un_custom_control = unserialize($custom_control);
+            // }
             
-            if($custom_treatment == null || $custom_treatment == 'null'){
-                $un_custom_treatment = 'null';
-            }else{
-                $un_custom_treatment = unserialize($custom_treatment);
-            }
+            // if($custom_treatment == null || $custom_treatment == 'null'){
+            //     $un_custom_treatment = 'null';
+            // }else{
+            //     $un_custom_treatment = unserialize($custom_treatment);
+            // }
             
-            $hasCustomControl = is_array($un_custom_control);
-            $hasCustomTreatment = is_array($un_custom_treatment);
+            // $hasCustomControl = is_array($un_custom_control);
+            // $hasCustomTreatment = is_array($un_custom_treatment);
             
             $evidence = $info['com_documentation'];
             
@@ -98,41 +98,41 @@
                 $uploadedEvidence = '<a href="evidence/'.$evidence.'" target="_blank" class="bb">View File</a>';
             }
 
-            if ($hasCustomControl == true) {
-                #if value in db is array
-                $customControlArrayStatus = 'true';
-                if ($custom_control == 'a:1:{i:0;s:0:"";}') {
-                    #empty array
-                    $customControlValuesStatus = 'empty';
-                    #show a single empty textbox
-                } else if ($custom_control == null){
-                    $customControlValuesStatus = 'empty';
-                    #show all details
-                } else {
-                    $customControlValuesStatus = 'not-empty';
-                    #show all details
-                }
-            } else {
-                $customControlArrayStatus = 'false';
-            }
+            // if ($hasCustomControl == true) {
+            //     #if value in db is array
+            //     $customControlArrayStatus = 'true';
+            //     if ($custom_control == 'a:1:{i:0;s:0:"";}') {
+            //         #empty array
+            //         $customControlValuesStatus = 'empty';
+            //         #show a single empty textbox
+            //     } else if ($custom_control == null){
+            //         $customControlValuesStatus = 'empty';
+            //         #show all details
+            //     } else {
+            //         $customControlValuesStatus = 'not-empty';
+            //         #show all details
+            //     }
+            // } else {
+            //     $customControlArrayStatus = 'false';
+            // }
 
-            if ($hasCustomTreatment == true) {
-                #if value in db is array
-                $customTreatmentArrayStatus = 'true';
-                if ($custom_treatment == 'a:1:{i:0;s:0:"";}') {
-                    #empty array
-                    $customTreatmentValuesStatus = 'empty';
-                    #show a single empty textbox
-                } else if ($custom_treatment == null) {
-                    $customTreatmentValuesStatus = 'empty';
-                    #show all details
-                } else {
-                    $customTreatmentValuesStatus = 'not-empty';
-                    #show all details
-                }   
-            } else {
-                $customTreatmentArrayStatus = 'false';
-            }
+            // if ($hasCustomTreatment == true) {
+            //     #if value in db is array
+            //     $customTreatmentArrayStatus = 'true';
+            //     if ($custom_treatment == 'a:1:{i:0;s:0:"";}') {
+            //         #empty array
+            //         $customTreatmentValuesStatus = 'empty';
+            //         #show a single empty textbox
+            //     } else if ($custom_treatment == null) {
+            //         $customTreatmentValuesStatus = 'empty';
+            //         #show all details
+            //     } else {
+            //         $customTreatmentValuesStatus = 'not-empty';
+            //         #show all details
+            //     }   
+            // } else {
+            //     $customTreatmentArrayStatus = 'false';
+            // }
             
         }else{
             $compli_exist = false;
@@ -179,6 +179,13 @@
                                 <a class="btn btn-primary btn-icon icon-left header-a" href="all"><i class="fas fa-arrow-left"></i> Back <span class='hide-sm' style='font-size: 12px;'>To Compliances</span></a>
                             </div>
                             <div class="card-body">
+                                <?php if($info['module'] !== 'null'){ ?>
+                                <div class="form-group">
+									<label>Compliance: </label>
+									<div class="r_desc"><?php echo getSelectedCompliance($info['module'], $con); ?></div>
+								</div>
+								<?php } ?>
+								
                                 <div class="form-group">
 									<label>Compliance Task or Obligation: </label>
 									<div class="r_desc"><?php echo check_null($info['com_compliancestandard'], 'None Specified', 'Error!!'); ?></div>
@@ -199,12 +206,24 @@
 								</div>
                                 <div class="form-group col-12 col-lg-3">
 									<label>Compliance Status: </label>
-									<div class="r_desc"><?php echo check_null($info['co_status'], 'Un-Assessed', 'Error!!'); ?></div>
+									<div class="r_desc">
+									    <?php 
+									        if($info['co_status'] == "Un-Assessed" || strtolower($info['co_status']) == "un-assessed" || strtolower($info['co_status']) == "unassessed"){
+    										    $effect = 'unaccessed';
+    										}else{
+    										    $effect = $info['co_status'];
+    										}
+    										
+										    echo getEffectivenessTitle($effect);
+									    ?>
+									 </div>
 								</div>
 								
 								<div class="form-group col-12 col-lg-3">
 									<label>Compliance Frequency: </label>
-									<div class="r_desc"><?php echo get__Frequency($info['frequency']); ?></div>
+									<div class="r_desc">
+									    <?php echo getFrequencyTitle($info['frequency']); ?>
+									</div>
 								</div>
 								
                                 <div class="form-group col-12 col-lg-3">
@@ -229,38 +248,32 @@
                                 </div>
                                 <?php } ?>
                                 <div class="form-group">
-                                    <label class="help-label">
-                                        RiskSafe Recommended Controls
-                                    </label>
-                                    <div class="r_desc"><?php echo check_null(getControlSelected($recommended_control, $con), 'No Recommended Control Selected', 'Error!'); ?></div>
+                                <label class="help-label">
+                                    Selected Controls
+                                </label>
+                                <div class="r_desc">
+                                    <ul>
+                                    <?php 
+                                        $controls = unserialize($info['existing_ct']);
+                                        foreach($controls as $control){
+                                    ?>
+                                    <li>
+                                        <?php 
+                                        if($info['control_type'] === 'recommended'){
+                                            echo ucfirst(getControlTitle($control, $con)); 
+                                        }else if($info['control_type'] === 'saved'){
+                                            echo ucfirst(getControlTitle_Saved($control, $con)); 
+                                        }else{
+                                            echo ucfirst($control); 
+                                        }
+                                            
+                                        ?>
+                                    </li>
+                                    <?php } ?>
+                                    </ul>
                                 </div>
-                                <div class="form-group">
-                                    <label class="help-label">
-                                        Saved Custom Controls
-                                    </label>
-                                    <div class="add-customs">
-                                        <div class="r_desc"><?php echo check_null(getCompanyControlSelected($company_id, $saved_control, $con), 'No Custom Control Added', 'Error!'); ?></div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="help-label">
-                                        Compliance Specific Controls
-                                    </label>
-                                    <div class="add-customss">
-                                        <?php if($custom_control == 'null'){ ?>
-                                        <div class="r_desc">No Compliance Specific Controls Specified!</div>
-                                        <?php }else{ ?>
-                                        <div id='add-customs-control'>
-                                            <ul class="r_value_ul">
-                                            <?php foreach (unserialize($custom_control) as $value) { ?>
-                                                <?php if ($value !== '' || $value !== null) { ?>
-                                                <li class="r_value"><?php echo ucwords($value); ?></li>
-                                            <?php }} ?>
-                                            </ul>
-                                        </div>
-                                        <?php } ?>
-                                    </div>
-                                </div>
+                            </div>
+                                
                                 <div class="form-group">
 									<label>Control Requirements: </label>
 									<div class="r_desc"><?php echo check_null($info['com_controls'], 'None Specified', 'Error!'); ?></div>
@@ -282,34 +295,23 @@
                                     <label class="help-label"> Imported Treatments: </label>
                                     <div class="r_desc"><?php echo check_null($info['imported_treatments'], 'No Treatment Imported', 'Error!'); ?></div>
                                 </div>
-                                <?php } ?>
+                                <?php }else{ ?>
                                 <div class="form-group">
                                     <label class="help-label">
-                                        Saved Custom Treatments
+                                        Selected Treatments
                                     </label>
-                                    <div class="add-customs">
-                                        <div class="r_desc"><?php echo check_null(getCompanyTreatmentSelected($company_id, $saved_treatment, $con), 'No Treatment Process Specified', 'Error!'); ?></div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="help-label">
-                                        Compliance Specific Treatments
-                                    </label>
-                                    <div class="add-customss">
-                                        <?php if($custom_treatment == 'null'){ ?>
-                                        <div class="r_desc">No Compliance Specific Treatment Specified!</div>
-                                        <?php }else{ ?>
-                                        <div id='add-customs-control'>
-                                            <ul class="r_value_ul">
-                                            <?php foreach (unserialize($custom_treatment) as $value) { ?>
-                                                <?php if ($value !== '' || $value !== null) { ?>
-                                                <li class="r_value"><?php echo ucwords($value); ?></li>
-                                            <?php }} ?>
-                                            </ul>
-                                        </div>
+                                    <div class="r_desc">
+                                        <ul>
+                                        <?php 
+                                            $treatments = unserialize($info['existing_tr']);
+                                            foreach($treatments as $treatment){
+                                        ?>
+                                        <li><?php echo ucfirst(getComplianceTreatment($info['treatment_type'], $treatment, $company_id, $con)); ?></li>
                                         <?php } ?>
+                                        </ul>
                                     </div>
                                 </div>
+                                <?php } ?>
                             </div>
                         </div>
                         <div class="card-footer">

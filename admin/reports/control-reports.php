@@ -4,13 +4,12 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'auth/sign-in?r=/reports/control-report');
-        exit();
+        header('Location: '.$file_dir.'login?r=/reports/control-reports');
     }
     $message = [];
     include '../../layout/db.php';
-    include '../../layout/admin__config.php';
-    // include '../ajax/customs.php';
+    include '../../layout/admin_config.php';
+    include '../ajax/customs.php';
     include_once 'summary.php';
     
     use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -217,23 +216,7 @@
                             $query = "SELECT * FROM as_customcontrols WHERE c_id = '$company_id' ORDER BY id DESC LIMIT 5";
                             $result=$con->query($query);
 		                          if ($result->num_rows > 0) { $i = 0;
-		                          
-                                    function getFrequency($freq) {
-
-                                        if ($freq == 5) {
-                                            return "Single Application";
-                                        } else if ($freq == 1) {
-                                            return "Daily Application";
-                                        } else if ($freq == 2) {
-                                            return "Weekly Application";
-                                        } else if ($freq == 3) {
-                                            return "Monthly Application";
-                                        } else if ($freq == 4) {
-                                            return "Yearly Application";
-                                        } else {
-                                            return "Single Application";
-                                        }
-                                    }
+		                              
                         ?>
                         <table class="table table-striped table-bordered table-hover hide-md" id="table">
                             <thead>

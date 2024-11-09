@@ -64,6 +64,7 @@
                             $_SESSION["company_id"]= $row["company_id"];
                             $_SESSION["company_name"]= $row["c_company"];
                             $_SESSION['admin_mail'] = $company_mail;
+                            $_SESSION['risk_industry'] = $row['risk_industry'];
                 
                             array_push($message, "Sign In Succesfully!!");
             

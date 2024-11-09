@@ -5,7 +5,7 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'auth/sign-in?r=/customs/new-control');
+        header('Location: '.$file_dir.'login?r=/customs/new-control');
         exit();
     }
   

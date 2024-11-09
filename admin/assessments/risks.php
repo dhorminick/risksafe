@@ -4,7 +4,7 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'auth/sign-in?r=/assessments/all');
+        header('Location: '.$file_dir.'login?r=/assessments/all');
         exit();
     }
     $message = [];
@@ -14,122 +14,28 @@
 
     $ass_exist = false;
     $noValue = true;
-    #$toEdit = false;
+    $risk__industry = $_SESSION['risk_industry'];
 
     if (isset($_GET['id']) && isset($_GET['id']) !== "") {
         $ri_id = sanitizePlus($_GET['id']);
         $toDisplay = true;
-        $CheckIfAssessmentDetailsExist = "SELECT * FROM as_details WHERE ri_id = '$ri_id' AND c_id = '$company_id'";
+        $CheckIfAssessmentDetailsExist = "SELECT * FROM as_assessment_new WHERE risk_id = '$ri_id' AND c_id = '$company_id'";
         $AssessmentDetailsExist = $con->query($CheckIfAssessmentDetailsExist);
         if ($AssessmentDetailsExist->num_rows > 0) {	
             $ass_exist = true;	
 
 			$info = $AssessmentDetailsExist->fetch_assoc();
-
-			$as_risk = $info['as_risk'];
-			$assess_id = $info['as_id'];
-            $as_hazard = $info['as_hazard'];
-            $as_like = $info['as_like'];
-            $as_consequence = $info['as_consequence'];
-            $as_rating = $info['as_rating'];
-            $as_descript = $info['as_descript'];
-            $as_effect = $info['as_effect'];
-            $as_action = $info['as_action'];
-            $as_duedate = $info['as_duedate'];
-            $as_owner = $info['as_owner'];
-            $custom_control_main = $info['custom_control_main'];
-            $custom_treatment_main = $info['custom_treatment_main'];
-
-            $recommended_control = $info['recommended_control'];
-            $saved_control = $info['saved_control'];	
-            $saved_treatment = $info['saved_treatment'];	
-            $custom_control = $info['custom_control'];	
-            $custom_treatment = $info['custom_treatment'];
-            // $custom_treatment_main = $info['custom_treatment_main'];
-            // $custom_control_main = $info['custom_control_main'];
-            $as_details_has_value = $info['as_details_has_value'];	
-
-            if($custom_control == 'null'){
-                $un_custom_control = $custom_control;
-            }else{
-                $un_custom_control = unserialize($custom_control);
-            }
-
-            if($custom_treatment == 'null'){
-                $un_custom_treatment = $custom_treatment;
-            }else{
-                $un_custom_treatment = unserialize($custom_treatment);
-            }
-            
-
-            $hasCustomControl = is_array($un_custom_control);
-            $hasCustomTreatment = is_array($un_custom_treatment);
-
-            if ($hasCustomControl == true) {
-                #if value in db is array
-                $customControlArrayStatus = 'true';
-                if ($custom_control == 'a:1:{i:0;s:0:"";}') {
-                    #empty array
-                    $customControlValuesStatus = 'empty';
-                    #show a single empty textbox
-                } else if ($custom_control == 'null'){
-                    $customControlValuesStatus = 'empty';
-                } else if ($custom_control == null){
-                    $customControlValuesStatus = 'empty';
-                } else {
-                    $customControlValuesStatus = 'not-empty';
-                    #show all details
-                }
-            } else {
-                $customControlArrayStatus = 'false';
-            }
-
-            if ($hasCustomTreatment == true) {
-                #if value in db is array
-                $customTreatmentArrayStatus = 'true';
-                if ($custom_treatment == 'a:1:{i:0;s:0:"";}') {
-                    #empty array
-                    $customTreatmentValuesStatus = 'empty';
-                    #show a single empty textbox
-                } else if ($custom_treatment == 'null') {
-                    $customTreatmentValuesStatus = 'empty';
-                    #show all details
-                } else if ($custom_treatment == null) {
-                    $customTreatmentValuesStatus = 'empty';
-                    #show all details
-                } else {
-                    $customTreatmentValuesStatus = 'not-empty';
-                    #show all details
-                }   
-            } else {
-                $customTreatmentArrayStatus = 'false';
-            }
-            
-			
-			#$toEdit = true;
-            $selrisk = -1;
-            $selhazard = -1;
-            $cathazard = -1;
-            $selcontrol = -1;
-            $detId = -1;
-
-            $CheckIfAssessmentExist = "SELECT * FROM as_assessment WHERE as_id = '$assess_id' AND c_id = '$company_id'";
-            $AssessmentExist = $con->query($CheckIfAssessmentExist);
-            if ($AssessmentExist->num_rows > 0) {
-                $as_info = $AssessmentExist->fetch_assoc();
-                $riskType = $as_info["as_type"];
-
-                $query="SELECT * FROM as_types WHERE idtype = '$riskType'";
-                $result=$con->query($query);
-                if ($result->num_rows > 0) {
-                    $row = $result->fetch_assoc();
-                    $riskType = $row['ty_name'];
-                }else{
-                    $riskType = 'Error!';
-                }
-            }else{
-                $riskType = 'Error!!';
-            }
+// 			$control_type = $info['control_type'];
+// 			if($control_type == 'recommended'){
+//                 $label = 'Recommended Control';
+//             }else if($control_type == 'saved'){
+//                 $control = serialize($_POST["saved-control"]);
+//             }else if($control_type == 'custom'){
+//                 $control = serialize($_POST["custom-control"]);
+//             }else{
+//                 echo 'Error';
+//                 exit();
+//             }
 
         }else{
             $ass_exist = false;
@@ -168,30 +74,32 @@
                         <!-- Identification -->
                         <div class="card-header">
                             <h3 class="d-inline">Risk Identification</h3>
-                            <a class="btn btn-primary btn-icon icon-left header-a" href="assessment-details?id=<?php echo $assess_id; ?>"><i class="fas fa-arrow-left"></i> Go Back</a>
+                            <a class="btn btn-primary btn-icon icon-left header-a" href="assessment-details?id=<?php echo $info['assessment']; ?>"><i class="fas fa-arrow-left"></i> Go Back</a>
                         </div>
                         <div class="card-body">
-                            <div class="form-group">
-                                <label>Assessment Type</label>
-                                <div id="risk_type_div" style='font-weight:400;text-transform:capitalize;'>
-                                    <?php echo $riskType; ?>
+                            
+                            <div class="form-group" style='margin-bottom:20px;'>
+                                <label>Selected Risk Industry:</label>
+                                <div style='font-weight:400;font-size:16px;'>
+                                    <?php echo $getIndustry = ucwords(getIndustryTitle($risk__industry, $con)); ?>
                                 </div>
                             </div>
+                            
                             <div class="form-group">
-                                <label>Risk</label>
+                                <label>Risk:</label>
                                 <div id="risk_div">
-                                    <div class="r_desc"><?php echo getRisks($as_risk, $con); ?></div>
+                                    <div class="r_desc"><?php if($info['risk_type'] == 'custom'){echo ucwords(getCustomRisks_New($info['risk'], $con));}else{ echo ucwords(getRisks_New($info['risk'], $con)); }; ?></div>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label>Risk Hazard</label>
+                                <label>Sub Risk:</label>
                                 <div id="hazard_div">
-                                    <div class="r_desc"><?php echo getHazards($as_hazard, $con) ;?></div>
+                                    <div class="r_desc"><?php if($info['risk_type'] == 'custom'){echo ucwords($info['sub_risk']);}else{ echo ucwords(getHazards_New($info['risk'], $info['sub_risk'], $con)); }; ?></div>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label>Risk Description</label>
-                                <div class="r_desc"><?php echo $as_descript; ?></div>
+                                <label>Risk Description:</label>
+                                <div class="r_desc"><?php echo ucfirst($info['description']); ?></div>
                             </div>
                         </div>
                         
@@ -207,15 +115,15 @@
                             <div class="row custom-row">
                                 <div class="form-group col-lg-4 col-12">
                                     <label>Likelihood</label>
-                                    <div class="r_desc"><?php echo getLikelihood($as_like, $con);?></div>
+                                    <div class="r_desc"><?php echo getLikelihood($info['likelihood'], $con);?></div>
                                 </div>
                                 <div class="form-group col-lg-4 col-12">
                                     <label>Consequence</label>
-                                    <div class="r_desc"><?php echo getConsequence($as_consequence , $con); ?></div>
+                                    <div class="r_desc"><?php echo getConsequence($info['consequence'] , $con); ?></div>
                                 </div>
                                 <div class="form-group col-lg-4 col-12">
                                     <label>Evaluation Rating</label>
-                                    <div class="r_desc"><?php echo rating($as_like, $as_consequence, $con); ?></div>
+                                    <div class="r_desc"><?php echo rating($info['likelihood'], $info['consequence'], $con); ?></div>
                                 </div>
                             </div>
                         </div>
@@ -232,44 +140,38 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label class="help-label">
-                                    RiskSafe Recommended Controls
+                                    Selected Controls
                                 </label>
-                                <div class="r_desc"><?php echo getControlSelected($recommended_control, $con); ?></div>
-                            </div>
-                            <div class="form-group">
-                                <label class="help-label">
-                                    Saved Custom Controls
-                                </label>
-                                <div class="add-customs">
-                                    <div class="r_desc"><?php echo getCompanyControlSelected($company_id, $saved_control, $con); ?></div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="help-label">
-                                    Assessment Specific Controls
-                                </label>
-                                <div class="add-customss">
-                                    <?php if($custom_control == 'null'){ ?>
-                                    <div class="r_desc">No Assessment Specific Controls Specified!</div>
-                                    <?php }else{ ?>
-                                    <div id='add-customs-control'>
-                                        <ul class="r_value_ul">
-                                        <?php foreach (unserialize($custom_control) as $value) { ?>
-                                            <?php if ($value !== '' || $value !== null) { ?>
-                                            <li class="r_value"><?php echo ucwords($value); ?></li>
-                                        <?php }} ?>
-                                        </ul>
-                                    </div>
+                                <div class="r_desc">
+                                    <ul>
+                                    <?php 
+                                        $controls = unserialize($info['control']);
+                                        foreach($controls as $control){
+                                    ?>
+                                    <li>
+                                        <?php 
+                                        if($info['control_type'] == 'recommended'){
+                                            echo ucfirst(getControlTitle($info['risk'], $control, $con)); 
+                                        }else if($info['control_type'] == 'saved'){
+                                            echo ucfirst(getControlTitle_Saved($info['risk'], $control, $con)); 
+                                        }else{
+                                            echo ucfirst(getControlTitle_Custom($info['risk'], $control, $con)); 
+                                        }
+                                            
+                                        ?>
+                                    </li>
                                     <?php } ?>
+                                    </ul>
                                 </div>
                             </div>
+                            
                             <div class="form-group">
                                 <label>Control Effectiveness</label>
-                                <div class="r_desc"><?php echo $as_effect; ?></div>
+                                <div class="r_desc"><?php echo ucfirst($info['control_effectiveness']); ?></div>
                             </div>
                             <div class="form-group">
                                 <label>Action Type</label>
-                                <div class="r_desc"><?php echo getlistActions($as_action, $con); ?> </div>
+                                <div class="r_desc"><?php echo getlistActions($info['control_action'], $con); ?> </div>
                             </div>
                         </div>
                         
@@ -284,39 +186,28 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label class="help-label">
-                                    Saved Custom Treatments
+                                    Selected Treatments
                                 </label>
-                                <div class="add-customs">
-                                    <div class="r_desc"><?php echo getCompanyTreatmentSelected($company_id, $saved_treatment, $con); ?></div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="help-label">
-                                    Assessment Specific Treatments
-                                </label>
-                                <div id='add-customss'>
-                                    <?php if($custom_treatment == 'null'){ ?>
-                                    <div class="r_desc">No Assessment Specific Treatment Specified!</div>
-                                    <?php }else{ ?>
-                                    <div id='add-customs-control'>
-                                        <ul class="r_value_ul">
-                                        <?php foreach (unserialize($custom_treatment) as $value) { ?>
-                                            <?php if ($value !== '' || $value !== null) { ?>
-                                            <li class="r_value"><?php echo ucwords($value); ?></li>
-                                        <?php }} ?>
-                                        </ul>
-                                    </div>
+                                <div class="r_desc">
+                                    <ul>
+                                    <?php 
+                                        $treatments = unserialize($info['treatment']);
+                                        foreach($treatments as $treatment){
+                                    ?>
+                                    <li><?php echo ucfirst(getAssessmentTreatment($info['treatment_type'], $treatment, $company_id, $con)); ?></li>
                                     <?php } ?>
+                                    </ul>
                                 </div>
                             </div>
+                            
                             <div class='row custom-row'>
                             <div class="form-group col-lg-8 col-12">
                                 <label>Action Owner</label>
-                                <div class="r_desc"><?php echo $as_owner;  ?></div>
+                                <div class="r_desc"><?php echo ucwords($info['owner']);  ?></div>
                             </div>
                             <div class="form-group col-lg-4 col-12">
                                 <label>Due Date</label>
-                                <div class="r_desc"><?php echo date("Y-m-d", strtotime($as_duedate)); ?></div>
+                                <div class="r_desc"><?php echo date("Y-m-d", strtotime($info['due_date'])); ?></div>
                             </div>
                             </div>
                         </div>

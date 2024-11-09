@@ -48,10 +48,10 @@ $(document).ready(function () {
         //     page.removeChild(page.lastElementChild);
         // });
         
-            var maxFieldTreatment = 10; //Input fields increment limitation
+            var maxFieldTreatment = 20; //Input fields increment limitation
             var addButtonTreatment = $('#btn-append-custom-treatment'); //Add button selector
             var wrapperTreatment = $('#add-customs-treatment'); //Input field wrapperTreatment
-            var fieldHTMLTreatment = '<div style="display:flex;justify-content:center;align-items:center;"><input type="text" class="form-control" placeholder="Enter Custom Treatment Description..." style="margin-top:5px;" name="custom-treatment[]"  required/><buttton class="btn btn-sm btn-primary remove_button_t" data-toggle="tooltip" title="Remove Field" data-placement="left" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>'; //New input field html 
+            var fieldHTMLTreatment = '<div style="display:flex;justify-content:center;align-items:center;"><input type="text" class="form-control" placeholder="Enter Custom Treatment Description..." style="margin-top:5px;" name="custom-treatment[]"  required/><buttton class="btn btn-sm btn-primary remove_button_t" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>'; //New input field html 
             var x_Treatment = 1; //Initial field counter is 1
             
             // Once add button is clicked
@@ -74,10 +74,10 @@ $(document).ready(function () {
             
             
             //controls
-            var maxField = 10; //Input fields increment limitation
+            var maxField = 20; //Input fields increment limitation
             var addButton = $('#btn-append-custom-control'); //Add button selector
             var wrapper = $('#add-customs-control'); //Input field wrapper
-            var fieldHTML = '<div style="display:flex;justify-content:center;align-items:center;"><input type="text" class="form-control" placeholder="Enter Custom Control Description..." style="margin-top:5px;" name="custom-control[]" required /><buttton class="btn btn-sm btn-primary remove_button" type="button" data-toggle="tooltip" title="Remove Field" data-placement="left" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>'; //New input field html 
+            var fieldHTML = '<div style="display:flex;justify-content:center;align-items:center;"><input type="text" class="form-control" placeholder="Enter Custom Control Description..." style="margin-top:5px;" name="custom-control[]" required /><buttton class="btn btn-sm btn-primary remove_button" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>'; //New input field html 
             var x = 1; //Initial field counter is 1
             
             // Once add button is clicked

@@ -1,6 +1,3 @@
-//$(".hazard").hide();
-// $(".risk-rating").hide();
-
 function refreshTreatment(){
     $("#fh4nfve").load(" #fh4nfve > *");
     //$("#f94jf0k").html("<a href='../customs/new-control' class='btn btn-sm btn-primary' id='fn4h9nf' style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>");
@@ -8,26 +5,61 @@ function refreshTreatment(){
 
 //switch button func
 
+// $("#risk").change(function (e) {
+//   var riskValue = $("#risk").val();
+//   if (riskValue == "0") {
+//       $(".hazard_empty").show();
+//       $("#hazard_div").html('');
+//       $("#risk-description").val('');
+      
+//       $("#control_selctor").html('Select Risk Above To Get Recommended Control!!');
+//   } else {
+//     $("#get_hazard").val();
+//     $("#get_hazard").val(riskValue);
+//     $("#get_desc").val();
+//     $("#get_desc").val(riskValue);
+    
+//     $("#risk_val").val();
+//     $("#risk_val").val(riskValue);
+                        
+//     $("#getControls").submit();
+    
+//     $("#getHazard").submit();
+//     $("#getDescription").submit();
+//   }
+// });
 
-$("#risk").change(function (e) {
-  var riskValue = $("#risk").val();
-  if (riskValue == "0") {
-      $(".hazard_empty").show();
-      //$("#hazard_div").hide();
-      $("#hazard_div").html('');
-    //$(".hazard").hide();
-  } else {
-    $("#get_risk_category").val();
-    $("#get_risk_category").val(riskValue);
-    $("#get_risk_selected").val();
-    $("#get_risk_selected").val("<?php echo $selhazard; ?>");
-    $("#getRisk").submit();
+$("#getDescription").submit(function (event) {
+  event.preventDefault();
 
-    // $("#hazard_div").html('');
-    // $("#hazard_div").load('../ajax/assessment?get=hazards&category=' + riskValue + '&selected=' + selhazard);
-    // $("#hazard_div").show();
-    // alert('works');
-  }
+  var formValues = $(this).serialize();
+  $("#risk-description").val('Fetching Description...');
+  $.post("../ajax/assessment", {
+    getDescription: formValues,
+  }).done(function (data) {
+    $("#risk-description").val(data);
+    setTimeout(function () {
+      $("#getDescription input").val("");
+    }, 0);
+  });
+});
+
+$("#getHazard").submit(function (event) {
+  event.preventDefault();
+
+  var formValues = $(this).serialize();
+  $("#hazard_div").html('Fetching Hazards...');
+  $(".hazard_empty").hide();
+  $.post("../ajax/assessment", {
+    getHazard: formValues,
+  }).done(function (data) {
+    $("#hazard_div").html(data);
+    $(".hazard_empty").hide();
+    $(".hazard").show();
+    setTimeout(function () {
+      $("#getHazard input").val("");
+    }, 0);
+  });
 });
 
 $("#getRisk").submit(function (event) {
@@ -145,7 +177,7 @@ $("#getRating").submit(function (event) {
   event.preventDefault();
 
   var formValues = $(this).serialize();
-
+  $("#rating").html('Calculating Rating...');
   $.post("../ajax/assessment", {
     getRating: formValues,
   }).done(function (data) {

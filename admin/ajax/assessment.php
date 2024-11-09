@@ -1,5 +1,40 @@
 <?php
+    function getCustomRisks_New($id, $con){
+		$query="SELECT * FROM as_customrisks WHERE risk_id = '$id'";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {	
+			$row=$result->fetch_assoc();
+			$response = $row['title'];
+		}else{
+			$response = 'Error!!';
+		}
+		return $response;
+    }
+    
     #independent fuctions
+    function getAssessmentTreatment($type, $id, $company, $con){
+        if($type == 'custom'){
+            $response = ucfirst($id);
+        }else if($type == 'saved'){
+            $query="SELECT * FROM as_customtreatments WHERE c_id = '$company'";
+    		$result=$con->query($query);
+    		if ($result->num_rows > 0) {
+        		$response = 'Treatment Error!!';
+        		while ($row=$result->fetch_assoc()) {
+        			if($row['treatment_id'] == strtolower($id)){
+        			    $response = ucfirst($row['title']);
+        			}
+        		}  
+    		}else{
+    		    $response = 'Company Error!!';
+    		}
+        }else{
+            $response = 'Treatment Type Error!!';
+        }
+        
+        return $response;
+    }
+    
     function calculateRating($like, $consequence, $conn) {
 	
 		$result=$conn->query("SELECT * FROM as_consequence WHERE idconsequence='$consequence'");
@@ -74,6 +109,78 @@
 		return $response;
     }
     
+    function listCustomRisks($company_id, $selected, $industry, $con){
+		$query="SELECT * FROM as_customrisks WHERE c_id = '$company_id' AND industry = '$industry'";
+		$result=$con->query($query);
+		$response = '';
+		if ($result->num_rows > 0) {	
+			while ($row=$result->fetch_assoc()) {
+				$response.='<option value="' . $row["risk_id"] . '"';
+				if ($row["risk_id"] == $selected) $response.=' selected';
+				$response.='>' . ucfirst($row["title"]) . '</option>';
+			}
+		}else{
+		    $response = 'empty';
+		}
+		return $response;
+    }
+    
+    function listRisksNew($type, $selected, $company_id, $con, $null = false){
+		$query="SELECT * FROM as_newrisk WHERE industry = '$type' ORDER BY id";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {	
+			$response='<select name="risk" id="risk" class="form-control" required>';
+			if($null == false){
+			    $response.='<option value="0">Please select risk...</option>';
+			}
+			if(listCustomRisks($company_id, $selected, $type, $con) !== 'empty'){
+			    $response.= listCustomRisks($company_id, $selected, $type, $con);
+			}
+			while ($row=$result->fetch_assoc()) {
+				$response.='<option value="' . $row["risk_id"] . '"';
+				if ($row["risk_id"]==$selected) $response.=' selected';
+				$response.='>' . ucwords($row["title"]) . '</option>';
+			}
+			$response.="</select>";
+		}else{
+			$response = 'error';
+		}
+		return $response;
+    }
+    
+    function getRisks_New($id, $con){
+		$query="SELECT * FROM as_newrisk WHERE risk_id = '$id'";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {	
+			$row=$result->fetch_assoc();
+			$response = $row['title'];
+		}else{
+			$response = 'Error!!';
+		}
+		return $response;
+    }
+    
+    function getHazards_New($id, $id_2, $con){
+		$query="SELECT * FROM as_newrisk_sub WHERE risk_id = '$id'";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {
+		    $response = 'Error';
+		    
+			$row=$result->fetch_assoc();
+			$title = unserialize($row['title']);
+		    
+		    foreach($title as $value){
+		        if($value['id'] == $id_2){
+		            $response = ucwords($value['text']);
+		        }
+		    }
+		}else{
+			$response = 'Error!!';
+		}
+		
+		return $response;
+    }
+    
     function getRisks($id, $con){
 		$query="SELECT * FROM as_risks WHERE idrisk = '$id'";
 		$result=$con->query($query);
@@ -86,6 +193,8 @@
 		return $response;
     }
     
+    
+    
     function getHazards($id, $con){
 		$query="SELECT * FROM as_cat WHERE idcat = '$id'";
 		$result=$con->query($query);
@@ -95,6 +204,22 @@
 		}else{
 			$response = 'Error!!';
 		}
+		return $response;
+    }
+    
+    function getIndustryTitle($id, $con){
+        if($id == ''){
+           $response = 'None Selected'; 
+        }else{
+            $query="SELECT * FROM as_newrisk_industry WHERE industry_id = '$id'";
+    		$result=$con->query($query);
+    		if ($result->num_rows > 0) {	
+    			$row=$result->fetch_assoc();
+    			$response = $row['title'];
+    		}else{
+    			$response = 'Error!!';
+    		}
+        }
 		return $response;
     }
 
@@ -117,7 +242,49 @@
 		return $response;
 	
 	}
-
+	
+	function listHazardsNew($cat, $con) {
+	
+		$query="SELECT * FROM as_newrisk_sub WHERE risk_id = '$cat'";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {
+		    $row=$result->fetch_assoc();
+		    $subs = unserialize($row['title']);
+		    
+		    $response='<select name="hazard" id="hazard" class="form-control" required>';
+		    foreach($subs as $value){
+		        $response.='<option value="' . $value["id"] . '">' . ucwords($value['text']) . '</option>';
+		    }
+		    $response.="</select>";
+		}else{
+			$response = 'error';
+		}
+		return $response;
+	
+	}
+	
+	function listHazardsNewSelected($cat, $selected, $con) {
+	
+		$query="SELECT * FROM as_newrisk_sub WHERE risk_id = '$cat'";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {
+		    $row=$result->fetch_assoc();
+		    $subs = unserialize($row['title']);
+		    
+		    $response='<select name="hazard" id="hazard" class="form-control" required>';
+		    foreach($subs as $value){
+		        $response.='<option value="' . $value["id"] . '"';
+				if ($value["id"] == $selected) $response.=' selected';
+				$response.= '>' . ucfirst($value["text"]) . '</option>';
+						    }
+		    $response.="</select>";
+		}else{
+			$response = 'error';
+		}
+		return $response;
+	
+	}
+	
     function listTreatments($id, $con) {
 	
 		if ($id == -1) {
@@ -189,7 +356,7 @@
                     break;
             }
         } else {
-			$riskRating = 'error';
+			$riskRating = 'Error!!';
             // echo 'Please select Likelihood and Consequence...';
         }
 		return $riskRating;
@@ -244,6 +411,84 @@
 			$response.='<option value="' . $row["id"] . '">' . $row["control_name"] . '</option>';
 		}
 		return $response. $response1;
+	}
+	
+	function listControl_New($id, $con){
+		$response="";
+		$query="SELECT * FROM as_newrisk WHERE risk_id = '$id'";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {
+		    $row=$result->fetch_assoc();
+    		$control_list = unserialize($row['control']);
+    		$response.= '<select name="existing_ct[]" id="existing_ct" class="form-control" required>';
+    		foreach($control_list as $control){
+    		    $response.= '<option value="'.ucwords($control['id']).'">'.ucwords($control['text']).'</option>';
+    		}
+    		$response.= '</select>';
+		}else{
+		    $response.='<option value="null" selected>No Control Recommended For This Risk!!</option>';
+		}
+		
+		return $response;
+	}
+	
+	function listControl_NewSelected($id, $selected, $con){
+		$response="";
+		$query="SELECT * FROM as_newrisk WHERE risk_id = '$id'";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {
+		    $row=$result->fetch_assoc();
+    		$control_list = unserialize($row['control']);
+    		$response.= '<select name="existing_ct[]" id="existing_ct" class="form-control" required>';
+    		foreach($control_list as $control){
+    		    $response.='<option value="' . $control['id'] . '"';
+    			if (strtolower($control['id']) == strtolower($selected)) $response.=' selected';
+    			$response.='>' . ucwords($control['text']) . '</option>';
+    		    #$response.= '<option value="'.ucwords($control).'">'.ucwords($control).'</option>';
+    		}
+    		$response.= '</select>';
+		}else{
+		    $response.='<option value="null" selected>No Control Recommended For This Risk!!</option>';
+		}
+		
+		return $response;
+	}
+	
+	function getControlTitle($risk, $id, $con){
+	    $response="";
+		$query="SELECT * FROM as_newrisk WHERE risk_id = '$risk'";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {
+		    $row=$result->fetch_assoc();
+    		$control_list = unserialize($row['control']);
+    		foreach($control_list as $control){
+    			if (strtolower($control['id']) == strtolower($id)) {
+    			    $response = $control['text'];
+    			}
+    		}
+		}else{
+		    $response = 'Error!!';
+		}
+		
+		return $response;
+	}
+	
+	function getControlTitle_Custom($risk, $id, $con){
+	    return $id;
+	}
+	
+	function getControlTitle_Saved($risk, $id, $con){
+	    $response="";
+		$query="SELECT * FROM as_customcontrols WHERE control_id = '$id'";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {
+		    $row=$result->fetch_assoc();
+		    $response = $row['title'];
+		}else{
+		    $response = 'Error!!';
+		}
+		
+		return $response;
 	}
 	
 	function listCompanyControl($id, $con) {
@@ -309,6 +554,43 @@
 		return $response;
 	
 	}
+	
+	function getDescription($type, $con){
+	    $query="SELECT * FROM as_newrisk WHERE risk_id = '$type' LIMIT 1";
+	    $result=$con->query($query);
+	    if ($result->num_rows > 0) {
+    		$row=$result->fetch_assoc();
+    		$response = ucfirst(html_entity_decode($row['description']));
+		}else{
+		    $response = 'Error!!';
+		}
+		return $response;
+	}
+	
+	function getCustomData($risk, $con){
+	    $query="SELECT * FROM as_customrisks WHERE risk_id = '$risk' LIMIT 1";
+	    $result=$con->query($query);
+	    if ($result->num_rows > 0) {
+    		$row=$result->fetch_assoc();
+    		$response = array(
+    		    'desc' => ucfirst(html_entity_decode($row['description'])),
+    		    'sub' => ucfirst(html_entity_decode($row['sub'])),
+    		    'owner' => ucwords(html_entity_decode($row['owner']))
+    		);
+
+		}else{
+		    
+		    $response = array(
+		        'desc' => 'Error Fetching Risk Description',
+		        'sub' => 'Error Fetching Sub Risk...',
+		        'owner' => 'Error Fetching Owner...'
+		    );
+		}
+		
+		return json_encode($response);
+	}
+	
+	
 
 	function addTreatment($id, $descript, $tmp, $assessment, $conn, $rand_id) {
 		$query="INSERT INTO as_astreat (tr_det, tr_descript, tr_tmpid, tr_assessment, rand_id) VALUES ('$id', '$descript', '$tmp', '$assessment', '$rand_id')";
@@ -386,7 +668,93 @@
 		
 		echo $response;
     }
+    
+    if (isset($_POST["getHazard"])) {
+		include '../../layout/db.php';
 
+		function sanitizePlus($data) {
+			$data = trim($data);
+			$data = stripslashes($data);
+			$data = strip_tags($data);
+			$data = htmlspecialchars($data);
+			return $data;
+		}
+		
+		$value = $_POST["getHazard"];
+        $getArray = getToArray($value);
+		
+        $cat = sanitizePlus($getArray['category']);
+
+		$response = listHazardsNew($cat, $con);
+		
+		echo $response;
+    }
+    
+    if (isset($_POST["getControls"])) {
+		include '../../layout/db.php';
+
+		function sanitizePlus($data) {
+			$data = trim($data);
+			$data = stripslashes($data);
+			$data = strip_tags($data);
+			$data = htmlspecialchars($data);
+			return $data;
+		}
+		
+		$value = $_POST["getControls"];
+        $getArray = getToArray($value);
+		
+        $risk = sanitizePlus($getArray['risk']);
+
+		$response = listControl_New($risk, $con);
+		
+		echo $response;
+    }
+    
+    if (isset($_POST["getCustomData"])) {
+		include '../../layout/db.php';
+
+		function sanitizePlus($data) {
+			$data = trim($data);
+			$data = stripslashes($data);
+			$data = strip_tags($data);
+			$data = htmlspecialchars($data);
+			return $data;
+		}
+		
+		$value = $_POST["getCustomData"];
+        $getArray = getToArray($value);
+		
+        $risk = sanitizePlus($getArray['risk']);
+
+		$response = getCustomData($risk, $con);
+		
+		echo $response;
+    }
+    
+    
+    if (isset($_POST["getDescription"])) {
+		include '../../layout/db.php';
+
+		function sanitizePlus($data) {
+			$data = trim($data);
+			$data = stripslashes($data);
+			$data = strip_tags($data);
+			$data = htmlspecialchars($data);
+			return $data;
+		}
+		
+		$value = $_POST["getDescription"];
+        $getArray = getToArray($value);
+		
+        $cat = sanitizePlus($getArray['category']);
+
+		$response = getDescription($cat, $con);
+		
+		echo $response;
+    }
+    
+    
 	if (isset($_POST["getRating"])) {
 		include '../../layout/db.php';
 
@@ -728,6 +1096,51 @@
 		}
 	}
 	
+	function countChart_New($id, $company_id, $like, $consequence, $conn) {
+		$query="SELECT * FROM as_assessment_new WHERE assessment = '$id' AND likelihood='$like' AND consequence='$consequence' AND c_id = '$company_id'";
+		$response="";
+		$result=$conn->query($query);
+		if ($result->num_rows > 0) {
+			$response=$result->num_rows;	 
+		}else{
+            $response = false;
+        }
+		return $response;
+	}
+	
+	function countLikelihood_New($id, $company_id, $like, $conn) {
+		$query="SELECT * FROM as_assessment_new WHERE assessment= '$id' AND likelihood = '$like' AND c_id = '$company_id'";
+		$result=$conn->query($query);
+		if ($result->num_rows > 0) {
+			$response=$result->num_rows;	
+		} else {
+			$response=false;
+		}
+		return $response;
+	}
+	
+	function countConsequence_New($id, $company_id, $consequence, $conn) {
+		$query="SELECT * FROM as_assessment_new WHERE assessment = '$id' AND consequence = '$consequence' AND c_id = '$company_id'";
+		$result=$conn->query($query);
+		if ($result->num_rows > 0) {
+			$response=$result->num_rows;	
+		} else {
+			$response=false;
+		}
+		return $response;
+	}
+	
+	function countRisks_New($id, $company_id, $rating, $conn) {
+	    $query="SELECT * FROM as_assessment_new WHERE assessment = '$id' AND rating = '$rating' AND c_id = '$company_id'";
+		$result=$conn->query($query);
+		if ($result->num_rows > 0) {
+			$response=$result->num_rows;	
+		} else {
+			$response=0;
+		}
+		return $response;
+	}
+	
 	function countChart($id, $company_id, $like, $consequence, $conn) {
 		$query="SELECT * FROM as_details WHERE as_assessment = '$id' AND as_like='$like' AND as_consequence='$consequence' AND c_id = '$company_id'";
 		$response="";
@@ -795,7 +1208,7 @@
 		return $response;
 	}
 	
-	    function getLikelihood($id, $con){
+	function getLikelihood($id, $con){
 		$query="SELECT * FROM as_like WHERE idlike = '$id' LIMIT 1";
 		$result=$con->query($query);
 		if ($result->num_rows > 0) {	
@@ -818,6 +1231,55 @@
 		}
 		return $response;
     }
+    
+    function listCompanyControlSelected_New($company_id, $id, $con) {
+        
+        if($id == 'null'){
+            $response = listCompanyControl($company_id, $con);
+        }else{
+    		$response="";
+    		$query="SELECT * FROM as_customcontrols WHERE c_id = '$company_id' AND control_id = '$id'";
+    		$result=$con->query($query);
+    		if ($result->num_rows > 0) {
+                $response.='<select name="saved-control[]" class="form-control" required>';
+        		while ($row=$result->fetch_assoc()) {
+        			$response.='<option value="' . $row["control_id"] . '"';
+                    if (strtolower($row["control_id"]) == strtolower($id)) $response.=' selected';
+    			    $response.='>' . ucfirst($row["title"]) . '</option>';
+        		}   
+        		$response.='</select>';
+    		}else{
+    		    $response.='Error Fetching Saved Control!!';
+    		}
+        }
+		return $response;
+	
+	}
+	
+	function listCompanyTreatmentSelected_New($company_id, $id, $con) {
+        
+        if($id == 'null'){
+            $response = listCompanyTreatment($company_id, $con);
+        }else{
+    		$response="";
+    		$query="SELECT * FROM as_customtreatments WHERE c_id = '$company_id'";
+    		$result=$con->query($query);
+    		if ($result->num_rows > 0) {
+    		    $response.='<select name="saved-treatment[]" class="form-control" required>';
+        		while ($row=$result->fetch_assoc()) {
+        			$response.='<option value="' . $row["treatment_id"] . '"';
+                    if (strtolower($row["treatment_id"]) == strtolower($id)) $response.=' selected';
+    			    $response.='>' . ucfirst($row["title"]) . '</option>';
+        		}  
+        		$response.='</select>';
+    		}else{
+    		    $response.='Error Fetching Saved Treatment!!';
+    		}
+        }
+	
+		return $response;
+	
+	}
 
     function listControlSelected($selected, $con){
 		$response="";
@@ -845,7 +1307,7 @@
                 $response.='<option value="null">No Custom Control Selected!!</option>';
         		while ($row=$result->fetch_assoc()) {
         			$response.='<option value="' . $row["control_id"] . '"';
-                    if ($row["control_id"]==$id) $response.=' selected';
+                    if ($row["control_id"] == $id) $response.=' selected';
     			    $response.='>' . $row["title"] . '</option>';
         		}   
     		}else{

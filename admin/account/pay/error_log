@@ -1,0 +1,2 @@
+[03-Sep-2024 03:19:07 Africa/Lagos] PHP Fatal error:  Uncaught (Status 400) (Request req_PNjDweIxsb20iH) Your account cannot currently make live charges.
+  thrown in /home/portfol1/public_html/admin/account/pay/stripe-php/lib/Exception/ApiErrorException.php on line 38

@@ -4,12 +4,13 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'auth/sign-in?r=/assessments/all');
+        header('Location: '.$file_dir.'login?r=/assessments/all');
         exit();
     }
     $message = [];
     include '../../layout/db.php';
     include '../../layout/admin__config.php';
+    include '../ajax/assessment.php';
     
     if (isset($_POST['delete-data'])){
         $type = sanitizePlus($_POST['data-type']);
@@ -105,7 +106,7 @@
                                 <th scope="col" class="sorting" style='width: 5%;' coltype="idassessment" colorder="">S/N</th>
                                 <th scope="col" class="sorting" style='width: 23%;' coltype="idassessment" colorder="">Team or Organisation</th>
                                 <th scope="col" class="sorting" style='width: 23%;' coltype="idassessment" colorder="">Task or Process</th>
-                                <th scope="col" class="sorting" style='width: 17%;' coltype="idassessment" colorder="">Assessment Type</th>
+                                <th scope="col" class="sorting" style='width: 17%;' coltype="idassessment" colorder="">Industry</th>
                                 <th scope="col" class="sorting" style='width: 10%;' coltype="idassessment" colorder="">Date</th>
                                 <th scope="col" class="sorting" style='width: 21%;' coltype="idassessment" colorder="">...</th> 
                             </tr> 
@@ -114,12 +115,6 @@
                             <?php 
                             if($_query->num_rows > 0){ $i = 0;
                                 while($item = $_query->fetch_assoc()){ $i++;
-                                    $id = $item['as_type'];
-                                    $query = "SELECT ty_name FROM as_types WHERE idtype='$id'";
-                                    $result = $con->query($query);
-                                    if ($row = $result->fetch_assoc()) {
-                                        $response["type"] = $row["ty_name"];
-                                    }
                                     $as_HasValue = $item["has_values"];
                                     if($as_HasValue == 'true'){
                                         $_editLink = "edit-assessment?id=".$item["as_id"];
@@ -137,7 +132,7 @@
                                     <td><?php echo $i; ?></td>
                                     <td><?php echo ucwords($item['as_team']); ?></td>
                                     <td><?php echo ucwords($item['as_task']); ?></td>
-                                    <th><?php echo ucwords($row["ty_name"]); ?></th>
+                                    <th><?php echo ucwords(getIndustryTitle($item["industry"], $con)); ?></th>
                                     <td><?php echo date("m/d/Y", strtotime($item["as_date"])); ?></td>
                                     <td>
                                         <a href="<?php echo $viewLink; ?>" class="action-icons btn btn-primary btn-action mr-1"><i class="fas fa-eye"></i></a>

@@ -573,32 +573,32 @@
     }
     
     function daysAgo ($oldTime, $newTime) {
-        $timeCalc = strtotime($newTime) - strtotime($oldTime);
-        $left = '';
-        if ($timeCalc >= (60*60*24*2)){
-            $left = 'days';
-            $timeCalc = intval($timeCalc/60/60/24);
-        }else if ($timeCalc >= (60*60*2)){
-            $left = 'hours';
-            $timeCalc = intval($timeCalc/60/60);
-        }else if ($timeCalc >= (60*60)){
-            $left = 'hour';
-            $timeCalc = intval($timeCalc/60/60);
-        }else if ($timeCalc >= 60*2){
-            $left = 'minutes';
-            $timeCalc = intval($timeCalc/60);
-        }else if ($timeCalc >= 60){
-            $left = 'minute';
-            $timeCalc = intval($timeCalc/60);
-        }else if ($timeCalc > 0){
-            $left = 'seconds';
-            $timeCalc .= " seconds";
-        }
-        $timeStamp = array(
-            'timeCalc' => $timeCalc,
-            'left' => $left
-        );
+	$timeCalc = strtotime($newTime) - strtotime($oldTime);
+    $left = '';
+	if ($timeCalc >= (60*60*24*2)){
+        $left = 'days';
+		$timeCalc = intval($timeCalc/60/60/24);
+	}else if ($timeCalc >= (60*60*2)){
+        $left = 'hours';
+		$timeCalc = intval($timeCalc/60/60);
+	}else if ($timeCalc >= (60*60)){
+        $left = 'hour';
+		$timeCalc = intval($timeCalc/60/60);
+	}else if ($timeCalc >= 60*2){
+        $left = 'minutes';
+		$timeCalc = intval($timeCalc/60);
+	}else if ($timeCalc >= 60){
+        $left = 'minute';
+		$timeCalc = intval($timeCalc/60);
+	}else if ($timeCalc > 0){
+        $left = 'seconds';
+		$timeCalc .= " seconds";
+	}
+    $timeStamp = array(
+        'timeCalc' => $timeCalc,
+        'left' => $left
+    );
 
-        return $timeStamp;
-    }
+	return $timeStamp;
+}
 ?>

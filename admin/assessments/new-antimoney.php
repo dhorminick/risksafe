@@ -4,12 +4,12 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'auth/sign-in?r=/assessments/new-antimoney');
+        header('Location: '.$file_dir.'login.php?r=/assessments/new-antimoney');
         exit();
     }
     $message = [];
     include '../../layout/db.php';
-    include '../../layout/admin__config.php';
+    include '../../layout/admin_config.php';
     include '../../layout/user_details.php';
 
     function calculateRating($like, $consequence, $conn) {

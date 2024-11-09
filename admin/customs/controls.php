@@ -4,12 +4,12 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: .'.$file_dir.'auth/sign-in?r=/customs/controls');
+        header('Location: .'.$file_dir.'login?r=/customs/controls');
         exit();
     }
     $message = [];
-    include $file_dir.'layout/db.php';
-    include $file_dir.'layout/admin__config.php';
+    include '../../layout/db.php';
+    include '../../layout/admin__config.php';
     include '../ajax/customs.php';
     
     if (isset($_POST['delete-data'])){
@@ -54,7 +54,7 @@
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title>Custom Controls | <?php echo $siteEndTitle ?></title>
-  <?php require $file_dir.'layout/general_css.php' ?>
+  <?php require '../../layout/general_css.php' ?>
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/admin.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/footer.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/bundles/prism/prism.css">
@@ -65,8 +65,8 @@
     <div id="app">
         <div class="main-wrapper main-wrapper-1">
         <div class="navbar-bg"></div>
-        <?php require $file_dir.'layout/header.php' ?>
-        <?php require $file_dir.'layout/sidebar_admin.php' ?>
+        <?php require '../../layout/header.php' ?>
+        <?php require '../../layout/sidebar_admin.php' ?>
         <!-- Main Content -->
         <div class="main-content">
             <section class="section">
@@ -76,7 +76,7 @@
                 <div class="card">
                     <form method="post">
                         <div class="card-body">
-                            <?php require $file_dir.'layout/alert.php' ?>
+                            <?php require '../../layout/alert.php' ?>
                             <div class="card-header">
                                 <h3 class="d-inline">Control Details</h3>
                                 <a class="btn btn-primary btn-icon icon-left header-a" href="controls"><i class="fas fa-arrow-left"></i> Back</a>
@@ -181,12 +181,12 @@
             </div>
             </section>
         </div>
-        <?php require $file_dir.'layout/delete_data.php' ?>
-        <?php require $file_dir.'layout/footer.php' ?>
+        <?php require '../../layout/delete_data.php' ?>
+        <?php require '../../layout/footer.php' ?>
         </footer>
         </div>
     </div>
-    <?php require $file_dir.'layout/general_js.php' ?>
+    <?php require '../../layout/general_js.php' ?>
     <script src="<?php echo $file_dir; ?>assets/bundles/prism/prism.js"></script>
     <style>
         .action-icons{
