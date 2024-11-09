@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Page</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="flex flex-col gap-[30px]">
+    <div class="fixed w-full">
+      <header
+        class="flex shadow-md py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px] tracking-wide relative z-50"
+      >
+        <div class="flex flex-wrap items-center justify-between gap-5 w-full">
+          <a href="javascript:void(0)"
+            ><img
+              src="https://risksafe.co/assets/images/logo-edit.jpg"
+              alt="logo"
+              class="w-36"
+            />
+          </a>
+
+          <div
+            id="collapseMenu"
+            class="max-lg:hidden lg:!block max-lg:before:fixed max-lg:before:bg-black max-lg:before:opacity-50 max-lg:before:inset-0 max-lg:before:z-50"
+          >
+            <button
+              id="toggleClose"
+              class="lg:hidden fixed top-2 right-4 z-[100] rounded-full bg-white p-3"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-4 fill-black"
+                viewBox="0 0 320.591 320.591"
+              >
+                <path
+                  d="M30.391 318.583a30.37 30.37 0 0 1-21.56-7.288c-11.774-11.844-11.774-30.973 0-42.817L266.643 10.665c12.246-11.459 31.462-10.822 42.921 1.424 10.362 11.074 10.966 28.095 1.414 39.875L51.647 311.295a30.366 30.366 0 0 1-21.256 7.288z"
+                  data-original="#000000"
+                ></path>
+                <path
+                  d="M287.9 318.583a30.37 30.37 0 0 1-21.257-8.806L8.83 51.963C-2.078 39.225-.595 20.055 12.143 9.146c11.369-9.736 28.136-9.736 39.504 0l259.331 257.813c12.243 11.462 12.876 30.679 1.414 42.922-.456.487-.927.958-1.414 1.414a30.368 30.368 0 0 1-23.078 7.288z"
+                  data-original="#000000"
+                ></path>
+              </svg>
+            </button>
+
+            <ul
+              class="lg:flex gap-x-5 max-lg:space-y-3 max-lg:fixed max-lg:bg-white max-lg:w-1/2 max-lg:min-w-[300px] max-lg:top-0 max-lg:left-0 max-lg:p-6 max-lg:h-full max-lg:shadow-md max-lg:overflow-auto z-50"
+            >
+              <li class="mb-6 hidden max-lg:block">
+                <a href="javascript:void(0)"
+                  ><img
+                    src="https://risksafe.co/assets/images/logo-edit.jpg"
+                    alt="logo"
+                    class="w-36"
+                  />
+                </a>
+              </li>
+              <li class="max-lg:border-b border-gray-300 max-lg:py-3 px-3">
+                <a
+                  href="/"
+                  class="hover:text-[var(--primary)] text-[var(--primary)] block font-semibold text-[15px]"
+                  >Home</a
+                >
+              </li>
+              <li class="max-lg:border-b border-gray-300 max-lg:py-3 px-3">
+                <a
+                  href="/about-risksafe.html"
+                  class="hover:text-[var(--primary)] text-gray-500 block font-semibold text-[15px]"
+                  >About RiskSafe</a
+                >
+              </li>
+              <li class="max-lg:border-b border-gray-300 max-lg:py-3 px-3">
+                <a
+                  href="/risksafe-resources.html"
+                  class="hover:text-[var(--primary)] text-gray-500 block font-semibold text-[15px]"
+                  >Resources</a
+                >
+              </li>
+              <li class="max-lg:border-b border-gray-300 max-lg:py-3 px-3">
+                <a
+                  href="/pricing.html"
+                  class="hover:text-[var(--primary)] text-gray-500 block font-semibold text-[15px]"
+                  >Pricing</a
+                >
+              </li>
+              <li class="max-lg:border-b border-gray-300 max-lg:py-3 px-3">
+                <a
+                  href="javascript:void(0)"
+                  class="hover:text-[var(--primary)] text-gray-500 block font-semibold text-[15px]"
+                  >Contact Us</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div class="flex max-lg:ml-auto space-x-3">
+            <a href="login.html" target="_blank" class="btn btn-primary"
+              >Sign In</a
+            >
+            <button class="btn btn-secondary hidden sm:block">
+              Get Started
+            </button>
+
+            <button id="toggleOpen" class="lg:hidden">
+              <svg
+                class="w-7 h-7"
+                fill="#000"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </header>
+    </div>
+
+    <-- necessary since the header is fixed -->
+    <div class="mt-[55px]"></div>
+
+    <-- if it makes sense and you have data for it, add it else ? -->
+    <div
+      class="flex flex-col px-[20px] py-[100px] sm:py-[100px] sm:px-[50px] mb-[20px] bg-gray-100"
+    >
+      <div class="text-[13px] text-gray-500">
+        <a href="/" class="bb">Home</a> | About RiskSafe
+      </div>
+      <h3 class="mb-[20px] font-bold text-4xl">About RiskSafe</h3>
+      <div class="text-[14px] w-full sm:max-w-[600px]">
+        With more simplified system design, RiskSafe was built by a team is made
+        up of Risk Managers with experience in banking, safety, startups and
+        small business.
+      </div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row justify-between py-[50px]">
+      <div class="w-full sm:w-[60%] px-[20px] sm:px-[50px]">
+        <h3 class="text-gray-800 text-3xl font-extrabold mb-[20px]">
+          What RiskSafe aims to achieve?
+        </h3>
+        <div class="flex flex-col gap-[15px]">
+          <p>
+            Why do so many startups, small businesses fail around the world...
+            Poor Risk Management.
+          </p>
+          <p>It could due to:</p>
+          <div class="ml-[20px]">
+            <ul class="list-disc">
+              <li>
+                Lack of understanding of regulatory requirements such as AML
+              </li>
+              <li>Lack of Fraud risk mitigation</li>
+              <li>Non adherence to Health & Safety requirements</li>
+              <li>In adequate management of Strategic risks</li>
+            </ul>
+          </div>
+          <p>
+            Entrepreneurs by nature are risk takers. But the most successful
+            risk takers protect their bottom line risk above all else.
+          </p>
+          <p>
+            The freedom of being your own boss comes with added responsibilities
+            like; ‘How do I protect myself when things go wrong in business?’
+          </p>
+          <p>
+            RiskSafe helps entrepreneurs understand their business risks and
+            help them move forward with confidence.
+          </p>
+          <p>
+            Forget the paper forms - our tools will help you understand which
+            risks to manage so you can focus on doing what you love.
+          </p>
+          <p>
+            Business growth requires a solid foundation and a solid foundation
+            is built on a powerful risk-management plan.
+          </p>
+        </div>
+      </div>
+      <div
+        class="w-full sm:w-[40%] hidden sm:block mt-[50px] sm:mt-0 mr-[50px]"
+      >
+        <img
+          src="https://assets-us-01.kc-usercontent.com/56ac0847-da43-0017-b8aa-e0522019cff9/b303e764-5ef5-4c00-b057-0b1393a7bbd6/broker-feeds-min.png"
+        />
+      </div>
+    </div>
+
+    <div class="flex justify-center items-center">
+      <div
+        class="cta w-full flex flex-col rounded-[10px] gap-[20px] p-[50px] justify-center items-center sm:w-[80%]"
+      >
+        <h1 class="font-bold text-[30px] text-center">Let's Work Together</h1>
+        <div class="sm:w-[500px] w-full text-center">
+          Elevate your audit, risk, sustainability, and compliance teams with
+          the intelligent, collaborative, connected risk management platform
+        </div>
+        <div class="mt-[10px]">
+          <a class="btn btn-secondary">Book A Demo Now!</a>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <footer
+        class="shadow-md py-4 sm:py-[30px] px-4 sm:px-10 bg-white min-h-[70px] tracking-wide relative z-40 mt-[50px] border border-gray-300"
+      >
+        <div class="flex flex-col sm:flex-row justify-between mb-[30px]">
+          <div class="about w-full sm:w-[50%]">
+            <div class="font-bold mb-[5px]">About RiskSafe</div>
+            We provide comprehensive risk management services, from assessment
+            and analysis to customized strategies, aimed at minimizing
+            uncertainty and maximizing opportunities. Our proactive approach
+            helps you stay ahead of threats and capitalize on emerging trends.
+          </div>
+          <div
+            class="about w-full mt-[10px] sm:mt-[0px] sm:w-[50%] flex flex-col sm:flex-row gap-[20px] sm:gap-[0px] sm:justify-around"
+          >
+            <div>
+              <div class="font-bold mb-[5px]">Contact Us</div>
+              <ul>
+                <li>Email: info@risksafe.co</li>
+                <li>Phone: 09076876557</li>
+              </ul>
+            </div>
+
+            <div>
+              <div class="font-bold mb-[10px]">Company</div>
+              <ul class="flex gap-[7px] flex-col">
+                <li><a class="bb" href="/">Home</a></li>
+                <li><a class="bb" href="/about-risksafe">About RiskSafe</a></li>
+                <li><a class="bb" href="/contact-us">Contact Us</a></li>
+                <li><a class="bb" href="/contact-us">Resources</a></li>
+                <li><a class="bb" href="/contact-us">Pricing</a></li>
+                <li class="mt-[10px]">
+                  <a class="bb" href="/contact-us">Get Started</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-[10px] mb-[10px] w-full">
+          Follow us on :
+          <a href="https://facebook.com/" target="_blank">
+            <i class="text-[20px] fa-brands fa-square-facebook"></i>
+          </a>
+          <a href="https://linedin.com/" target="_blank"
+            ><i class="text-[20px] fa-brands fa-linkedin"></i
+          ></a>
+        </div>
+        <div
+          class="flex justify-between border-red-400 border-t-2 pt-[20px] pb-[-20px]"
+        >
+          <div>© RiskSafe - 2024</div>
+          <div class="flex gap-3">
+            <a class="bb" href="/contact-us">Terms of service</a>
+            <a class="bb" href="/contact-us">Privacy Policy</a>
+            <a class="bb hidden sm:block" href="/contact-us">RiskSafe Help</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
