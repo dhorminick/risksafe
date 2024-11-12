@@ -319,7 +319,7 @@
                                     <th>Team or Organisation</th>
                                     <th>Task or Process</th>
                                     <th>Date</th>
-                                    <th>Action</th>
+                                    <th>...</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -329,9 +329,7 @@
                                     <td><?php echo ucwords($item['as_team']); ?></td>
                                     <td><?php echo ucwords($item['as_task']); ?></td>
                                     <td><?php echo ucwords($item['as_date']); ?></td>
-                                    <td>
-                                        <a href="report-details?id=<?php echo $item["as_id"]; ?>" target="_blank" class="action-icons btn btn-primary btn-action mr-1"><i class="fas fa-eye"></i> View Report</a>
-                                    </td>
+                                    <td>...</td>
                                 </tr>
                                 <?php } ?>
                             </tbody>

@@ -208,7 +208,7 @@
 		return $riskRating;
     }
     
-    function getNext($date, $freq){
+    function getNext_s($date, $freq){
 
 		if ($freq == 0) {
 			$next = "Not set";
@@ -240,7 +240,7 @@
 		}
 	}
 
-	function getEffectiveness($effe){
+	function getEffectiveness_s($effe){
 		if ($effe == 0) {
 			return "Not Assessed";
 		} else if ($effe == 1) {

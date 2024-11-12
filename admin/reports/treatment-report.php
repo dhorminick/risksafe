@@ -24,24 +24,27 @@
     $export = false;
     
     if(has_data('as_customtreatments', 'c_id', $company_id, $con) == true){
-        $query="SELECT MAX( cus_date ) AS max FROM as_customtreatments WHERE c_id = '$company_id'";
+        $query="SELECT MAX( cus_date ) AS max, MIN( cus_date ) as min FROM as_customtreatments WHERE c_id = '$company_id'";
     	if ($result=$con->query($query)) {
     	    $row=$result->fetch_assoc();
+    	    
     	    $largestNumber = $row['max'];
+    	    $smallestNumber = $row['min'];
     	}else{
     	    $largestNumber = 0;
-    	}
-    	
-    	$query="SELECT MIN( cus_date ) AS max FROM as_customtreatments WHERE c_id = '$company_id'";
-    	if ($result=$con->query($query)) {	
-    	    $row=$result->fetch_assoc();
-    	    $smallestNumber = $row['max'];
-    	}else{
     	    $smallestNumber = 0;
     	}
     	
-    	$largestNumber_1 = DateTime::createFromFormat('Y-m-d', $largestNumber);
-        $smallestNumber_1 = DateTime::createFromFormat('Y-m-d', $smallestNumber);
+    // 	$query="SELECT MIN( cus_date ) AS max FROM as_customtreatments WHERE c_id = '$company_id'";
+    // 	if ($result=$con->query($query)) {	
+    // 	    $row=$result->fetch_assoc();
+    // 	    $smallestNumber = $row['max'];
+    // 	}else{
+    // 	    $smallestNumber = 0;
+    // 	}
+    	
+    	$largestNumber_1 = DateTime::createFromFormat('Y-m-d H:i:s', $largestNumber);
+        $smallestNumber_1 = DateTime::createFromFormat('Y-m-d H:i:s', $smallestNumber);
                 
         $largestNumber__1 = date_format($largestNumber_1, "Y-m-d");
         $smallestNumber__1 = date_format($smallestNumber_1, "Y-m-d");
@@ -218,7 +221,7 @@
                                     <th style="width: 5%;">S/N</th>
                                     <th style='width: 30%'>Title</th>
                                     <th>Description</th>
-                                    <thstyle='width: 10%'>Status</th>
+                                    <th style='width: 10%'>Status</th>
                                     <th style='width: 10%'>...</th>
                                 </tr>
                             </thead>
