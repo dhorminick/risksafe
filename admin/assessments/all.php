@@ -116,11 +116,7 @@
                             if($_query->num_rows > 0){ $i = 0;
                                 while($item = $_query->fetch_assoc()){ $i++;
                                     $as_HasValue = $item["has_values"];
-                                    if($as_HasValue == 'true'){
-                                        $_editLink = "edit-assessment?id=".$item["as_id"];
-                                    }else{
-                                        $_editLink = "add-assessment-details?id=".$item["as_id"];
-                                    }
+                                    $_editLink = "edit-assessment?id=".$item["as_id"];
                     
                                     $viewLink = 'assessment-details?id='.$item["as_id"].'" data-toggle="tooltip" title="View Assessment" data-placement="right"';
                                     $editLink = $_editLink.'" data-toggle="tooltip" title="Edit Assessment" data-placement="right"';
