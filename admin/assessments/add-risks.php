@@ -429,7 +429,7 @@
         $("#fetchControls").html('<span style="font-weight:400;">Select Risk Above To Get Recommended Control 2!!</span>');
         $('#btn-append-rec-control').hide();
         let fieldHTMLTreatent = 'empty';
-        let userRisks = [<?php $query="SELECT * FROM as_customrisks WHERE c_id = '$company_id'"; $result=$con->query($query); if ($result->num_rows > 0) { while($row=$result->fetch_assoc()){ ?> "<?php echo $row['risk_id']; ?>", <?php } }else{ echo 'empty'; } ?> ]
+        let userRisks = [<?php $query="SELECT * FROM as_customrisks WHERE c_id = '$company_id'"; $result=$con->query($query); if ($result->num_rows > 0) { while($row=$result->fetch_assoc()){ ?> "<?php echo $row['risk_id']; ?>", <?php } }else{ echo "'empty'"; } ?> ]
         
         $("#getControls").submit(function (event) {
           event.preventDefault();
