@@ -46,13 +46,14 @@
               $state = sanitizePlus($_POST["state"]);
               $country = sanitizePlus($_POST["country"]);
               $existing = sanitizePlus($_POST["existing"]);
-              $audi_treatment = sanitizePlus($_POST["audi_treatment"]);
+            //   $audi_treatment = sanitizePlus($_POST["audi_treatment"]);
               $Effectivness = sanitizePlus($_POST["Effectivness"]);
               $freq = sanitizePlus($_POST["freq"]);
               $next = getNext($date, $freq);
               $next = date("Y-m-d", strtotime($next));
 
-              $query = "UPDATE as_auditcontrols SET con_company = '$company', con_industry = '$industry', con_team = '$team', con_task = '$task', con_assessor = '$assessor', con_site = '$site', con_date = '$date', con_time = '$time', con_street = '$street', con_building = '$building', con_zipcode = '$zipcode', con_state = '$state', con_country = '$country', aud_treatment = '$audi_treatment', con_effect = '$Effectivness', con_next = '$next', con_frequency = '$freq', con_control = '', subControl = '' WHERE aud_id = '$id' AND c_id = '$company_id'";
+                // aud_treatment = '$audi_treatment', 
+              $query = "UPDATE as_auditcontrols SET con_company = '$company', con_industry = '$industry', con_team = '$team', con_task = '$task', con_assessor = '$assessor', con_site = '$site', con_date = '$date', con_time = '$time', con_street = '$street', con_building = '$building', con_zipcode = '$zipcode', con_state = '$state', con_country = '$country', con_effect = '$Effectivness', con_next = '$next', con_frequency = '$freq', con_control = '', subControl = '' WHERE aud_id = '$id' AND c_id = '$company_id'";
               $auditCreated = $con->query($query);
               if ($auditCreated) {
                 #send notif and redirect

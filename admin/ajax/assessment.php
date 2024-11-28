@@ -125,6 +125,22 @@
 		return $response;
     }
     
+    function listKRI($company_id,  $con, $selected = null){
+		$query="SELECT * FROM kri WHERE c_id = '$company_id'";
+		$result=$con->query($query);
+		$response = '';
+		if ($result->num_rows > 0) {	
+			while ($row=$result->fetch_assoc()) {
+				$response.='<option value="' . $row["k_id"] . '"';
+				if ($row["k_id"] == $selected && $selected !== null) $response.=' selected';
+				$response.='>' . ucfirst($row["indicator"]) . '</option>';
+			}
+		}else{
+		    $response = '<option value="null">No Key Risk Indicator Registered Yet!</option>';
+		}
+		return $response;
+    }
+    
     function listRisksNew($type, $selected, $company_id, $con, $null = false){
 		$query="SELECT * FROM as_newrisk WHERE industry = '$type' ORDER BY id";
 		$result=$con->query($query);
@@ -388,6 +404,46 @@
 		$result=$con->query($query);
 		if ($result->num_rows > 0) {
 			$response='<select name="consequence" id="consequence" class="form-control" required>';
+			$response.='<option value="0">Please select consequence...</option>';
+			while ($row=$result->fetch_assoc()) {
+				$response.='<option value="' . $row["idconsequence"] . '"';
+				if ($row["idconsequence"]==$selected) $response.=' selected';
+				$response.='>' . $row["con_consequence"] . '</option>';
+			}
+			$response.="</select>";
+		}else{
+			$response = 'error';
+		}
+		return $response;
+	
+	}
+	
+	function listLikelihood_Residual($selected, $con) {
+	
+		$query="SELECT * FROM as_like ORDER BY idlike";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {
+			$response='<select name="likelihood_residual" id="likelihood_residual" class="form-control" required>';
+			$response.='<option value="0">Please select likelihood...</option>';
+			while ($row=$result->fetch_assoc()) {
+				$response.='<option value="' . $row["idlike"] . '"';
+				if ($row["idlike"]==$selected) $response.=' selected';
+				$response.='>' . $row["li_like"] . '</option>';
+			}
+			$response.="</select>";
+		}else{
+			$response = 'error';
+		}
+		return $response;
+	
+	}
+
+	function listConsequence_Residual($selected, $con) {
+	
+		$query="SELECT * FROM as_consequence ORDER BY idconsequence";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {
+			$response='<select name="consequence_residual" id="consequence_residual" class="form-control" required>';
 			$response.='<option value="0">Please select consequence...</option>';
 			while ($row=$result->fetch_assoc()) {
 				$response.='<option value="' . $row["idconsequence"] . '"';
@@ -767,6 +823,28 @@
 		}
 		
 		$value = $_POST["getRating"];
+        $getArray = getToArray($value);
+		
+        $consequence = sanitizePlus($getArray['consequence']);
+        $likelihood = sanitizePlus($getArray['likelihood']);
+
+		$response = rating($likelihood, $consequence, $con);
+		echo $response;
+		// echo $consequence.' '.$likelihood;
+    }
+    
+    if (isset($_POST["getRating_r"])) {
+		include '../../layout/db.php';
+
+		function sanitizePlus($data) {
+			$data = trim($data);
+			$data = stripslashes($data);
+			$data = strip_tags($data);
+			$data = htmlspecialchars($data);
+			return $data;
+		}
+		
+		$value = $_POST["getRating_r"];
         $getArray = getToArray($value);
 		
         $consequence = sanitizePlus($getArray['consequence']);

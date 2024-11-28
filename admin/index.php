@@ -12,6 +12,8 @@
     include '../layout/admin__config.php';
     $accnt_dir = "admin/";
     require 'ajax/index.php';
+    
+    require 'ajax/_index.php';
 ?>
 
 <!DOCTYPE html>
@@ -23,6 +25,8 @@
   <?php require '../layout/general_css.php' ?>
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/css/admin.custom.css">
   <link rel="stylesheet" href="<?php echo $file_dir; ?>assets/bundles/izitoast/css/iziToast.min.css">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body>
@@ -106,8 +110,281 @@
                     </div>
                   </div>
                 </div>
-
+                
+                <?php $auditSummary = getAuditData($company_id, $con); ?>
                 <div class="card custom-card">
+                    <div class="card-header">
+                        <h3 class="!text-[20px]">Audits</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class='row'>
+                            <div class='col-12 col-lg-6'>
+                                <canvas id="auditChart"></canvas>
+                            </div>
+                            <div class='col-12 col-lg-6 audit-stats'>
+                                <div class='grid grid-cols-2 gap-[10px]'>
+                                    <div class='card-c shadow-md'>
+                                        <div>
+                                            <label>% Effective</label>
+                                            <?php echo calcPercentage($auditSummary['effective'], $auditSummary['sum']); ?>
+                                        </div>
+                                    </div>
+                                    <div class='card-c shadow-md'>
+                                        <div>
+                                            <label>Effective</label>
+                                            <?php echo $auditSummary['effective']; ?>
+                                        </div>
+                                    </div>
+                                    <div class='card-c shadow-md'>
+                                        <div>
+                                            <label>Ineffective</label>
+                                            <?php echo $auditSummary['ineffective']; ?>
+                                        </div>
+                                    </div>
+                                    <div class='card-c shadow-md'>
+                                        <div>
+                                            <label>Unassessed</label>
+                                            <?php echo $auditSummary['unassessed']; ?>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <div class='card-c shadow-md mt-[10px]'>
+                                    <div>
+                                        <label>Total Audits</label>
+                                        <?php echo $auditSummary['sum']; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <?php $riskSummary = getRisksData($company_id, $con); ?>
+                <div class="card custom-card">
+                    <div class="card-header">
+                        <h3 class="!text-[20px]">Risks Management</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class='row risk-stats'>
+                            <div class='col-12 col-lg-4'>
+                                <div>Risk Summary:</div>
+                                <table class='stats '>
+                                    <thead>
+                                        <tr>
+                                            <th class='left'>Risk Rating</th>
+                                            <th>Total</th>
+                                            <th>%</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class='left'>
+                                                <span class="stat bg-[red]"> Very High</span>
+                                            </td>
+                                            <td><?php echo $riskSummary['veryHigh']; ?></td>
+                                            <td><?php echo calcPercentage($riskSummary['veryHigh'], $riskSummary['sum']); ?>%</td>
+                                        </tr>
+                                        <tr>
+                                            <td class='left'>
+                                                <span class="stat bg-[orange]"> High</span>
+                                            </td>
+                                            <td><?php echo $riskSummary['high']; ?></td>
+                                            <td><?php echo calcPercentage($riskSummary['high'], $riskSummary['sum']); ?>%</</td>
+                                        </tr>
+                                        <tr>
+                                            <td class='left'>
+                                                <span class="stat bg-[yellow]"> Medium</span>
+                                            </td>
+                                            <td><?php echo $riskSummary['medium']; ?></td>
+                                            <td><?php echo calcPercentage($riskSummary['medium'], $riskSummary['sum']); ?>%</</td>
+                                        </tr>
+                                        <tr>
+                                            <td class='left'>
+                                                <span class="stat bg-[green]"> Low</span>
+                                            </td>
+                                            <td><?php echo $riskSummary['low']; ?></td>
+                                            <td><?php echo calcPercentage($riskSummary['low'], $riskSummary['sum']); ?>%</</td>
+                                        </tr>
+                                        <tr>
+                                            <td class='left'>Total</td>
+                                            <td><?php echo $riskSummary['sum']; ?></td>
+                                            <td>100%</</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class='col-12 col-lg-8'>
+                                <div>Risk Metrics:</div>
+                                <table class='' width="100%" border="1" cellspacing="0" cellpadding="3">
+                                        <tr>
+                                            <td colspan="2" rowspan="2" align="center" valign="middle">&nbsp;</td>
+                                            <td colspan="6" align="center" valign="middle"><strong>Consequence</strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">
+                                                Insignificant</td>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Minor</td>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Moderate
+                                            </td>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Major</td>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Severe</td>
+                                            <td width="12%" align="center" valign="middle" bgcolor="#EAEAEA">
+                                                <strong>Totals</strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="3%" rowspan="6" align="center" valign="middle" class="tbl_rotate" style='transform: rotate(-90deg);'><strong>Likelihood</strong></td>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Almost
+                                                certain</td>
+                                            <td width="14%" align="center" valign="middle" class='c-b' bgcolor="#FFFF00">
+                                                <?php echo countDataChart($company_id, 1, 1, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF9900">
+                                                <?php echo countDataChart($company_id, 1, 2, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF0000">
+                                                <?php echo countDataChart($company_id, 1, 3, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF0000">
+                                                <?php echo countDataChart($company_id, 1, 4, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF0000">
+                                                <?php echo countDataChart($company_id, 1, 5, $con); ?></td>
+                                            <td width="12%" align="center" valign="middle">
+                                                <strong><?php echo countDataLikelihood($company_id, 1, $con); ?></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Likely
+                                            </td>
+                                            <td width="14%" align="center" valign="middle" class='c-b' bgcolor="#FFFF00">
+                                                <?php echo countDataChart($company_id, 2, 1, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF9900">
+                                                <?php echo countDataChart($company_id, 2, 2, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF9900">
+                                                <?php echo countDataChart($company_id, 2, 3, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF0000">
+                                                <?php echo countDataChart($company_id, 2, 4, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF0000">
+                                                <?php echo countDataChart($company_id, 2, 5, $con); ?></td>
+                                            <td width="12%" align="center" valign="middle">
+                                                <strong><?php echo countDataLikelihood($company_id, 2, $con); ?></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Possible
+                                            </td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#00FF00">
+                                                <?php echo countDataChart($company_id, 3, 1, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-b' bgcolor="#FFFF00">
+                                                <?php echo countDataChart($company_id, 3, 2, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF9900">
+                                                <?php echo countDataChart($company_id, 3, 3, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF9900">
+                                                <?php echo countDataChart($company_id, 3, 4, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF0000">
+                                                <?php echo countDataChart($company_id, 3, 5, $con); ?></td>
+                                            <td width="12%" align="center" valign="middle">
+                                                <strong><?php echo countDataLikelihood($company_id, 3, $con); ?></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Unlikely
+                                            </td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#00FF00">
+                                                <?php echo countDataChart($company_id, 4, 1, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#00FF00">
+                                                <?php echo countDataChart($company_id, 4, 2, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-b' bgcolor="#FFFF00">
+                                                <?php echo countDataChart($company_id, 4, 3, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-b' bgcolor="#FFFF00">
+                                                <?php echo countDataChart($company_id, 4, 4, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#FF9900">
+                                                <?php echo countDataChart($company_id, 4, 5, $con); ?></td>
+                                            <td width="12%" align="center" valign="middle">
+                                                <strong><?php echo countDataLikelihood($company_id, 4, $con); ?></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">Rare</td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#00FF00">
+                                                <?php echo countDataChart($company_id, 5, 1, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#00FF00">
+                                                <?php echo countDataChart($company_id, 5, 2, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-w' bgcolor="#00FF00">
+                                                <?php echo countDataChart($company_id, 5, 3, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-b' bgcolor="#FFFF00">
+                                                <?php echo countDataChart($company_id, 5, 4, $con); ?></td>
+                                            <td width="14%" align="center" valign="middle" class='c-b' bgcolor="#FFFF00">
+                                                <?php echo countDataChart($company_id, 5, 5, $con); ?></td>
+                                            <td width="12%" align="center" valign="middle">
+                                                <strong><?php echo countDataLikelihood($company_id, 5, $con); ?></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="14%" align="center" valign="middle" bgcolor="#EAEAEA">
+                                                <strong>Totals</strong>
+                                            </td>
+                                            <td width="14%" align="center" valign="middle">
+                                                <strong><?php echo countDataConsequence($company_id, 1, $con); ?></strong>
+                                            </td>
+                                            <td width="14%" align="center" valign="middle">
+                                                <strong><?php echo countDataConsequence($company_id, 2, $con); ?></strong>
+                                            </td>
+                                            <td width="14%" align="center" valign="middle">
+                                                <strong><?php echo countDataConsequence($company_id, 3, $con); ?></strong>
+                                            </td>
+                                            <td width="14%" align="center" valign="middle">
+                                                <strong><?php echo countDataConsequence($company_id, 4, $con); ?></strong>
+                                            </td>
+                                            <td width="14%" align="center" valign="middle">
+                                                <strong><?php echo countDataConsequence($company_id, 5, $con); ?></strong>
+                                            </td>
+                                            <td width="12%" align="center" valign="middle">
+                                                <strong><?php echo $riskSummary['sum']; ?></strong>
+                                            </td>
+                                        </tr>
+                                </table>
+                            </div>
+                            <div class='col-12 mt-[50px]'>
+                                <div>Top Risks:</div>
+                                <?php if($riskSummary['toprisks'] !== false){ ?>
+                                <table class='stats'>
+                                    <thead>
+                                        <tr>
+                                            <th class='left'>UID</th>
+                                            <th class='left'>Risk Category</th>
+                                            <th class='left w-[40%]'>Risk</th>
+                                            <th>Impact</th>
+                                            <th>Likelihood</th>
+                                            <th>Inherent Risk Level</th>
+                                            <th>Residual Risk Level</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach($riskSummary['toprisks'] as $item){ ?>
+                                        <tr>
+                                            <td class='left'><?php echo 'RO-'.strtoupper($item['id']); ?></td>
+                                            <td class='left'><?php echo _getIndustryTitle($item['industry'], $con) ?></td>
+                                            <td class='left'><?php echo getRiskTitle($item['risk_type'], $item['risk'], $con); ?></td>
+                                            <td><?php echo round($item['consequence'], 2); ?></td>
+                                            <td><?php echo round($item['likelihood'], 2); ?></td>
+                                            <td><?php echo _getRating($item['rating']); ?></td>
+                                            <td><?php echo _getRating($item['rating_residual']); ?></td>
+                                        </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                                <?php }else{ ?>
+                                <div>
+                                    No risks registered yet!
+                                </div>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- audits -->
+                <div class="card custom-card !hidden">
                   <div class="card-header">
                     <h3 class="d-inline">Audit Controls - (<?php echo $totalCount; ?>)</h3>
                     <a class="btn btn-primary btn-icon icon-left header-a" href="monitoring/audits"><i class="fas fa-arrow-left"></i> View All</a>
@@ -159,7 +436,9 @@
                     </div>
                   </div>
                 </div>
-
+                
+                
+                <!-- incidents -->
                 <div class="card custom-card">
                   <div class="card-header">
                     <h3 class="d-inline">Incidents - (<?php echo $totaltreCount; ?>)</h3>
@@ -212,7 +491,9 @@
                     </div>
                   </div>
                 </div>
-
+                
+                
+                <!-- treatments -->
                 <div class="card custom-card">
                   <div class="card-header">
                     <h3 class="d-inline">Treatments - (<?php echo $totaltreCount; ?>)</h3>
@@ -265,7 +546,9 @@
                     </div>
                   </div>
                 </div>
-
+                
+                
+                <!-- compliance -->
                 <div class="card custom-card">
                   <div class="card-header">
                     <h3 class="d-inline">Compliance Standard - (<?php echo $totalComplianceCount; ?>)</h3>
@@ -317,7 +600,7 @@
                   </div>
                 </div>
 
-                <div class="card custom-card">
+                <div class="card custom-card !hidden">
                   <div class="card-header">
                     <h3 class="d-inline">Risk Charts</h1>
                   </div>
@@ -462,7 +745,7 @@
           </div>
         </div>
         <?php } ?>
-        <?php require '../layout/user_footer.php' ?>
+        <?php require '../layout/footer.php' ?>
         </footer>
         <div class="res"></div>
         </div>
@@ -514,6 +797,36 @@
           },
         }
       });
+      
+      var ctx = document.getElementById('auditChart').getContext('2d');
+      var myPieChart = new Chart(ctx, {
+        type: 'pie',
+        data:  {
+          labels: [
+            'Ineffective',
+            'Effective',
+            'Unassessed'
+          ],
+          datasets: [{
+            label: 'Audit Summary',
+            data: <?php echo json_encode($auditSummary['chart']); ?>,
+            backgroundColor: [
+              'rgb(255, 99, 132)',
+              'rgb(54, 162, 235)',
+              'rgb(255, 205, 86)'
+            ],
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          legend: {
+            position: 'right',
+          },
+        }
+      });
+      
+      
     </script>
     
     <!-- Page Specific JS File -->
@@ -550,7 +863,7 @@
         });
     </script>
     <?php } ?>
-    <style>
+    <style lang='scss'>
       .custom-card{
         padding: 10px;
       }
@@ -563,6 +876,72 @@
       .btn.btn-primary.btn-icon.icon-left.header-a:hover{
         background-color: black !important;
         opacity: 0.8;
+      }
+      
+      .stat{
+          padding: 5px 7px;
+          font-size: 13px;
+          border-radius: 10px;
+          color:white;
+          font-weight:bold;
+      }
+      
+      table.stats {
+          th, td {
+              padding: 7px;
+          }
+          th:not(.left), td:not(.left){
+              text-align: center;
+          }
+      }
+      .risk-stats{
+          table, th, td {
+              border: 1px solid black;
+            }
+            table{
+                margin-top:10px;
+                width:100%;
+                min-height:270px;
+                border-radius:10px;
+            }
+      }
+      .txt-red{
+          color: red;
+      }
+      .txt-orange{
+          color: orange;
+      }
+      .txt-yellow{
+          color: yellow;
+      }
+      .txt-green{
+          color: green;
+      }
+      .audit-stats{
+          
+          
+          .card-c{
+              background-color: white;
+              border-radius:5px;
+              min-height: 100px;          
+              display:flex;
+              flex-direction: column;
+              justify-content:center;
+              align-items:center;
+              padding:20px;
+              width:100%;
+              
+              div{
+                display:flex;
+                flex-direction: column; 
+                font-weight:normal !important;
+                text-align:center;
+                
+                label{
+                   font-weight:bolder !important; 
+                }
+              }
+          }
       }
       
     </style>

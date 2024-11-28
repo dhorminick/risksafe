@@ -253,7 +253,9 @@
                                 </label>
                                 <div class="r_desc">
                                     <ul>
-                                    <?php 
+                                    <?php if($info['control_type'] === 'na'){ ?>
+                                    Control Not Assessed!
+                                    <?php    }else{
                                         $controls = unserialize($info['existing_ct']);
                                         foreach($controls as $control){
                                     ?>
@@ -269,7 +271,7 @@
                                             
                                         ?>
                                     </li>
-                                    <?php } ?>
+                                    <?php }} ?>
                                     </ul>
                                 </div>
                             </div>
@@ -302,12 +304,14 @@
                                     </label>
                                     <div class="r_desc">
                                         <ul>
-                                        <?php 
+                                        <?php if($info['treatment_type'] === 'na'){ ?>
+                                        Treatment Not Assessed!
+                                        <?php    }else{ 
                                             $treatments = unserialize($info['existing_tr']);
                                             foreach($treatments as $treatment){
                                         ?>
                                         <li><?php echo ucfirst(getComplianceTreatment($info['treatment_type'], $treatment, $company_id, $con)); ?></li>
-                                        <?php } ?>
+                                        <?php }} ?>
                                         </ul>
                                     </div>
                                 </div>

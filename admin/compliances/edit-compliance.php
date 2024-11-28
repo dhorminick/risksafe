@@ -40,40 +40,6 @@
                 }
                 
                 
-                
-                // if (isset($_POST["custom-control"]) && $_POST["custom-control"] != null) {
-                //     $custom_control = serialize($_POST["custom-control"]);
-                // }else{
-                //     $custom_control = 'null'; #empty array
-                // }
-                
-                
-                // if (isset($_POST["custom-treatment"]) && $_POST["custom-treatment"] != null) {
-                //     $custom_treatment = serialize($_POST["custom-treatment"]);
-                // }else{
-                //     $custom_treatment = 'null'; #empty array
-                // }
-                
-                
-                // if (isset($_POST["existing_ct"]) && $_POST["existing_ct"] == 0) {
-                //     $existing_ct = 'null'; #empty array
-                // }else{
-                //     $existing_ct = sanitizePlus($_POST["existing_ct"]); 
-                // }
-                
-                // if (isset($_POST["saved-control"]) && $_POST["saved-control"] == 'null') {
-                //     $saved_control = 'null'; #empty array
-                // }else{
-                //     $saved_control = sanitizePlus($_POST["saved-control"]);
-                // }
-                
-                // if (isset($_POST["saved-treatment"]) && $_POST["saved-treatment"] == 'null') {
-                //     $saved_treatment = 'null'; #empty array
-                // }else{
-                //     $saved_treatment = sanitizePlus($_POST["saved-treatment"]);
-                // }
-                
-                
                 $control_type = sanitizePlus($_POST["control-type"]);
                 $treatment_type = sanitizePlus($_POST["treatment-type"]);
                 
@@ -83,6 +49,8 @@
                     $control = serialize($_POST["saved-control"]);
                 }else if($control_type == 'custom'){
                     $control = serialize($_POST["custom-control"]);
+                }else if($control_type == 'na'){
+                    $control = 'Not Assessed!';
                 }else{
                     $error = true;
                     array_push($message, 'Error 402: Control Type Error!!');
@@ -92,6 +60,8 @@
                     $treatment = serialize($_POST["saved-treatment"]);
                 }else if($treatment_type == 'custom'){
                     $treatment = serialize($_POST["custom-treatment"]);
+                }else if($treatment_type == 'na'){
+                    $treatment = 'Not Assessed!';
                 }else{
                     $error = true;
                     array_push($message, 'Error 402: Treatment Type Error!!');
@@ -214,41 +184,6 @@
                 $uploadedEvidence = '<a href="evidence/'.$evidence.'" target="_blank">View File</a>';
             }
 
-            // if ($hasCustomControl == true) {
-            //     #if value in db is array
-            //     $customControlArrayStatus = 'true';
-            //     if ($custom_control == 'a:1:{i:0;s:0:"";}') {
-            //         #empty array
-            //         $customControlValuesStatus = 'empty';
-            //         #show a single empty textbox
-            //     } else if ($custom_control == null){
-            //         $customControlValuesStatus = 'empty';
-            //         #show all details
-            //     } else {
-            //         $customControlValuesStatus = 'not-empty';
-            //         #show all details
-            //     }
-            // } else {
-            //     $customControlArrayStatus = 'false';
-            // }
-
-            // if ($hasCustomTreatment == true) {
-            //     #if value in db is array
-            //     $customTreatmentArrayStatus = 'true';
-            //     if ($custom_treatment == 'a:1:{i:0;s:0:"";}') {
-            //         #empty array
-            //         $customTreatmentValuesStatus = 'empty';
-            //         #show a single empty textbox
-            //     } else if ($custom_treatment == null) {
-            //         $customTreatmentValuesStatus = 'empty';
-            //         #show all details
-            //     } else {
-            //         $customTreatmentValuesStatus = 'not-empty';
-            //         #show all details
-            //     }   
-            // } else {
-            //     $customTreatmentArrayStatus = 'false';
-            // }
             
         }else{
             $compli_exist = false;
@@ -380,14 +315,29 @@
                                 #custom_type{
                                     display:none;
                                 }
+                                #no_type_c{
+                                        display:none;
+                                }
                                 <?php }else if($info['control_type'] == 'saved'){ ?>
                                 #recommended_type,
                                 #custom_type{
                                     display:none;
                                 }
+                                #no_type_c{
+                                        display:none;
+                                }
                                 <?php }else if($info['control_type'] == 'custom'){ ?>
                                 #recommended_type,
                                 #saved_type{
+                                    display:none;
+                                }
+                                #no_type_c{
+                                        display:none;
+                                }
+                                <?php }else if($info['control_type'] == 'na'){ ?>
+                                    #recommended_type,
+                                #saved_type,
+                                #custom_type{
                                     display:none;
                                 }
                                 <?php } ?>
@@ -418,6 +368,10 @@
                                     <div>
                                         <input type='radio' id='assessment-specific' value='custom' name='control-type' <?php if($info['control_type'] == 'custom'){ echo 'checked'; } ?> />
                                         <label for='assessment-specific'>Assessment Specific Controls</label>
+                                    </div>
+                                    <div>
+                                        <input type='radio' id='na-c' value='na' name='control-type' <?php if($info['control_type'] == 'na'){ echo 'checked'; } ?> />
+                                        <label for='na-c'>N/A</label>
                                     </div>
                                 </div>
                             
@@ -571,6 +525,8 @@
                                         <div id='add-customs-control'></div>
                                     </div>
                                     <?php } ?>
+                                    
+                                    <div class="form-group" id='na_type_c'> </div>
                                 </div>
                                 
                                 
@@ -604,6 +560,10 @@
                                     <input type='radio' id='saved-t' value='saved' name='treatment-type' <?php if($info['treatment_type'] == 'saved'){ echo 'checked'; } ?> />
                                     <label for='saved-t'>Saved Custom Controls</label>
                                 </div>
+                                <div>
+                                    <input type='radio' id='na-t' value='na' name='treatment-type' <?php if($info['treatment_type'] == 'na'){ echo 'checked'; } ?> />
+                                    <label for='na-t'>N/A</label>
+                                </div>
                             </div>
                             
                             <style>
@@ -611,10 +571,24 @@
                                 #saved_type_t{
                                     display:none;
                                 }
+                                #no_type_t{
+                                    display:none;
+                                }
                                 <?php }else if($info['treatment_type'] == 'saved'){ ?>
                                 #custom_type_t{
                                     display:none;
                                 }
+                                #no_type_t{
+                                    display:none;
+                                }
+                                <?php }else if($info['treatment_type'] == 'na'){ ?>
+                                #custom_type_t{
+                                    display:none;
+                                }
+                                #saved_type_t{
+                                    display:none;
+                                }
+                                
                                 <?php } ?>
                             </style>
                             
@@ -719,6 +693,7 @@
                                 </div>
                                 <?php } ?>
                                 
+                                <div class="form-group" id='na_type_t'> </div>
                             </div>
                             <?php } ?>
                             
@@ -863,19 +838,28 @@
                     $('#recommended').show();
                     $('#custom_type').hide();
                     $('#saved_type').hide();
+                    $('#na_type_c').hide();
                     
                 }else if(val == 'saved'){
                     $('#recommended_type').hide();
                     $('#custom_type').hide();
                     $('#saved_type').show();
+                    $('#na_type_c').hide();
                 }else if(val == 'custom'){
                     $('#recommended_type').hide();
                     $('#custom_type').show();
                     $('#saved_type').hide();
+                    $('#na_type_c').hide();
+                }else if(val == 'na'){
+                    $('#recommended_type').hide();
+                    $('#custom_type').hide();
+                    $('#saved_type').hide();
+                    $('#na_type_c').show();
                 }else{
                     $('#recommended_type').show();
                     $('#custom_type').hide();
                     $('#saved_type').hide();
+                    $('#na_type_c').hide();
                 }
                 // alert('works');
             }
@@ -889,12 +873,19 @@
                 if(val == 'saved'){
                     $('#custom_type_t').hide();
                     $('#saved_type_t').show();
+                    $('#na_type_t').hide();
                 }else if(val == 'custom'){
                     $('#custom_type_t').show();
                     $('#saved_type_t').hide();
+                    $('#na_type_t').hide();
+                }else if(val == 'na'){
+                    $('#custom_type_t').hide();
+                    $('#saved_type_t').hide();
+                    $('#na_type_t').show();
                 }else{
                     $('#custom_type_t').hide();
                     $('#saved_type_t').show();
+                    $('#na_type_t').hide();
                 }
             }
         });

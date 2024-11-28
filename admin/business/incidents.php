@@ -256,8 +256,8 @@
                     <div style="width:100%;min-height:400px;display:flex;justify-content:center;align-items:center;">
                               <div style="text-align: center;"> 
                                 <h3>Empty Data!!</h3>
-                                No Compliance Data Registered Yet,
-                                <p><a href="new-compliance" class="btn btn-primary btn-icon icon-left mt-2"><i class="fas fa-plus"></i> Create New Compliance</a></p>
+                                No Incident Registered Yet,
+                                <p><a href="new-incident" class="btn btn-primary btn-icon icon-left mt-2"><i class="fas fa-plus"></i> Register New Incident</a></p>
                             </div>
                     </div>
                     <?php } ?>

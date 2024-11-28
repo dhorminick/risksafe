@@ -40,12 +40,17 @@
                 $control_type = sanitizePlus($_POST["control-type"]);
                 $treatment_type = sanitizePlus($_POST["treatment-type"]);
                 
+                $causes = serialize($_POST["causes"]);
+                $kri = sanitizePlus($_POST["kri"]);
+                
                 if($control_type == 'recommended'){
                     $control = serialize($_POST["existing_ct"]);
                 }else if($control_type == 'saved'){
                     $control = serialize($_POST["saved-control"]);
                 }else if($control_type == 'custom'){
                     $control = serialize($_POST["custom-control"]);
+                }else if($control_type == 'na'){
+                    $control = 'Not Assessed!';
                 }else{
                     $error = true;
                     array_push($message, 'Error 402: Control Type Error!!');
@@ -55,6 +60,8 @@
                     $treatment = serialize($_POST["saved-treatment"]);
                 }else if($treatment_type == 'custom'){
                     $treatment = serialize($_POST["custom-treatment"]);
+                }else if($treatment_type == 'na'){
+                    $treatment = 'Not Assessed!';
                 }else{
                     $error = true;
                     array_push($message, 'Error 402: Treatment Type Error!!');
@@ -63,7 +70,7 @@
                 if($error == false){
                     # code...
                     $rating = calculateRating($likelihood, $consequence, $con);
-                    $updateRisk = "UPDATE as_assessment_new SET risk_type = '$risk_type', risk = '$risk', sub_risk = '$hazard', description = '$descript', likelihood = '$likelihood', consequence = '$consequence', rating= '$rating', control_type = '$control_type', control = '$control', control_effectiveness = '$effectiveness', control_action = '$actiontake', treatment_type = '$treatment_type', treatment = '$treatment', owner = '$owner', due_date = '$date' WHERE risk_id = '$assessmentId' AND c_id = '$company_id'";
+                    $updateRisk = "UPDATE as_assessment_new SET kri = '$kri', causes = '$causes', risk_type = '$risk_type', risk = '$risk', sub_risk = '$hazard', description = '$descript', likelihood = '$likelihood', consequence = '$consequence', rating= '$rating', control_type = '$control_type', control = '$control', control_effectiveness = '$effectiveness', control_action = '$actiontake', treatment_type = '$treatment_type', treatment = '$treatment', owner = '$owner', due_date = '$date' WHERE risk_id = '$assessmentId' AND c_id = '$company_id'";
                     $RiskInserted = $con->query($updateRisk);  
                     if ($RiskInserted) {
                         array_push($message, 'Risk Details Updated Successfully!!');
@@ -176,6 +183,7 @@
                         
                         <div class="card-body">
                             <div class="row custom-row">
+                                <div class='col-12'>Inherent Evaluation</div>
                                 <div class="form-group col-lg-4 col-12">
                                     <label>Likelihood</label>
                                     <?php echo listLikelihood($info['likelihood'] , $con);?>
@@ -193,6 +201,97 @@
                                     <div id="rating-show"><?php echo rating($info['likelihood'], $info['consequence'], $con); ?></div>
                                 </div>
                             </div>
+                            
+                            <?php if($info['rating_residual'] !== null){ ?>
+                            <div class="row custom-row">
+                                <div class='col-12'>Residual Evaluation</div>
+                                <div class="form-group col-lg-4 col-12">
+                                    <label>Likelihood</label>
+                                    <?php echo listLikelihood($info['likelihood_residual'] , $con);?>
+                                </div>
+                                <div class="form-group col-lg-4 col-12">
+                                    <label>Consequence</label>
+                                    <?php echo listConsequence($info['consequence_residual'] , $con); ?>
+                                </div>
+                                <!--<div class="form-group col-lg-4 col-12 risk-rating-residual">-->
+                                <!--    <label>Risk Rating</label>-->
+                                <!--    <div id="rating_residual"></div>-->
+                                <!--</div>-->
+                                <div class="form-group col-lg-4 col-12 risk-rating-show-residual">
+                                    <label>Risk Rating</label>
+                                    <div id="rating_residual"><?php echo rating($info['likelihood_residual'], $info['consequence_residual'], $con); ?></div>
+                                </div>
+                            </div>
+                            <?php } ?>
+                        </div>
+                        
+                        <div class='divider'></div>
+                        
+                        <div class="card-header hh">
+                            <h3 class="d-inline">Risk Causes</h3>
+                        </div>
+                        <div class="card-body">
+                            <?php if($info['causes'] !== null){ ?>
+                            <div class="form-group">
+                                    <label class="help-label">
+                                        Risk Causes
+                                    </label>
+                                    <div class="add-customs">
+                                        <?php 
+                                            $causes = unserialize($info['causes']);
+                                            $cause_more = $causes;
+                                            $t_count = 0;
+                                            foreach($causes as $cause){
+                                                $t_count++;
+                                                echo "<div class='add-customs' style='width:100%;'>";
+                                                echo '<input type="text" class="form-control" value='.ucfirst($treatment).' placeholder="Enter cause..." name="causes[]">';
+                                                echo '<button type="button" class="btn btn-sm btn-primary" id="btn-append-causes">+ Add</button>';
+                                                echo "</div>";
+                                                break;
+                                            }
+                                        ?>
+                                    </div>
+                                    <div id='add-causes'>
+                                        <?php 
+                                            unset($cause_more[0]);
+                                            foreach($cause_more as $_cause){
+                                        ?>
+                                        <div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> 
+                                            <input type="text" class="form-control" value='<?php echo ucfirst($_cause); ?>' placeholder="Enter cause..." name="causes[]" style="margin-top:5px;"  required/>
+                                            <buttton class="btn btn-sm btn-primary remove_button_causes" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;' type="button"><i class="fas fa-minus"></i></buttton>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            <?php }else{ ?>
+                            No risk causes specified!
+                            <?php } ?>
+                        </div>
+                        
+                        <div class='div_divider'></div>
+                        
+                        <!-- Indicators -->
+                        <div class="card-header">
+                            <h3 class="d-inline">Risk Indicator</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                    <label class="help-label">
+                                        KRI
+                                    </label>
+                                    <div class="add-customs">
+                                        <div style='width:100%;margin-right:5px;' id='fh4nfve_111'>
+                                            <select name="kri" class="form-control" required>
+                                                <?php echo listKRI($company_id,  $con, $info['kri']); ?>
+                                            </select>
+                                        </div>
+                                        <a href='../monitoring/new-kri?redirect=true' target='_blank' class="btn btn-sm btn-primary" id='fn4h9nf' style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>
+                                        <buttton id='f93nfo0_111' class="btn btn-sm btn-primary" type='button' data-toggle="tooltip" title="Refresh Customs List" data-placement="left" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
+                                        <!--<button type="button" class="btn btn-sm btn-primary" id="btn-append-saved-control" style='margin-left:5px;'>+ Add</button>-->
+                                    </div>
+                                    
+                                    <!--<div id='add-saved-control' style='margin-top:5px;'></div>-->
+                            </div>
                         </div>
                         
                         <div class='div_divider'></div>
@@ -202,14 +301,30 @@
                             #custom_type{
                                 display:none;
                             }
+                            #no_type_c{
+                                    display:none;
+                            }
                             <?php }else if($info['control_type'] == 'saved'){ ?>
                             #recommended_type,
                             #custom_type{
                                 display:none;
                             }
+                            #no_type_c{
+                                    display:none;
+                            }
                             <?php }else if($info['control_type'] == 'custom'){ ?>
                             #recommended_type,
                             #saved_type{
+                                display:none;
+                            }
+                            #no_type_c{
+                                    display:none;
+                            }
+                            <?php }else if($info['control_type'] == 'na'){ ?>
+                                #recommended_type,
+                            #saved_type,
+                            #custom_type,
+                            #no-effect{
                                 display:none;
                             }
                             <?php } ?>
@@ -233,6 +348,10 @@
                                 <div>
                                     <input type='radio' id='assessment-specific' value='custom' name='control-type' <?php if($info['control_type'] == 'custom'){ echo 'checked'; } ?> />
                                     <label for='assessment-specific'>Assessment Specific Controls</label>
+                                </div>
+                                <div>
+                                    <input type='radio' id='na-c' value='na' name='control-type' <?php if($info['control_type'] == 'na'){ echo 'checked'; } ?> />
+                                    <label for='na-c'>N/A</label>
                                 </div>
                             </div>
                             
@@ -408,9 +527,11 @@
                                     <div id='add-customs-control'></div>
                                 </div>
                                 <?php } ?>
+                                
+                                <div class="form-group" id='na_type_c'> </div>
                             </div>
                             
-                            <div class="form-group">
+                            <div class="form-group" id='no-effect'>
                                 <label>Control Effectiveness</label>
                                 <textarea name="effectiveness" rows="4" class="form-control" placeholder="Enter control effectiveness..." required><?php echo $info['control_effectiveness']; ?></textarea>
                             </div>
@@ -436,7 +557,11 @@
                                 </div>
                                 <div>
                                     <input type='radio' id='saved-t' value='saved' name='treatment-type' <?php if($info['treatment_type'] == 'saved'){ echo 'checked'; } ?> />
-                                    <label for='saved-t'>Saved Custom Controls</label>
+                                    <label for='saved-t'>Saved Custom Treatments</label>
+                                </div>
+                                <div>
+                                    <input type='radio' id='na-t' value='na' name='treatment-type' <?php if($info['treatment_type'] == 'na'){ echo 'checked'; } ?> />
+                                    <label for='na-t'>N/A</label>
                                 </div>
                             </div>
                             
@@ -445,10 +570,24 @@
                                 #saved_type_t{
                                     display:none;
                                 }
+                                #no_type_t{
+                                    display:none;
+                                }
                                 <?php }else if($info['treatment_type'] == 'saved'){ ?>
                                 #custom_type_t{
                                     display:none;
                                 }
+                                #no_type_t{
+                                    display:none;
+                                }
+                                <?php }else if($info['treatment_type'] == 'na'){ ?>
+                                #custom_type_t{
+                                    display:none;
+                                }
+                                #saved_type_t{
+                                    display:none;
+                                }
+                                
                                 <?php } ?>
                             </style>
                             
@@ -552,10 +691,10 @@
                                     <div id='add-customs-treatment'></div>
                                 </div>
                                 <?php } ?>
+                                
+                                
+                                <div class="form-group" id='na_type_t'> </div>
                         
-                            
-                            
-                            
                             
                             
                             <div class='row custom-row'>
@@ -624,6 +763,10 @@
                 <input type="hidden" name="consequence" id="get_risk_consequence">
                 <input type="hidden" name="likelihood" id="get_risk_likelihood">
             </form>
+            <form id="getRating_r" class="ajax-form">
+                <input type="hidden" name="consequence" id="get_risk_consequence_r">
+                <input type="hidden" name="likelihood" id="get_risk_likelihood_r">
+            </form>
             <form id="getControls" class="ajax-form">
                 <input type="hidden" name="risk" id="risk_val">
             </form>
@@ -670,6 +813,57 @@
             }, 0);
           });
         });
+        
+        $("#getRating_r").submit(function (event) {
+  // alert('first first stop!');
+  event.preventDefault();
+
+  var formValues = $(this).serialize();
+  $("#rating_residual").html('Calculating Rating...');
+  $.post("../ajax/assessment", {
+    getRating_r: formValues,
+  }).done(function (data) {
+    // alert(data);
+    $("#rating_residual").html(data);
+    // $(".risk-rating-residual").hide();
+    setTimeout(function () {
+      $("#getRating_r input").val("");
+    }, 0);
+
+    // alert('second stop!');
+  });
+});
+
+$("#consequence_residual").change(function (e) {
+  var riskConsequence = $(this).val();
+  var likelihoodValue = $("#likelihood_residual").val();
+  if (riskConsequence !== "0" && likelihoodValue !== "0") {
+    likelihoodValue = likelihoodValue * 1;
+    riskConsequence = riskConsequence * 1;
+
+    $("#get_risk_consequence_r").val(riskConsequence);
+    $("#get_risk_likelihood_r").val(likelihoodValue);
+
+    $("#getRating_r").submit();
+  } else {
+  }
+});
+
+$("#likelihood_residual").change(function (e) {
+  var riskLikelihood = $(this).val();
+  var consequenceValue = $("#consequence_residual").val();
+
+  if (riskLikelihood !== "0" && consequenceValue !== "0") {
+    consequenceValue = consequenceValue * 1;
+    riskLikelihood = riskLikelihood * 1;
+
+    $("#get_risk_consequence_r").val(consequenceValue);
+    $("#get_risk_likelihood_r").val(riskLikelihood);
+
+    $("#getRating_r").submit();
+  } else {
+  }
+});
         
         $("#risk").change(function (e) {
             var riskValue = $("#risk").val();
@@ -747,6 +941,8 @@
                     $('#recommended').show();
                     $('#custom_type').hide();
                     $('#saved_type').hide();
+                    $('#na_type_c').hide();
+                    $('#no-effect').show();
                     
                     var riskValue = $("#risk").val();
                     var riskType = $('#selected_risk_type').val();
@@ -771,14 +967,27 @@
                     $('#recommended_type').hide();
                     $('#custom_type').hide();
                     $('#saved_type').show();
+                    $('#na_type_c').hide();
+                    $('#no-effect').show();
+                    
                 }else if(val == 'custom'){
                     $('#recommended_type').hide();
                     $('#custom_type').show();
                     $('#saved_type').hide();
+                    $('#na_type_c').hide();
+                    $('#no-effect').show();
+                }else if(val == 'na'){
+                    $('#recommended_type').hide();
+                    $('#custom_type').hide();
+                    $('#saved_type').hide();
+                    $('#na_type_c').show();
+                     $('#no-effect').hide();
                 }else{
                     $('#recommended_type').show();
                     $('#custom_type').hide();
                     $('#saved_type').hide();
+                    $('#na_type_c').hide();
+                    $('#no-effect').show();
                 }
                 // alert('works');
             }
@@ -792,12 +1001,19 @@
                 if(val == 'saved'){
                     $('#custom_type_t').hide();
                     $('#saved_type_t').show();
+                    $('#na_type_t').hide();
                 }else if(val == 'custom'){
                     $('#custom_type_t').show();
                     $('#saved_type_t').hide();
+                    $('#na_type_t').hide();
+                }else if(val == 'na'){
+                    $('#custom_type_t').hide();
+                    $('#saved_type_t').hide();
+                    $('#na_type_t').show();
                 }else{
                     $('#custom_type_t').hide();
                     $('#saved_type_t').show();
+                    $('#na_type_t').hide();
                 }
             }
         });
@@ -878,6 +1094,33 @@
                 x_Treatmens--; //Decrease field counter
             });
             
+            
+            // causes
+            var _maxFieldTeatmen = 20; //Input fields increment limitation
+            var _adButtonTreatmen = $('#btn-append-causes'); //Add button selector
+            var _wraperTreatmen = $('#add-causes'); //Input field wrapperTreatment
+            var _fieldHTLTreatmen = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> <input type="text" class="form-control" placeholder="Enter cause..." name="causes[]"> <button type="button" class="btn btn-sm btn-primary remove_button_causes" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
+            var _x_Treatmens = 1; //Initial field counter is 1
+            
+            
+            
+            // Once add button is clicked
+            $(_adButtonTreatmen).click(function(){
+                //Check maximum number of input fields
+                if(_x_Treatmens < _maxFieldTeatmen){ 
+                    _x_Treatmens++; //Increase field counter
+                    $(_wraperTreatmen).append(_fieldHTLTreatmen); //Add field html
+                }else{
+                    alert('A maximum of '+_maxFieldTeatmen+' fields are allowed to be added. ');
+                }
+            });
+            
+            // Once remove button is clicked
+            $(_wraperTreatmen).on('click', '.remove_button_causes', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove(); //Remove field html
+                _x_Treatmens--; //Decrease field counter
+            });
             
     </script>
     <style>

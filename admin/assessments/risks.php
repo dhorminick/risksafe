@@ -4,7 +4,7 @@
     if (isset($_SESSION["loggedIn"]) == true || isset($_SESSION["loggedIn"]) === true) {
         $signedIn = true;
     } else {
-        header('Location: '.$file_dir.'login?r=/assessments/all');
+        header('Location: '.$file_dir.'auth/sign-in?r=/assessments/all');
         exit();
     }
     $message = [];
@@ -113,6 +113,7 @@
                         
                         <div class="card-body">
                             <div class="row custom-row">
+                                <div class='col-12'>Inherent Evaluation</div>
                                 <div class="form-group col-lg-4 col-12">
                                     <label>Likelihood</label>
                                     <div class="r_desc"><?php echo getLikelihood($info['likelihood'], $con);?></div>
@@ -126,8 +127,51 @@
                                     <div class="r_desc"><?php echo rating($info['likelihood'], $info['consequence'], $con); ?></div>
                                 </div>
                             </div>
+                            
+                            <?php if($info['rating_residual'] !== null){ ?>
+                            <div class="row custom-row">
+                                <div class='col-12'>Residual Evaluation</div>
+                                <div class="form-group col-lg-4 col-12">
+                                    <label>Likelihood</label>
+                                    <div class="r_desc"><?php echo getLikelihood($info['likelihood_residual'], $con);?></div>
+                                </div>
+                                <div class="form-group col-lg-4 col-12">
+                                    <label>Consequence</label>
+                                    <div class="r_desc"><?php echo getConsequence($info['consequence_residual'] , $con); ?></div>
+                                </div>
+                                <div class="form-group col-lg-4 col-12">
+                                    <label>Evaluation Rating</label>
+                                    <div class="r_desc"><?php echo rating($info['likelihood_residual'], $info['consequence_residual'], $con); ?></div>
+                                </div>
+                            </div>
+                            <?php } ?>
                         </div>
                         
+                        
+                        <div class='div_divider'></div>
+                        
+                        <!-- Treatment -->
+                        <div class="card-header hh">
+                            <h3 class="d-inline">Risk Causes</h3>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label class="help-label">
+                                    Registered Causes
+                                </label>
+                                <div class="r_desc">
+                                    <ul>
+                                    <?php 
+                                        $causes = unserialize($info['causes']);
+                                        foreach($causes as $cause){
+                                    ?>
+                                    <li><?php echo ucfirst($cause); ?></li>
+                                    <?php } ?>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                         
                         <div class='div_divider'></div>
 
@@ -143,8 +187,10 @@
                                     Selected Controls
                                 </label>
                                 <div class="r_desc">
-                                    <ul>
-                                    <?php 
+                                    <?php if($info['control_type'] === 'na'){ ?>
+                                    Control Not Assessed!
+                                    <?php    }else{
+                                        echo '<ul>';
                                         $controls = unserialize($info['control']);
                                         foreach($controls as $control){
                                     ?>
@@ -160,8 +206,7 @@
                                             
                                         ?>
                                     </li>
-                                    <?php } ?>
-                                    </ul>
+                                    <?php } echo '</ul>'; } ?>
                                 </div>
                             </div>
                             
@@ -189,14 +234,17 @@
                                     Selected Treatments
                                 </label>
                                 <div class="r_desc">
-                                    <ul>
-                                    <?php 
+                                    <?php if($info['treatment_type'] === 'na'){ ?>
+                                    Treatment Not Assessed!
+                                    <?php    }else{
+                                    echo '<ul>';
+                                    
                                         $treatments = unserialize($info['treatment']);
                                         foreach($treatments as $treatment){
                                     ?>
                                     <li><?php echo ucfirst(getAssessmentTreatment($info['treatment_type'], $treatment, $company_id, $con)); ?></li>
-                                    <?php } ?>
-                                    </ul>
+                                    
+                                    <?php } echo '</ul>'; } ?>
                                 </div>
                             </div>
                             

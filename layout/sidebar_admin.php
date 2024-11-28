@@ -70,6 +70,8 @@
                 <ul class="dropdown-menu">
                     <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>monitoring/new-audit">Create New Audit</a></li>
                     <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>monitoring/audits">All Audits of Control</a></li>
+                    <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>monitoring/new-kri">Create New KRI</a></li>
+                    <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>monitoring/kri">All Key Risk Indicators</a></li>
                     <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>monitoring/new-treatment">Create New Treatment</a></li>
                     <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>monitoring/treatments">All Treatments</a></li>
                 </ul>

@@ -61,7 +61,7 @@
 
     if(isset($_POST["create-assessment"])){
         // $insert_userid = $_SESSION["userid"];
-        // $type = ucwords(getIndustryTitle($risk__industry, $con));
+        $type = ucwords(getIndustryTitle($risk__industry, $con));
         $team = sanitizePlus($_POST["team"]);
         $task = sanitizePlus($_POST["task"]);
         $descript = sanitizePlus($_POST["description"]);
@@ -77,7 +77,7 @@
         $as_id = secure_random_string(10);
 
         $query = "INSERT INTO as_assessment (industry, as_user, as_type, as_team, as_task, as_descript, as_number, as_owner, as_next, as_assessor, as_approval, as_completed, as_date, as_id, has_values, c_id, export_date) 
-        VALUES ('$risk__industry', '$userId', 0, '$team', '$task', '$descript', '$number', '$owner', '$next', '$assessor', '$approval', '0', '$next', '$as_id', 'false', '$company_id', '$date')";
+        VALUES ('$risk__industry', '$userId', '$type', '$team', '$task', '$descript', '$number', '$owner', '$next', '$assessor', '$approval', '0', '$next', '$as_id', 'false', '$company_id', '$date')";
         $assessmentCreated = $con->query($query);
         if ($assessmentCreated) {
                 # code...

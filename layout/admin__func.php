@@ -601,4 +601,177 @@
 
 	return $timeStamp;
 }
+
+    function _getSelected($selected, $query){
+	    if($selected == $query){
+	        return 'selected';
+	    }else{
+	        return '';
+	    }
+	}
+
+    function _listFrequencies($selected = null){
+	    $response = '
+	        <option value="1" '._getSelected($selected, 1).'>Daily Applications</option>
+            <option value="2" '._getSelected($selected, 2).'>Weekly Applications</option>
+            <option value="4" '._getSelected($selected, 4).'>Monthly Applications</option>
+            <option value="5" '._getSelected($selected, 5).'>Quaterly Applications</option>
+            <option value="8" '._getSelected($selected, 8).'>Half Yearly Applications</option>
+            <option value="6" '._getSelected($selected, 6).'>Annually Applications</option>
+            <option value="7" '._getSelected($selected, 7).'>As Required</option>
+	    ';
+	    
+	    return $response;
+	}
+	
+	function _getFrequencyTitle($freq){
+	    if ($freq == 7) {
+			return "As Required";
+		} else if ($freq == 1 || strtolower($freq) == 'daily') {
+			return "Daily Applications";
+		} else if ($freq == 2 || strtolower($freq) == 'weekly') {
+			return "Weekly Applications";
+		} else if ($freq == 3) {
+			return "Fort-Nightly Controls";
+		} else if ($freq == 4 || strtolower($freq) == 'monthly') {
+			return "Monthly Applications";
+		} else if ($freq == 5) {
+			return "Quaterly Applications";
+		} else if ($freq == 8) {
+			return "Half Yearly Applications";
+		} else if ($freq == 6 || strtolower($freq) == 'annually') {
+			return "Annually Applications";
+		} else {
+			return "None Specified";
+		}
+	}
+	
+	function _getEffectivenessTitle($effective){
+	    $effect = strtolower($effective);
+	    if ($effect === 'effective') {
+			return "Effective";
+		} else if ($effect === 'ineffective') {
+			return "InEffective";
+		} else {
+			return "UnAssessed";
+		}
+	}
+	
+	function _listEffectiveness($selected = null){
+	    
+	    if($selected == null){
+    	    $response = '
+    	        <option value="Effective">Effective</option>
+                <option value="InEffective">InEffective</option>
+                <option value="UnAssessed">UnAssessed</option> 
+    	    ';
+	    }else{
+	        $response = '
+    	        <option value="Effective" '._getSelected(strtolower($selected), strtolower('Effective')).'>Effective</option>
+                <option value="InEffective" '._getSelected(strtolower($selected), strtolower('InEffective')).'>InEffective</option>
+                <option value="UnAssessed" '._getSelected(strtolower($selected), strtolower('UnAssessed')).'>UnAssessed</option> 
+    	    ';
+	    }
+	    
+	    return $response;
+	}
+	
+	function _getStatus($effective){
+	    $effect = strtolower($effective);
+	    if ($effect === 'high') {
+			return "High";
+		} else if ($effect === 'low') {
+			return "Low";
+		} else {
+			return "Medium";
+		}
+	}
+	
+	function _listStatus($selected = null){
+	    
+	    if($selected == null){
+    	    $response = '
+    	        <option value="High">High</option>
+                <option value="Low">Low</option>
+                <option value="Medium" selected>Medium</option> 
+    	    ';
+	    }else{
+	        $response = '
+    	        <option value="High" '._getSelected(strtolower($selected), strtolower('High')).'>High</option>
+                <option value="Low" '._getSelected(strtolower($selected), strtolower('Low')).'>Low</option>
+                <option value="Medium" '._getSelected(strtolower($selected), strtolower('Medium')).'>Medium</option> 
+    	    ';
+	    }
+	    
+	    return $response;
+	}
+	
+	function _getTrend($effective){
+	    $effect = strtolower($effective);
+	    if ($effect === 'increasing') {
+			return "Increasing";
+		} else if ($effect === 'decreasing') {
+			return "Decreasing";
+		} else {
+			return "Stable";
+		}
+	}
+	
+	function _listTrend($selected = null){
+	    
+	    if($selected == null){
+    	    $response = '
+    	        <option value="Increasing">Increasing</option>
+                <option value="Decreasing">Decreasing</option>
+                <option value="Stable" selected>Stable</option> 
+    	    ';
+	    }else{
+	        $response = '
+    	        <option value="Increasing" '._getSelected(strtolower($selected), strtolower('Increasing')).'>Increasing</option>
+                <option value="Decreasing" '._getSelected(strtolower($selected), strtolower('Decreasing')).'>Decreasing</option>
+                <option value="Stable" '._getSelected(strtolower($selected), strtolower('Stable')).'>Stable</option> 
+    	    ';
+	    }
+	    
+	    return $response;
+	}
+	
+    function _getPriority($effective){
+	    $effect = strtolower($effective);
+	    if ($effect === 'lowest') {
+			return "Lowest";
+		} else if ($effect === 'high') {
+			return "High";
+		} else if ($effect === 'critical') {
+			return "Critical";
+		} else if ($effect === 'medium') {
+			return "Medium";
+		}else{
+			return "Low";
+		}
+	}
+	
+	function _listPriority($selected = null){
+	    
+	    if($selected == null){
+    	    $response = '
+    	        <option value="Lowest">Lowest</option>
+                <option value="Low" selected>Low</option>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Critical">Critical</option>
+    	    ';
+	    }else{
+	        $response = '
+    	        <option value="Lowest" '._getSelected(strtolower($selected), strtolower('Lowest')).'>Lowest</option>
+                <option value="Low" '._getSelected(strtolower($selected), strtolower('Low')).'>Low</option>
+                <option value="High" '._getSelected(strtolower($selected), strtolower('High')).'>High</option> 
+                <option value="Medium" '._getSelected(strtolower($selected), strtolower('Medium')).'>Medium</option>
+                <option value="Critical" '._getSelected(strtolower($selected), strtolower('Critical')).'>Critical</option> 
+    	    ';
+	    }
+	    
+	    return $response;
+	}	
+
 ?>

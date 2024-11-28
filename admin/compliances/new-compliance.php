@@ -41,6 +41,8 @@
                     $treatment = serialize($_POST["saved-treatment"]);
                 }else if($treatment_type == 'custom'){
                     $treatment = serialize($_POST["custom-treatment"]);
+                }else if($treatment_type == 'na'){
+                    $treatment = 'Not Assessed!';
                 }else{
                     $error = true;
                     array_push($message, 'Error 402: Treatment Type Error!!');
@@ -52,6 +54,8 @@
                     $control = serialize($_POST["saved-control"]);
                 }else if($control_type == 'custom'){
                     $control = serialize($_POST["custom-control"]);
+                }else if($control_type == 'na'){
+                    $control = 'Not Assessed!';
                 }else{
                     $error = true;
                     array_push($message, 'Error 402: Control Type Error!!');
@@ -304,6 +308,10 @@
                                         <input type='radio' id='assessment-specific' value='custom' name='control-type' />
                                         <label for='assessment-specific'>Compliance Specific Controls</label>
                                     </div>
+                                    <div>
+                                        <input type='radio' id='na-c' value='na' name='control-type' />
+                                        <label for='na-c'>N/A</label>
+                                    </div>
                                 </div>
                                 
                                 <div id='control_type'>
@@ -354,6 +362,8 @@
                                         <div id='add-customs-control'></div>
                                         <div class="custom-controls"></div>
                                     </div>
+                                    
+                                    <div class="form-group" id='na_type_c' style='margin-top:0px;'></div>
                                 </div>
                                 
                                 <div class="form-group">
@@ -379,6 +389,10 @@
                                 <div>
                                     <input type='radio' id='saved-t' value='saved' name='treatment-type' />
                                     <label for='saved-t'>Saved Custom Controls</label>
+                                </div>
+                                <div>
+                                    <input type='radio' id='na-t' value='na' name='treatment-type' />
+                                    <label for='na-t'>N/A</label>
                                 </div>
                             </div>
                             <div class="form-group" id='saved_type_t'>
@@ -408,6 +422,8 @@
                                 </div>
                                 <div id='add-customs-treatment'></div>
                             </div>
+                            
+                            <div class="form-group" id='na_type_t' style='margin-top:0px;'></div>
                                 
                                 <div class="clearfix" id="treatments">
                                     <?php #echo rawurldecode(listTreatments($company_id, $con)); ?>
@@ -560,20 +576,28 @@
                     $('#recommended').show();
                     $('#custom_type').hide();
                     $('#saved_type').hide();
-                    
+                    $('#na_type_c').hide();
                     
                 }else if(val == 'saved'){
                     $('#recommended_type').hide();
                     $('#custom_type').hide();
                     $('#saved_type').show();
+                    $('#na_type_c').hide();
                 }else if(val == 'custom'){
                     $('#recommended_type').hide();
                     $('#custom_type').show();
                     $('#saved_type').hide();
+                    $('#na_type_c').hide();
+                }else if(val == 'na'){
+                    $('#recommended_type').hide();
+                    $('#custom_type').hide();
+                    $('#saved_type').hide();
+                    $('#na_type_c').show();
                 }else{
                     $('#recommended_type').show();
                     $('#custom_type').hide();
                     $('#saved_type').hide();
+                    $('#na_type_c').hide();
                 }
                 // alert('works');
             }
@@ -587,12 +611,19 @@
                 if(val == 'saved'){
                     $('#custom_type_t').hide();
                     $('#saved_type_t').show();
+                    $('#na_type_t').hide();
                 }else if(val == 'custom'){
                     $('#custom_type_t').show();
                     $('#saved_type_t').hide();
+                    $('#na_type_t').hide();
+                }else if(val == 'na'){
+                    $('#custom_type_t').hide();
+                    $('#saved_type_t').hide();
+                    $('#na_type_t').show();
                 }else{
                     $('#custom_type_t').hide();
                     $('#saved_type_t').show();
+                    $('#na_type_t').hide();
                 }
             }
         });
