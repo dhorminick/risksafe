@@ -634,7 +634,7 @@ $("#likelihood_residual").change(function (e) {
               } else {
               // $("#control_selctor").html('<div id="fetchControls" style="width:100%;"></div>');
                 	
-                if(userRisks !== 'empty' && userRisks.includes(riskValue)){
+                if(userRisks[0] !== 'empty' && userRisks !== 'empty' && userRisks.includes(riskValue)){
                     $('#selected_risk_type').val('custom');
                     $('#get_customhazard').val(riskValue);
                     
