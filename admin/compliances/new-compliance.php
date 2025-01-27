@@ -35,6 +35,7 @@
         
         
         $freq = sanitizePlus($_POST["freq"]);
+        $incidents = serialize($_POST["incidents"]);
         
                 
                 if($treatment_type == 'saved'){
@@ -112,8 +113,8 @@
             
             if($error === false){
                 $date = date("Y-m-d");
-                        $query = "INSERT INTO as_compliancestandard (compliance_module, control_type, treatment_type, module, com_user_id, com_compliancestandard, com_legislation, com_controls, com_training, co_status, com_officer, com_documentation,existing_tr,existing_ct, c_id, compli_id, saved_control, saved_treatment, custom_control, custom_treatment, frequency) 
-                        VALUES ('$compliance_module', '$control_type', '$treatment_type', '$module', '$userId', '$compliancestandard', '$legislation', '$control_req', '$training', '$compliancestatus', '$officer', '$targetFilePath','$treatment','$control','$company_id','$com_id', 'null', 'null', 'null', 'null', '$freq')";
+                        $query = "INSERT INTO as_compliancestandard (compliance_module, incidents, control_type, treatment_type, module, com_user_id, com_compliancestandard, com_legislation, com_controls, com_training, co_status, com_officer, com_documentation,existing_tr,existing_ct, c_id, compli_id, saved_control, saved_treatment, custom_control, custom_treatment, frequency) 
+                        VALUES ('$compliance_module', '$incidents', '$control_type', '$treatment_type', '$module', '$userId', '$compliancestandard', '$legislation', '$control_req', '$training', '$compliancestatus', '$officer', '$targetFilePath','$treatment','$control','$company_id','$com_id', 'null', 'null', 'null', 'null', '$freq')";
                         $sql = mysqli_query($con, $query);
                         if ($sql) {
                             #notify
@@ -241,6 +242,7 @@
 									<label>Compliance Requirements: </label>
 									<textarea name="training" class="form-control" id='compliance__requirements' placeholder="Enter Compliance Requirements..." required></textarea>
 								</div>
+								
 								<div class='row custom-row'>
                                 <div class="form-group col-12 col-lg-4">
 									<label for='com_officer'>Compliance Officer: </label>
@@ -284,6 +286,32 @@
 							</div>
 							
 							<div class='div_divider'></div>
+                                
+                                <!-- Incidents -->
+                                <div class="card-header">
+                                    <h3 class="d-inline">Compliance Incidents</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                            <label class="help-label">
+                                               Incidents
+                                            </label>
+                                            <div class="add-customs">
+                                                <div style='width:100%;margin-right:5px;' id='fh4nfve_1111'>
+                                                    <select name="incidents[]" class="form-control" required>
+                                                        <?php echo __listCompanyIncidents($company_id, $con); ?>
+                                                    </select>
+                                                </div>
+                                                <a href='../business/new-incident?redirect=true' target='_blank' class="btn btn-sm btn-primary" id='fn4h9nf' style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>
+                                                <buttton id='f93nfo0_1111' class="btn btn-sm btn-primary" type='button' data-toggle="tooltip" title="Refresh Customs List" data-placement="left" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
+                                                <button type="button" class="btn btn-sm btn-primary" id="btn-append-incident" style='margin-left:5px;'>+ Add</button>
+                                            </div>
+                                            
+                                            <div id='add-incident' style='margin-top:5px;'></div>
+                                    </div>
+                                </div>
+                                
+                            <div class='div_divider'></div>
 
                             <!-- Controls -->
                             <div class="card-header hh">
@@ -338,13 +366,13 @@
                                             Saved Custom Controls
                                         </label>
                                         <div class="add-customs">
-                                            <div style='width:100%;margin-right:5px;' id='fh4nfve_11'>
+                                            <div style='width:100%;margin-right:5px;' id='fh4nfve_110'>
                                                 <select name="saved-control[]" class="form-control" required>
                                                     <?php echo listCompanyControl($company_id, $con); ?>
                                                 </select>
                                             </div>
                                             <a href='../customs/new-control?redirect=true' target='_blank' class="btn btn-sm btn-primary" id='fn4h9nf' style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>
-                                            <buttton id='f93nfo0_11' class="btn btn-sm btn-primary" type='button' data-toggle="tooltip" title="Refresh Customs List" data-placement="left" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
+                                            <buttton id='f93nfo0_110' class="btn btn-sm btn-primary" type='button' data-toggle="tooltip" title="Refresh Customs List" data-placement="left" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
                                             <button type="button" class="btn btn-sm btn-primary" id="btn-append-saved-control" style='margin-left:5px;'>+ Add</button>
                                         </div>
                                         
@@ -499,6 +527,14 @@
     <script>
         let fieldHTMLTreatent = 'empty';
         $('#btn-append-rec-control').hide();
+        
+        $("#f93nfo0_1111").click(function (e) {
+          $("#fh4nfve_1111").load(" #fh4nfve_1111 > *");
+        });
+        
+        $("#f93nfo0_110").click(function (e) {
+          $("#fh4nfve_110").load(" #fh4nfve_110 > *");
+        });
         
         $("#compliance_module").change(function (e) {
             var moduleValue = $("#compliance_module").val();
@@ -699,6 +735,32 @@
                 e.preventDefault();
                 $(this).parent('div').remove(); //Remove field html
                 x_Treatmens--; //Decrease field counter
+            });
+            
+            
+            // incidents
+            var _maxFieldTeatmen = 10; //Input fields increment limitation
+            var _adButtonTreatmen = $('#btn-append-incident'); //Add button selector
+            var _wraperTreatmen = $('#add-incident'); //Input field wrapperTreatment
+            var _fieldHTLTreatmen = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> <select name="incidents[]" class="form-control" required> <?php echo __listCompanyIncidents($company_id, $con); ?> </select> <buttton class="btn btn-sm btn-primary remove_button_t" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
+            var _x_Treatmens = 1; //Initial field counter is 1
+            
+            // Once add button is clicked
+            $(_adButtonTreatmen).click(function(){
+                //Check maximum number of input fields
+                if(_x_Treatmens < _maxFieldTeatmen){ 
+                    _x_Treatmens++; //Increase field counter
+                    $(_wraperTreatmen).append(_fieldHTLTreatmen); //Add field html
+                }else{
+                    alert('A maximum of '+_maxFieldTeatmen+' fields are allowed to be added. ');
+                }
+            });
+            
+            // Once remove button is clicked
+            $(_wraperTreatmen).on('click', '.remove_button_t', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove(); //Remove field html
+                _x_Treatmens--; //Decrease field counter
             });
     </script>
 </body>

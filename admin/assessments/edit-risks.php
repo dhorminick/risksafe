@@ -40,6 +40,8 @@
                 $control_type = sanitizePlus($_POST["control-type"]);
                 $treatment_type = sanitizePlus($_POST["treatment-type"]);
                 
+                $incidents = serialize($_POST["incidents"]);
+                
                 $causes = serialize($_POST["causes"]);
                 $kri = sanitizePlus($_POST["kri"]);
                 
@@ -70,7 +72,7 @@
                 if($error == false){
                     # code...
                     $rating = calculateRating($likelihood, $consequence, $con);
-                    $updateRisk = "UPDATE as_assessment_new SET kri = '$kri', causes = '$causes', risk_type = '$risk_type', risk = '$risk', sub_risk = '$hazard', description = '$descript', likelihood = '$likelihood', consequence = '$consequence', rating= '$rating', control_type = '$control_type', control = '$control', control_effectiveness = '$effectiveness', control_action = '$actiontake', treatment_type = '$treatment_type', treatment = '$treatment', owner = '$owner', due_date = '$date' WHERE risk_id = '$assessmentId' AND c_id = '$company_id'";
+                    $updateRisk = "UPDATE as_assessment_new SET kri = '$kri', incidents = '$incidents', causes = '$causes', risk_type = '$risk_type', risk = '$risk', sub_risk = '$hazard', description = '$descript', likelihood = '$likelihood', consequence = '$consequence', rating= '$rating', control_type = '$control_type', control = '$control', control_effectiveness = '$effectiveness', control_action = '$actiontake', treatment_type = '$treatment_type', treatment = '$treatment', owner = '$owner', due_date = '$date' WHERE risk_id = '$assessmentId' AND c_id = '$company_id'";
                     $RiskInserted = $con->query($updateRisk);  
                     if ($RiskInserted) {
                         array_push($message, 'Risk Details Updated Successfully!!');
@@ -295,6 +297,52 @@
                         </div>
                         
                         <div class='div_divider'></div>
+                            
+                            <!-- Incidents -->
+                                <div class="card-header">
+                                    <h3 class="d-inline">Risk Incidents</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                    <label class="help-label">
+                                        Incidents
+                                    </label>
+                                    <div class="add-customs">
+                                        <?php 
+                                            $controls = unserialize($info['incidents']);
+                                            $controls_more = $controls;
+                                            $c_count = 0;
+                                            foreach($controls as $control){
+                                                $c_count++;
+                                                echo "<div style='width:100%;margin-right:5px;' id='fh4nfve_1111'>";
+                                                echo __listCompanyIncidents_Selected($company_id, $con, $control);
+                                                echo "</div>";
+                                                break;
+                                            }
+                                        ?>
+                                        
+                                        <a href='../customs/new-incident?redirect=true' target='_blank' class="btn btn-sm btn-primary" id='fn4h9nf' style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>
+                                        <buttton id='f93nfo0_1111' class="btn btn-sm btn-primary" type='button' data-toggle="tooltip" title="Refresh Customs List" data-placement="left" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
+                                        <button type="button" class="btn btn-sm btn-primary" id="btn-append-incident" style='margin-left:5px;'>+ Add</button>
+                                    </div>
+                                    
+                                    <div id='add-incident' style='margin-top:5px;'>
+                                        <?php 
+                                            unset($controls_more[0]);
+                                            foreach($controls_more as $_control){
+                                        ?>
+                                        <div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> 
+                                            <?php echo __listCompanyIncidents_Selected($company_id, $con, $_control); ?>
+                                            <buttton class="btn btn-sm btn-primary remove_button_t rmv_btn" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;' type="button"><i class="fas fa-minus"></i></buttton>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                                </div>
+                                
+                        <div class='div_divider'></div>
+                        
+                        
                         <style>
                             <?php if($info['control_type'] == 'recommended'){ ?>
                             #saved_type,
@@ -784,8 +832,13 @@
     <script src="<?php echo $file_dir; ?>assets/bundles/bootstrap-daterangepicker/daterangepicker.js"></script>
     <script src='../../assets/js/admin/assessment.js'></script>
     <script>
+    
+     $("#f93nfo0_1111").click(function (e) {
+          $("#fh4nfve_1111").load(" #fh4nfve_1111 > *");
+        });
+        
         let fieldHTMLTreatent = 'empty';
-        let userRisks = [<?php $query="SELECT * FROM as_customrisks WHERE c_id = '$company_id'"; $result=$con->query($query); if ($result->num_rows > 0) { while($row=$result->fetch_assoc()){ ?> "<?php echo $row['risk_id']; ?>", <?php } }else{ echo 'empty'; } ?> ]
+        let userRisks = <?php $query="SELECT * FROM as_customrisks WHERE c_id = '$company_id'"; $result=$con->query($query); if ($result->num_rows > 0){ ?> [ <?php while($row=$result->fetch_assoc()){ ?> "<?php echo $row['risk_id']; ?>", <?php } echo ']'; }else{ echo "'empty';"; } ?> 
         
         <?php if($info['risk_type'] == 'custom') { ?> $('#btn-append-rec-control').hide(); <?php } ?>
         
@@ -1117,6 +1170,31 @@ $("#likelihood_residual").change(function (e) {
             
             // Once remove button is clicked
             $(_wraperTreatmen).on('click', '.remove_button_causes', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove(); //Remove field html
+                _x_Treatmens--; //Decrease field counter
+            });
+            
+            // incidents
+            var _maxFieldTeatmen = 10; //Input fields increment limitation
+            var _adButtonTreatmen = $('#btn-append-incident'); //Add button selector
+            var _wraperTreatmen = $('#add-incident'); //Input field wrapperTreatment
+            var _fieldHTLTreatmen = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> <select name="incidents[]" class="form-control" required> <?php echo __listCompanyIncidents($company_id, $con); ?> </select> <buttton class="btn btn-sm btn-primary remove_button_t" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
+            var _x_Treatmens = 1; //Initial field counter is 1
+            
+            // Once add button is clicked
+            $(_adButtonTreatmen).click(function(){
+                //Check maximum number of input fields
+                if(_x_Treatmens < _maxFieldTeatmen){ 
+                    _x_Treatmens++; //Increase field counter
+                    $(_wraperTreatmen).append(_fieldHTLTreatmen); //Add field html
+                }else{
+                    alert('A maximum of '+_maxFieldTeatmen+' fields are allowed to be added. ');
+                }
+            });
+            
+            // Once remove button is clicked
+            $(_wraperTreatmen).on('click', '.remove_button_t', function(e){
                 e.preventDefault();
                 $(this).parent('div').remove(); //Remove field html
                 _x_Treatmens--; //Decrease field counter

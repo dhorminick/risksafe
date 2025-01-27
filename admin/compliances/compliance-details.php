@@ -232,6 +232,39 @@
 								</div>
 								</div>
 							</div>
+							
+							
+							<!-- Incident -->
+                            <div class='div_divider'></div>
+    
+                            <!-- Incident -->
+                            <div class="card-header hh">
+                                <h3 class="d-inline">Compliance Incident</h3>
+                            </div>
+                            <div class="card-body">
+                                <?php if($info['incidents'] === null){ ?>
+    							<div class="form-group">
+                                    <label class="help-label">Incidents</label>
+                                    <div class="r_desc">None Specified!</div>
+                                </div>
+                                <?php }else{ ?>
+                                <div class="form-group">
+                                    <label class="help-label">
+                                        Selected Incidents
+                                    </label>
+                                    <div class="r_desc">
+                                        <ul>
+                                        <?php
+                                            $treatments = unserialize($info['incidents']);
+                                            foreach($treatments as $treatment){
+                                        ?>
+                                        <li><?php echo ucfirst(__getIncident($company_id, $treatment, $con)); ?></li>
+                                        <?php } ?>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <?php } ?>
+                            </div>
                             
                             <div class='div_divider'></div>
 

@@ -1,6 +1,6 @@
 <?php
 #vars
-$sitee = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]";
+$sitee = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]/";
 include 'variablesandfunctions.php';
 
 

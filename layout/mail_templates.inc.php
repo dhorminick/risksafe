@@ -213,6 +213,7 @@ $mail = '
 
 return $mail;
 }
+
 function _confirm_mail_tenplate($name, $otp, $web_link, $help){
 $mail = '
 <!DOCTYPE html>
@@ -279,6 +280,81 @@ $mail = '
           <div style="margin-bottom: 5px">
             If you did not sign up for RiskSafe, you can safely ignore
             this email, and no further action will be required.
+          </div>
+          <div class="'.uniqid().'" style="margin-bottom: 5px">
+            Should you have any questions or need assistance, feel free to reach
+            out to our support team at
+            <a href="mailto:'.$help.'"
+              >'.$help.'</a
+            >.
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+';
+
+return $mail;
+}
+
+function _notif_email($type, $msg, $link, $web_link, $help = 'help@risksafe.co', $unsubscribe = 'support@risksafe.co'){
+$mail = '
+<!DOCTYPE html>
+<html style="font-family: Verdana, Geneva, sans-serif !important;display:flex;justify-content:center;align-items:center;padding:20px;color:black !important;">
+  <head>
+  </head>
+  <body class="'.uniqid().'" style="font-family: Verdana, Geneva, sans-serif !important;width:100%;color:black !important;">
+    <div
+      class="main-container"
+      style="
+        max-width: 600px;
+        border-radius: 10px;
+        border-top: 10px solid #6777ef;
+        border-left: 1px solid #6777ef;
+        border-right: 1px solid #6777ef;
+        border-bottom: 10px solid #6777ef;
+        font-family: Verdana, Geneva, sans-serif !important;
+        color:black !important;
+      "
+    >
+      <div class="logo" style="width: 100%; text-align: center;">
+        <a href="'.$web_link.'"
+          ><img src="'.$web_link.'/assets/images/logo-edit.jpg?p='.uniqid().'" alt="RiskSafe" title="logo" width="auto" height="auto" style="margin: 10px 0px; height: 60px; text-align: center"
+        /></a>
+      </div>
+      <div
+        class="body"
+        style="padding: 20px 15px 10px 15px; margin: 0px 0px 10px 0px"
+      >
+        <div class="body_body" style="font-size: 14px !important">
+          <div class="'.uniqid().'" style="margin-bottom: 5px">
+            '.$msg.'
+          </div>
+          <div
+            style="
+              margin: 10px 0px;
+              padding: 20px 0px;
+              width: 100%;
+              text-align: center;
+            "
+          >
+            <a
+              href="'.strtolower($link).'"
+              style="
+                border-radius: 4px;
+                padding: 10px 20px;
+                font-size: 15px !important;
+                background-color: #6777ef;
+                color: white;
+                cursor: pointer;
+                text-decoration: none !important;
+              "
+              >View '.$type.'</a
+            >
+          </div>
+          <div style="margin-bottom: 5px">
+            To unsubscribe from notification mails, send us a response @ <a href="mailto:'.$unsubscribe.'">'.$unsubscribe.'</a>.
           </div>
           <div class="'.uniqid().'" style="margin-bottom: 5px">
             Should you have any questions or need assistance, feel free to reach
@@ -498,4 +574,113 @@ $mail = '
 
 return $mail;
 }
+
+function _book_demo_template($data){
+$mail = '
+<!DOCTYPE html>
+<html style="font-family: Verdana, Geneva, sans-serif !important;display:flex;justify-content:center;align-items:center;padding:20px;color:black !important;">
+  <head>
+  </head>
+  <body class="'.uniqid().'" style="font-family: Verdana, Geneva, sans-serif !important;width:100%;color:black !important;">
+    <div
+      class="main-container"
+      style="
+        max-width: 600px;
+        border-radius: 10px;
+        border-top: 10px solid #6777ef;
+        border-left: 1px solid #6777ef;
+        border-right: 1px solid #6777ef;
+        border-bottom: 10px solid #6777ef;
+        font-family: Verdana, Geneva, sans-serif !important;
+        color:black !important;
+      "
+    >
+      <div class="logo" style="width: 100%; text-align: center;">
+        <a href="'.$data['url'].'"
+          ><img src="'.$data['url'].'/assets/images/logo-edit.jpg?p='.uniqid().'" alt="RiskSafe" title="logo" width="auto" height="auto" style="margin: 10px 0px; height: 60px; text-align: center"
+        /></a>
+      </div>
+      <div
+        class="body"
+        style="padding: 20px 15px 10px 15px; margin: 0px 0px 10px 0px"
+      >
+        <div class="body_body" style="font-size: 14px !important">
+          <div style="margin-bottom: 20px">Dear '.ucwords($data['name']).',</div>
+          
+          <div style="margin-bottom: 5px">
+            Thank you for scheduling a demo with us! We\'re thrilled to have the opportunity to showcase how RiskSafe can help meet your needs.
+          </div>
+          <div style="margin-bottom: 5px">
+            We’ve successfully received your request, and one of our team members will get back to you within the next 24 hours to finalize the details and answer any preliminary questions you may have.
+          </div>
+          <div style="margin-bottom: 5px">
+            In the meantime, if there’s anything specific you’d like us to cover during the demo, feel free to reply to this email, and we’ll tailor the session accordingly.
+          </div>
+          <div style="margin-bottom: 5px">
+            We look forward to connecting with you soon!
+          </div>
+          
+          
+          <div style="text-align:right;margin-top:20px;">
+              <div>Best regards,</div>
+              <div>RiskSafe</div>
+          </div>
+          
+          
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+';
+
+return $mail;
+}
+
+function _contact_us_template($data){
+$mail = '
+<!DOCTYPE html>
+<html style="font-family: Verdana, Geneva, sans-serif !important;display:flex;justify-content:center;align-items:center;padding:20px;color:black !important;">
+  <head>
+  </head>
+  <body class="'.uniqid().'" style="font-family: Verdana, Geneva, sans-serif !important;width:100%;color:black !important;">
+    <div
+      class="main-container"
+      style="
+        max-width: 600px;
+        border-radius: 10px;
+        border-top: 10px solid #6777ef;
+        border-left: 1px solid #6777ef;
+        border-right: 1px solid #6777ef;
+        border-bottom: 10px solid #6777ef;
+        font-family: Verdana, Geneva, sans-serif !important;
+        color:black !important;
+      "
+    >
+      <div class="logo" style="width: 100%; text-align: center;">
+        <a href="'.$data['url'].'"
+          ><img src="'.$data['url'].'/assets/images/logo-edit.jpg?p='.uniqid().'" alt="RiskSafe" title="logo" width="auto" height="auto" style="margin: 10px 0px; height: 60px; text-align: center"
+        /></a>
+      </div>
+      <div
+        class="body"
+        style="padding: 20px 15px 10px 15px; margin: 0px 0px 10px 0px"
+      >
+        <div class="body_body" style="font-size: 14px !important">
+          <div style="margin-bottom: 20px">From: '.ucwords($data['name']).',</div>
+          <div style="margin-bottom: 20px">Email Address: '.ucwords($data['email']).'</div>
+          <div style="margin-bottom: 5px">Subject: '.ucwords($data['subject']).'</div>
+          <div style="margin-bottom: 5px">
+            Message: '.ucwords($data['message']).'
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+';
+
+return $mail;
+}
+
 ?>

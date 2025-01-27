@@ -1,304 +1,285 @@
 <?php
-	$message = [];
-	include 'layout/config.php';
-	require('vendor/autoload.php');
+  session_start();
 
-	use PHPMailer\PHPMailer\PHPMailer;
-	use PHPMailer\PHPMailer\SMTP;
+  $message = [];
+  
+  $file_dir = '';
+  
+  include $file_dir.'layout/db.php';
+  require $file_dir.'layout/variablesandfunctions.php'; 
+  require $file_dir.'layout/mail.php';
 
-	include 'layout/variablesandfunctions.php';	
-	include 'layout/db.php';	
+  function _isEmpty($data){
+    if(!$data || $data === null || $data === ''){
+      return true;
+    }
 
-	$message = [];
-	$nameChecker = false;
-    $emailChecker = false;
-	$subjectChecker = false;
-	$questionChecker = false;
-	
-	if (isset($_POST["contact"])) {
+    return false;
+  } 
 
-		$name = sanitizePlus($_POST["name"]);
-		$email = sanitizePlus($_POST["email"]);
-		$subject = sanitizePlus($_POST["subject"]);
-		$question = sanitizePlus($_POST["question"]);
-		$datetime = date("Y-m-d H:i:s");
+  if (isset($_POST["book"])) {
+      $name = sanitizePlus($_POST["name"]);
+      $email = sanitizePlus($_POST["email"]);
+      $subject = sanitizePlus($_POST["subject"]);
+      $_message = sanitizePlus($_POST["message"]);
 
-		#verify if params have values
-        $nameChecker = errorExists($name, $nameChecker);
-        $emailChecker = errorExists($email, $emailChecker);
-        $subjectChecker = errorExists($subject, $subjectChecker);
-		$questionChecker = errorExists($question, $questionChecker);
+      if(_isEmpty($email) || _isEmpty($_message)){
+        array_push($message, "Email address and contact message fields are required!");
+      }else{
+        $data = array(
+          'name' => $name,
+          'email' => $email,
+          'message' => $_message,
+          'subject' => $subject,
+          'url' => 'https://risksafe.co/'
+        );
+        $data = serialize($data);
 
-		if ($nameChecker == true || $emailChecker == true || $subjectChecker == true || $questionChecker == true) {
-            array_push($message, "Error 402: Incomplete Parameters!!");
-        } else {
-			$addContact = "INSERT INTO as_contact (`name`, `email`, `subject`, `question`,`read_status`,`date`)
-				VALUES ('$name', '$email', '$subject', '$question','0','$datetime' )";
-			$contactAdded = $con->query($addContact);
-			if ($contactAdded) {
-				$mail = new PHPMailer(false);
-				$mail->isSMTP();
-				$mail->Host = 'smtp.gmail.com';
-				$mail->Port = 587;
-				$mail->SMTPAuth = true;
-				$mail->Username = 'jay@risksafe.co'; // Replace with your Mailtrap username
-				$mail->Password = 'Welcome901#@!'; // Replace with your Mailtrap password
-				//BBs35JSmbWjWfi+7/v+e03CcORG4h181ZvMVlpD+pDoo
+        #send admin mail
+        $mailSubject = 'RiskSafe Contact - '.ucwords($subject);
+        $mailRecipient = 'jay@risksafe.co';
+        $mailSender = $email;
+        $mail = _sendAdminMailForContact($mailSender, $mailRecipient, $mailSubject, $data);
 
-				$mail->SMTPSecure = 'TLS';
-				$mail->SMTPDebug = SMTP::DEBUG_OFF;
-				$mail->Debugoutput = 'html';
-				// Email content
-				if ($name == null || $name == '') {
-					$name = 'user';
-				}
-
-				$mail->setfrom($email, ucwords($name));
-				$mail->addAddress('jay@risksafe.co');
-				//$mailto:mail->addaddress('shwetachauhan035@gmail.com');
-				$mail->Subject = 'Contact Mail';
-				// Email body
-
-				//$body=// Email message (HTML content)
-				$body = '<!DOCTYPE html>
-					<html>
-					
-					<head>
-						<meta charset="UTF-8">
-						<title>Email Verification</title>
-					</head>
-					
-					<body>
-						<table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;">
-							<tr>
-								<td align="center" bgcolor="#f9f9f9" style="padding: 40px 0 30px 0;">
-									<img src="https://risksafe.co/img/logo.png" alt="RiskSafe" width="100">
-								</td>
-							</tr>
-							<tr>
-								<td align="center" bgcolor="#ffffff" style="padding: 40px 20px 40px 20px; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; color: #666666;">
-									<p>Name: ' . $name . '</p>           
-									<p>Email: ' . $email . '</p>           
-									<p>Subject: ' . $subject . '</p>           
-									<p>Question: ' . $question . '</p>           
-									<p>Best regards,<br>Risksafe Team</p>
-								</td>
-							</tr>
-							<tr>
-								<td bgcolor="#f9f9f9" align="center" style="padding: 20px 0 30px 0; font-family: Arial, sans-serif; font-size: 12px; color: #666666;">
-									<p>&copy; <?php echo date("Y"); ?>RiskSafe. All rights reserved.</p>
-								
-								</td>
-							</tr>
-						</table>
-					</body>
-					
-					</html>';
-				$mail->Body = $body;
-				// Set the email body as HTML
-				$mail->isHTML(true);
-
-				if ($mail->send()) {
-					array_push($message, "Mail Sent Successfully!! Our Team Will Get Back To You As Soon As Possible.");
-				} else {
-					array_push($message, "Mail Error: ".$mail->ErrorInfo);
-				}
-			} else {
-				array_push($message, "Error 502: Error Logging Form Details!!");
-			}
-		}
-	}
-
-	if (isset($_POST["mailUs"])){
-		function getToArrayCustom($array){
-			$getArray = [];
-
-			$convertArray = explode("&", $array);
-			for ($i=0; $i < count($convertArray); $i++) { 
-				$keyValue = explode('=', $convertArray[$i]);
-				$getArray[$keyValue [0]] = $keyValue [1];
-			}
-
-			return $getArray;
-		}
-		$getArray = getToArrayCustom($_POST["mailUs"]);
-		$contactEmail = sanitizePlus($getArray['popup-email']);
-		if ($getArray['popup-name'] || $getArray['popup-name'] != '' || $getArray['popup-name'] != null) {
-			$contactName = sanitizePlus($getArray['popup-name']);
-		} else {
-			$contactName = 'RiskSafe User';
-		}
-		$contactMessage = sanitizePlus($getArray['popup-message']);
-		$contactSubject = 'Pop Up - Contact Form';
-
-		include_once 'layout/mail_custom.php';
-		$sent = mailUserCustom($contactSubject, $contactMessage, $adminemailaddr, $contactEmail);
-
-		if ($sent['sent'] == 'true') {
-			echo '
-				<script src="assets/bundles/izitoast/js/iziToast.min.js"></script>
-				<script>
-				$(".toastr-error-1").click(function () {
-					iziToast.success({
-						title: $(this).attr("title"),
-						message: $(this).attr("message"),
-						position: "topRight",
-					});
-				});
-				setTimeout(function () {
-					$(".res").removeClass("show");
-					$(".res").html("");
-				}, 2000);
-				</script>
-				<span class="toastr-error-1" title="Error 402:" message="Success: Mail Sent Successfully!!"></span>
-				<script>$(".toastr-error-1").click();</script>
-			';
-		} else {
-			echo '
-				<script src="assets/bundles/izitoast/js/iziToast.min.js"></script>
-				<script>
-				$(".toastr-error-5").click(function () {
-					iziToast.success({
-						title: $(this).attr("title"),
-						message: $(this).attr("message"),
-						position: "topRight",
-					});
-				});
-				setTimeout(function () {
-					$(".res").removeClass("show");
-					$(".res").html("");
-				}, 2000);
-				</script>
-				<span class="toastr-error-5" title="Error 402:" message="Error: '.$sent['error'].'"></span>
-				<script>$(".toastr-error-5").click();</script>
-			';
-		}
-		
-	}
+        if ($mail['sent'] === 'true' && $mail['error'] === 'none') {
+          array_push($message, 'Contact Request Submitted Successfully!');
+        }else{
+          array_push($message, "Error 502: Server Error!! Contact Our Support Team For More Info.");
+        }
+      }
+  }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-  <title>Contact Us | <?php echo APP_TITLE; ?></title>
-  <?php require 'layout/general_css.php' ?>
-  <link rel="stylesheet" href="assets/css/index.custom.css">
-  <link rel="stylesheet" href="assets/css/main.css">
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Us</title>
 
-<body>
-    <div class="loader"></div>
-    <div id="app">
-        <div class="main-wrapper main-wrapper-1">
-        <div class="navbar-bg"></div>
-        <?php require 'layout/header_main.php' ?>
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="intro-header custom contact" style="display: none;">
-                <div class="intro-message">
-                    <h2>Contact Us</h2>
-                    <div class="intro-breadcrumbs">
-                        <a href="/" class="links">Home</a>
-                        <a href="">About Us</a>
-                    </div>
-                </div>
-            </div>
-			<section class="header-section">
-				<div class="">
-					<div class="intro-breadcrumbs custom">
-                        <a href="/" class="bb">Home</a>
-                        <a href="">Contact</a>
-                    </div>
-					<h1 class="h">How can we help?</h1>
-					<div class="header-text">
-						<div>Have an issue, report or inquiry, send us a mail now and our team will get back to you as soon as possible.</div>
-					</div>
-				</div>
-			</section>
-            <section class="section" style="margin-top: 25px !important;">
-            <div class="section-body card">
-                <!-- <div class="card-header" style="margin-bottom:40px;"> 
-					<div style="width: 100%;">
-						<h2 class="section-text-heading">How can we help?</h2> 
-						<p style="width: 100%;text-align:center;margin:-15px 0px 0px 0px;font-weight:400;">Have an issue, report or inquiry, send us a mail now and our team will get back to you as soon as possible.</p>
-					</div>
-                </div> -->
-                <div class="card-body"> 
-                    <div class="row pt-30">
-						<?php include 'layout/alert.php'; ?>
-						<div class="col-lg-8 col-12">
-							<form class="form" method="post">
-								<div class='row section-row'>
-									<div class="form-group col-lg-6 col-12 pp0">
-										<label>Full Name:</label>
-										<input class="form-control" type="text" name="name"  required/>
-									</div>
-									<div class="form-group col-lg-6 col-12 n-">
-										<label>Work Email:</label>
-										<input class="form-control" type="email" name="email" required/>
-									</div>
-								</div>
-								<div class="form-group">
-									<label>Subject:</label>
-									<input class="form-control" type="text" name="subject" required />
-								</div>
-								<div class="form-group">
-									<label>Questions ? Feedback ? Trouble ? Let us know as much detail as you can.</label>
-									<textarea class="form-control" name="question" required style="min-height: 100px;resize:none;"></textarea>
-								</div>
-								<div class="form-group">
-									<button type="submit" class="btn btn-primary btn-icon icon-left" name="contact"><i class="far fa-paper-plane"></i> Send Message</button>
-								</div>
-							</form>
-						</div>
-						
-						<div class="col-lg-4">
-							<h3 class="page-header">Contact Us</h3>
-							<hr>
-							<label>Email :</label>
-							<p><a class="bb" href="mailto:contact@risksafe.com">contact@risksafe.com</a></p>
-							
-							<!--<label>Phone :</label>-->
-							<!--<p><a class="bb" href="tel:+61390051277">+613 9005 1277</a></p>-->
+    <link rel="stylesheet" href="/assets/css/_style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel='shortcut icon' type='image/x-icon' href='/assets/favicon/favicon.ico' />
+  </head>
+  <body class="flex flex-col gap-[30px]">
+    <?php include 'layout/header.layout.php' ?>
 
-							<label>Address :</label>
-							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</p>
-						</div>
-					</div>
-                </div>
-                <div class="card-footer"> 
-                </div>                
-            </div>
-            </section>
-        </div>
-        <?php require 'layout/footer.php' ?>
-        </footer>
-        </div>
+    <div class="mt-[55px]"></div>
+
+    <div
+      class="flex flex-col px-[20px] py-[100px] sm:py-[100px] sm:px-[50px] mb-[20px] bg-gray-100"
+    >
+      <div class="text-[13px] text-gray-500">
+        <a href="/" class="bb">Home</a> | Contact
+      </div>
+      <h3 class="mb-[20px] font-bold text-4xl">Contact Us</h3>
+      <div class="text-[14px] w-full sm:max-w-[600px]">
+        Have an issue, report or inquiry, send us a mail now and our team will
+        get back to you as soon as possible.
+      </div>
     </div>
-    <?php require 'layout/general_js.php' ?>
-</body>
-<style>
-    .section-body{
-        padding: 20px;
+
+    <div>
+      <div class="max-w-7xl max-lg:max-w-3xl mx-auto p-4">
+          <div class='mb-[10px] w-full'><?php include $file_dir.'layout/new_alert.php'; ?></div>
+        <div
+          class="bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] rounded p-8"
+        >
+          <h2 class="text-3xl text-gray-800 font-extrabold mb-[10px]">
+            Get in touch!
+          </h2>
+          <div class="text-[15px] mb-12">
+            You’ve got questions. We’ve got answers. Drop us note, send us a
+            message, give us a ring.
+          </div>
+
+          <div class="grid lg:grid-cols-2 items-start gap-12">
+            <form class="space-y-3 text-gray-800" method="post">
+              <div>
+                <label for="name">First Name:</label>
+                <input
+                  id="name"
+                  type="text"
+                  name="name"
+                  class="w-full bg-gray-100 rounded py-3 px-6 text-sm focus:bg-transparent focus:outline-blue-600"
+                />
+              </div>
+
+              <div>
+                <label for="mail">Email Address:</label>
+                <input
+                  type="email"
+                  id="mail"
+                  name="email"
+                  class="w-full bg-gray-100 rounded py-3 px-6 text-sm focus:bg-transparent focus:outline-blue-600"
+                />
+              </div>
+
+              <div>
+                <label for="sub">Subject:</label>
+                <input
+                  type="text"
+                  id="sub"
+                  name="subject"
+                  class="w-full bg-gray-100 rounded py-3 px-6 text-sm focus:bg-transparent focus:outline-blue-600"
+                />
+              </div>
+
+              <div>
+                <label for="message"
+                  >Questions ? Feedback ? Trouble ? Let us know as much detail
+                  as you can.</label
+                >
+                <textarea
+                  name='message'
+                  rows="6"
+                  class="w-full bg-gray-100 rounded px-6 text-sm pt-3 focus:bg-transparent focus:outline-blue-600"
+                ></textarea>
+              </div>
+
+              <button
+                type="submit"
+                name="contact"
+                class="text-white bg-blue-600 hover:bg-blue-700 rounded text-sm px-6 py-3 !mt-6"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16px"
+                  height="16px"
+                  fill="currentColor"
+                  class="mr-2 inline"
+                  viewBox="0 0 548.244 548.244"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M392.19 156.054 211.268 281.667 22.032 218.58C8.823 214.168-.076 201.775 0 187.852c.077-13.923 9.078-26.24 22.338-30.498L506.15 1.549c11.5-3.697 24.123-.663 32.666 7.88 8.542 8.543 11.577 21.165 7.879 32.666L390.89 525.906c-4.258 13.26-16.575 22.261-30.498 22.338-13.923.076-26.316-8.823-30.728-22.032l-63.393-190.153z"
+                    clip-rule="evenodd"
+                    data-original="#000000"
+                  />
+                </svg>
+                Send Message
+              </button>
+            </form>
+
+            <div class="grid sm:grid-cols-2 gap-12">
+              <div class="flex items-start bg-white">
+                <div
+                  class="shadow-[0_0px_2px_0px_rgba(6,81,237,0.3)] rounded px-3 py-2"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-5 fill-blue-600"
+                    viewBox="0 0 512 512"
+                  >
+                    <path
+                      d="M341.476 338.285c54.483-85.493 47.634-74.827 49.204-77.056C410.516 233.251 421 200.322 421 166 421 74.98 347.139 0 256 0 165.158 0 91 74.832 91 166c0 34.3 10.704 68.091 31.19 96.446l48.332 75.84C118.847 346.227 31 369.892 31 422c0 18.995 12.398 46.065 71.462 67.159C143.704 503.888 198.231 512 256 512c108.025 0 225-30.472 225-90 0-52.117-87.744-75.757-139.524-83.715zm-194.227-92.34a15.57 15.57 0 0 0-.517-.758C129.685 221.735 121 193.941 121 166c0-75.018 60.406-136 135-136 74.439 0 135 61.009 135 136 0 27.986-8.521 54.837-24.646 77.671-1.445 1.906 6.094-9.806-110.354 172.918L147.249 245.945zM256 482c-117.994 0-195-34.683-195-60 0-17.016 39.568-44.995 127.248-55.901l55.102 86.463a14.998 14.998 0 0 0 25.298 0l55.101-86.463C411.431 377.005 451 404.984 451 422c0 25.102-76.313 60-195 60z"
+                      data-original="#000000"
+                    ></path>
+                    <path
+                      d="M256 91c-41.355 0-75 33.645-75 75s33.645 75 75 75 75-33.645 75-75-33.645-75-75-75zm0 120c-24.813 0-45-20.187-45-45s20.187-45 45-45 45 20.187 45 45-20.187 45-45 45z"
+                      data-original="#000000"
+                    ></path>
+                  </svg>
+                </div>
+                <div class="ml-6">
+                  <h4 class="text-gray-800 text-base font-bold">
+                    Visit office
+                  </h4>
+                  <p class="text-sm text-gray-500 mt-1">
+                    123 Main Street, City, Country
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start bg-white">
+                <div
+                  class="shadow-[0_0px_2px_0px_rgba(6,81,237,0.3)] rounded px-3 py-2"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-5 fill-blue-600"
+                    viewBox="0 0 473.806 473.806"
+                  >
+                    <path
+                      d="M374.456 293.506c-9.7-10.1-21.4-15.5-33.8-15.5-12.3 0-24.1 5.3-34.2 15.4l-31.6 31.5c-2.6-1.4-5.2-2.7-7.7-4-3.6-1.8-7-3.5-9.9-5.3-29.6-18.8-56.5-43.3-82.3-75-12.5-15.8-20.9-29.1-27-42.6 8.2-7.5 15.8-15.3 23.2-22.8 2.8-2.8 5.6-5.7 8.4-8.5 21-21 21-48.2 0-69.2l-27.3-27.3c-3.1-3.1-6.3-6.3-9.3-9.5-6-6.2-12.3-12.6-18.8-18.6-9.7-9.6-21.3-14.7-33.5-14.7s-24 5.1-34 14.7l-.2.2-34 34.3c-12.8 12.8-20.1 28.4-21.7 46.5-2.4 29.2 6.2 56.4 12.8 74.2 16.2 43.7 40.4 84.2 76.5 127.6 43.8 52.3 96.5 93.6 156.7 122.7 23 10.9 53.7 23.8 88 26 2.1.1 4.3.2 6.3.2 23.1 0 42.5-8.3 57.7-24.8.1-.2.3-.3.4-.5 5.2-6.3 11.2-12 17.5-18.1 4.3-4.1 8.7-8.4 13-12.9 9.9-10.3 15.1-22.3 15.1-34.6 0-12.4-5.3-24.3-15.4-34.3l-54.9-55.1zm35.8 105.3c-.1 0-.1.1 0 0-3.9 4.2-7.9 8-12.2 12.2-6.5 6.2-13.1 12.7-19.3 20-10.1 10.8-22 15.9-37.6 15.9-1.5 0-3.1 0-4.6-.1-29.7-1.9-57.3-13.5-78-23.4-56.6-27.4-106.3-66.3-147.6-115.6-34.1-41.1-56.9-79.1-72-119.9-9.3-24.9-12.7-44.3-11.2-62.6 1-11.7 5.5-21.4 13.8-29.7l34.1-34.1c4.9-4.6 10.1-7.1 15.2-7.1 6.3 0 11.4 3.8 14.6 7l.3.3c6.1 5.7 11.9 11.6 18 17.9 3.1 3.2 6.3 6.4 9.5 9.7l27.3 27.3c10.6 10.6 10.6 20.4 0 31-2.9 2.9-5.7 5.8-8.6 8.6-8.4 8.6-16.4 16.6-25.1 24.4-.2.2-.4.3-.5.5-8.6 8.6-7 17-5.2 22.7l.3.9c7.1 17.2 17.1 33.4 32.3 52.7l.1.1c27.6 34 56.7 60.5 88.8 80.8 4.1 2.6 8.3 4.7 12.3 6.7 3.6 1.8 7 3.5 9.9 5.3.4.2.8.5 1.2.7 3.4 1.7 6.6 2.5 9.9 2.5 8.3 0 13.5-5.2 15.2-6.9l34.2-34.2c3.4-3.4 8.8-7.5 15.1-7.5 6.2 0 11.3 3.9 14.4 7.3l.2.2 55.1 55.1c10.3 10.2 10.3 20.7.1 31.3zm-154.2-286.1c26.2 4.4 50 16.8 69 35.8s31.3 42.8 35.8 69c1.1 6.6 6.8 11.2 13.3 11.2.8 0 1.5-.1 2.3-.2 7.4-1.2 12.3-8.2 11.1-15.6-5.4-31.7-20.4-60.6-43.3-83.5s-51.8-37.9-83.5-43.3c-7.4-1.2-14.3 3.7-15.6 11s3.5 14.4 10.9 15.6zm217.2 96.3c-8.9-52.2-33.5-99.7-71.3-137.5s-85.3-62.4-137.5-71.3c-7.3-1.3-14.2 3.7-15.5 11-1.2 7.4 3.7 14.3 11.1 15.6 46.6 7.9 89.1 30 122.9 63.7 33.8 33.8 55.8 76.3 63.7 122.9 1.1 6.6 6.8 11.2 13.3 11.2.8 0 1.5-.1 2.3-.2 7.3-1.1 12.3-8.1 11-15.4z"
+                      data-original="#000000"
+                    ></path>
+                  </svg>
+                </div>
+                <div class="ml-6">
+                  <h4 class="text-gray-800 text-base font-bold">Call us</h4>
+                  <p class="text-sm text-gray-500 mt-1">+6139-795-3170</p>
+                </div>
+              </div>
+
+              <div class="flex items-start bg-white">
+                <div
+                  class="shadow-[0_0px_2px_0px_rgba(6,81,237,0.3)] rounded px-3 py-2"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-5 fill-blue-600"
+                    viewBox="0 0 32 32"
+                  >
+                    <path
+                      d="M8 30a1.001 1.001 0 0 1-1-1v-5H4c-1.654 0-3-1.346-3-3V5c0-1.654 1.346-3 3-3h24c1.654 0 3 1.346 3 3v16c0 1.654-1.346 3-3 3H15.851l-7.226 5.781A.998.998 0 0 1 8 30zM4 4c-.552 0-1 .449-1 1v16c0 .551.448 1 1 1h4a1 1 0 0 1 1 1v3.92l5.875-4.701A1 1 0 0 1 15.5 22H28c.552 0 1-.449 1-1V5c0-.551-.448-1-1-1z"
+                      data-original="#000000"
+                    ></path>
+                    <path
+                      d="M24 12H8a1 1 0 1 1 0-2h16a1 1 0 1 1 0 2zm-8 4H8a1 1 0 1 1 0-2h8a1 1 0 1 1 0 2z"
+                      data-original="#000000"
+                    ></path>
+                  </svg>
+                </div>
+                <div class="ml-6">
+                  <h4 class="text-gray-800 text-base font-bold">Chat to us</h4>
+                  <p class="text-sm text-gray-500 mt-1">
+                    <a href="mailto:contact@risksafe.ca" class="bb"
+                      >contact@risksafe.ca</a
+                    >
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start bg-white">
+                <div
+                  class="shadow-[0_0px_2px_0px_rgba(6,81,237,0.3)] rounded px-3 py-2"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-5 fill-blue-600"
+                    viewBox="0 0 100 100"
+                  >
+                    <path
+                      d="M83 23h-3V11c0-3.309-2.692-6-6-6H26c-3.308 0-6 2.691-6 6v12h-3C8.729 23 2 29.729 2 38v30c0 4.963 4.037 9 9 9h9v12c0 3.309 2.692 6 6 6h48c3.308 0 6-2.691 6-6V77h9c4.963 0 9-4.037 9-9V38c0-8.271-6.729-15-15-15zM26 11h48v12H26zm0 78V59h48v30zm66-21c0 1.654-1.345 3-3 3h-9V59h3a3 3 0 1 0 0-6H17a3 3 0 1 0 0 6h3v12h-9c-1.655 0-3-1.346-3-3V38c0-4.963 4.037-9 9-9h66c4.963 0 9 4.037 9 9zm-27 0a3 3 0 0 1-3 3H38a3 3 0 1 1 0-6h24a3 3 0 0 1 3 3zm0 12a3 3 0 0 1-3 3H38a3 3 0 1 1 0-6h24a3 3 0 0 1 3 3zm21-42a3 3 0 0 1-3 3h-6a3 3 0 1 1 0-6h6a3 3 0 0 1 3 3z"
+                      data-original="#000000"
+                    ></path>
+                  </svg>
+                </div>
+                <div class="ml-6">
+                  <h4 class="text-gray-800 text-base font-bold">Fax</h4>
+                  <p class="text-sm text-gray-500 mt-1">+6139-7953-170</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <?php include 'layout/footer.layout.php' ?>
+  </body>
+  <style>
+    label {
+      font-size: 14px;
+      margin-bottom: 5px;
     }
-    .section-ul{
-        margin-left: 0px !important;
-        padding-left: 20px !important;
-        color: inherit !important;
-    }
-    .section-text-heading{
-        width:100%;
-        text-align: center;
-    }
-    p.section-p.-p{
-        margin-bottom: 25px !important;
-    }
-    p.section-p.-p strong{
-        font-weight: bold !important;
-    }
-    .main-footer{
-        margin-top: -25px;
-    }
-</style>
+  </style>
 </html>

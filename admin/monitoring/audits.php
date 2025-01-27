@@ -10,6 +10,45 @@
     $message = [];
     include $file_dir.'layout/db.php';
     include $file_dir.'layout/admin__config.php';
+    
+    function getCtrlTitle($id, $type, $con){
+	    if($type === 'custom'){
+	        $query="SELECT * FROM as_customcontrols WHERE control_id = '$id'";
+    		$result=$con->query($query);
+    		if ($result->num_rows > 0) {
+    		    $row=$result->fetch_assoc();
+    		    
+        		return $row['title'];  
+    		}else{
+    		    return 'Error';
+    		}
+	    }else if($type === 'recommended'){
+	        $query = "SELECT * FROM as_controls WHERE id = '$id'";
+    		$result = $con->query($query);
+    		
+    		if ($result->num_rows > 0) {
+    		    $row=$result->fetch_assoc();
+    		    
+        		return $row['control_name'];  
+    		}else{
+    		    return 'Error!!';
+    		}
+	    }else if($type === 'monitoring'){
+	        $query = "SELECT * FROM as_monitoring WHERE m_id = '$id'";
+    		$result = $con->query($query);
+    		
+    		if ($result->num_rows > 0) {
+    		    $row=$result->fetch_assoc();
+    		    
+        		return $row['title'];  
+    		}else{
+    		    return 'Error!!';
+    		}
+	    }else{
+	        return 'Error!';
+	    }
+	}
+	
     function getNext($date, $freq){
 
 		if ($freq == 0) {
@@ -157,7 +196,7 @@
                                         } else if ($freq == 6) {
                                             return "Annually Controls";
                                         } else {
-                                            return "Un-Assessed";
+                                            return "Un-Assessed"; 
                                         }
                                     }
                                     $viewLink = 'audit-details?id='.$item["aud_id"].'" data-toggle="tooltip" title="View Audit" data-placement="right"';
@@ -167,7 +206,7 @@
                             ?> 
                                 <tr> 
                                     <td><?php echo $i; ?></td>
-                                    <td><?php echo ucwords($item["con_control"]); ?></td>
+                                    <td><?php echo ucwords(getCtrlTitle($item["con_control"], $item["control_type"], $con)); ?></td>
                                     <td><?php echo date("m-d-Y", strtotime($item["con_date"])); ?></td>
                                     <td><?php echo ucwords($effect); ?></td>
                                     <td><?php echo get_Frequency($item["con_frequency"]); ?></td>

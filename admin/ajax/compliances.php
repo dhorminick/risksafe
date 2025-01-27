@@ -18,11 +18,17 @@
         		    $control = unserialize($row['controls']);
     		    
                     $response.='<select name="existing_ct[]" class="form-control" required>';
-        		    foreach($control as $value){
-        		        if($value['control'] && $value['control'] !== '' && $value['control'] !== null){
-                			$response.='<option value="' . $value["id"] . '"'; if($value['id'] == $selected){ $response.= ' selected'; } $response.='>' . ucfirst($value["control"]) . '</option>';
-        		        }
-        		    }
+                    
+                    if(is_array($control)){
+            		    foreach($control as $value){
+            		        if($value['control'] && $value['control'] !== '' && $value['control'] !== null){
+                    			$response.='<option value="' . $value["id"] . '"'; if($value['id'] == $selected){ $response.= ' selected'; } $response.='>' . ucfirst($value["control"]) . '</option>';
+            		        }
+            		    }
+                    }else{
+                        $response.='<option>No Recommended Control Specified For The Selected Compliance!!</option>';
+                    }
+                    
             		$response.='</select>';
             		
             		$response = preg_replace('/\s+/', ' ', $response);

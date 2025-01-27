@@ -7,6 +7,11 @@ RewriteRule ^/?(.*)\.php$ /$1 [L,R=301]
 # check to see if the request is for a PHP file:
 RewriteCond %{REQUEST_FILENAME}\.php -f
 RewriteRule ^/?(.*)$ /$1.php [L]
+Redirect /login /auth/sign-in
+
+# ErrorDocument 404 /404.php
+ErrorDocument 404 /error/404.php
+
 # php -- BEGIN cPanel-generated handler, do not edit
 <IfModule fcgid_module>
     <IfModule mime_module>
@@ -18,7 +23,3 @@ RewriteRule ^/?(.*)$ /$1.php [L]
 </IfModule>
 
 # php -- END cPanel-generated handler, do not edit
-Redirect /login /auth/sign-in
-Redirect /reset-password /auth/reset-password
-Redirect /register /auth/sign-up
-Redirect /logout /auth/sign-out

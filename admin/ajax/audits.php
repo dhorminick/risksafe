@@ -14,6 +14,110 @@
 		
 		return $response;
 	}
+	
+	function _getCtrlTitle($id, $type, $con){
+	    if($type === 'custom'){
+	        $query="SELECT * FROM as_customcontrols WHERE control_id = '$id'";
+    		$result=$con->query($query);
+    		if ($result->num_rows > 0) {
+    		    $row=$result->fetch_assoc();
+    		    
+        		return $row['title'];  
+    		}else{
+    		    return 'Error';
+    		}
+	    }else if($type === 'recommended'){
+	        $query = "SELECT * FROM as_controls WHERE id = '$id'";
+    		$result = $con->query($query);
+    		
+    		if ($result->num_rows > 0) {
+    		    $row=$result->fetch_assoc();
+    		    
+        		return $row['control_name'];  
+    		}else{
+    		    return 'Error!!';
+    		}
+	    }else if($type === 'monitoring'){
+	        $query = "SELECT * FROM as_monitoring WHERE m_id = '$id'";
+    		$result = $con->query($query);
+    		
+    		if ($result->num_rows > 0) {
+    		    $row=$result->fetch_assoc();
+    		    
+        		return $row['title'];  
+    		}else{
+    		    return 'Error!!';
+    		}
+	    }else{
+	        return 'Error!';
+	    }
+	}
+	
+	function listCompanyControl($id, $con) {
+	
+		$response="";
+		$query="SELECT * FROM as_customcontrols WHERE c_id = '$id'";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {
+    		$response.='<option value="null" selected>No Custom Control Selected!!</option>';
+    		while ($row=$result->fetch_assoc()) {
+    			$response.='<option value="' . $row["control_id"] . '">' . $row["title"] . '</option>';
+    		}   
+		}else{
+		    $response.='<option value="null" selected>No Custom Control Created Yet!!</option>';
+		}
+		return $response;
+	
+	}
+	
+	function listMonitorings($id, $con, $selected = null) {
+	
+		$response="";
+		$query="SELECT * FROM as_monitoring WHERE c_id = '$id'";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {
+		    if($selected === null){
+		        $res = '<option value="null" selected>No Monitoring Selected!!</option>';
+		    }else{
+		        $res = '<option value="null">No Monitoring Selected!!</option>';
+		    }
+    		$response.= $res;
+    		while ($row=$result->fetch_assoc()) {
+    			#$response.='<option value="' . $row["m_id"] . '">' . ucfirst($row["title"]) . '</option>';
+    			$response.='<option value="' . $row["m_id"] . '"';
+                    if ( $row["m_id"] === $selected && $selected !== null && $selected !== 'null' ) $response.=' selected';
+    			    $response.='>' . ucfirst($row["title"]) . '</option>';
+    		}   
+		}else{
+		    $response.='<option value="null" selected>No Monitoring Created Yet!!</option>';
+		}
+		return $response;
+	
+	}
+	
+	function listCompanyControlSelected($company_id, $id, $con) {
+        
+        if($id == 'null'){
+            $response = listCompanyControl($company_id, $con);
+        }else{
+    		$response="";
+    		$query="SELECT * FROM as_customcontrols WHERE c_id = '$company_id'";
+    		$result=$con->query($query);
+    		if ($result->num_rows > 0) {
+                $response.='<option value="null">No Custom Control Selected!!</option>';
+        		while ($row=$result->fetch_assoc()) {
+        			$response.='<option value="' . $row["control_id"] . '"';
+                    if ($row["control_id"]==$id) $response.=' selected';
+    			    $response.='>' . $row["title"] . '</option>';
+        		}   
+    		}else{
+    		    $response.='<option value="null" selected>Error!!</option>';
+    		}
+        }
+		return $response;
+	
+	}
+	
 	function listSubControl($cat, $conn){
 		$response = '<select name="subcontrol" id="subcontrol" class="form-control" required>';
 		$response .= '<option value="">Please select control...</option>';

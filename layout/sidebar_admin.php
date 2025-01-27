@@ -18,10 +18,10 @@
             <!-- <a href="../index"> <img alt="image" src="<?php echo $file_dir; ?>assets/images/logo-edit.jpg" class="header-logo" /> <span
                 class="logo-name">Otika</span>
             </a> -->
-            <a href='/'><img src="<?php echo $file_dir; ?>assets/images/logo-edit.jpg" class='logo' alt="LOGO*"></a>
+            <a href='/admin/'><img src="<?php echo $file_dir; ?>assets/images/logo-edit.jpg" class='logo' alt="LOGO*"></a>
             <a href="../index"> 
                 <!-- <img alt="image" src="<?php echo $file_dir; ?>assets/images/logo-edit.jpg" class="header-logo " /> -->
-                <!-- <span class="logo-name logo"><img alt="image" src="<?php echo $file_dir; ?>assets/images/logo-edit.jpg" class="header-logo" /></span> -->
+                <!-- <span class="logo-name logo"><img alt="image" src="<?php #echo $file_dir; ?>assets/images/logo-edit.jpg" class="header-logo" /></span> -->
             </a>
             </div>
             <ul class="sidebar-menu">
@@ -70,6 +70,8 @@
                 <ul class="dropdown-menu">
                     <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>monitoring/new-audit">Create New Audit</a></li>
                     <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>monitoring/audits">All Audits of Control</a></li>
+                    <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>monitoring/new-monitoring">Create New Control</a></li>
+                    <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>monitoring/all-monitoring">All Controls</a></li>
                     <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>monitoring/new-kri">Create New KRI</a></li>
                     <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>monitoring/kri">All Key Risk Indicators</a></li>
                     <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>monitoring/new-treatment">Create New Treatment</a></li>

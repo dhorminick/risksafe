@@ -103,6 +103,36 @@
                                         <label>Control Frequency Of Application :</label>
                                         <div class="description-text"><?php echo switchFreq($info['frequency']); ?></div>
                                     </div>
+                                    
+                                    <?php if($info['effectiveness'] === '2' || $info['effectiveness'] === 2){ ?>
+                                    <!-- Treatment -->
+                                    <div class="user-description col-12">
+                                        <h3>Treatment Plans</h3>
+                                    </div>
+                                    
+                                    <div class="user-description col-12">
+                                        <div class="form-group">
+                                            <label class="help-label">
+                                                Selected Treatments
+                                            </label>
+                                            <div class="r_desc">
+                                                <?php if($info['treatment_type'] === 'na'){ ?>
+                                                Treatment Not Assessed!
+                                                <?php    }else{
+                                                echo '<ul>';
+                                                
+                                                    $treatments = unserialize($info['treatment']);
+                                                    foreach($treatments as $treatment){
+                                                ?>
+                                                <li><?php echo ucfirst(__getAssessmentTreatment($info['treatment_type'], $treatment, $company_id, $con)); ?></li>
+                                                
+                                                <?php } echo '</ul>'; } ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <?php } ?>
+                                    
                                 </div>
                             </div>
                         </div>

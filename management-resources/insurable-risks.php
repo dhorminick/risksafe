@@ -1,63 +1,212 @@
-<?php require '../layout/config.php';$file_dir = '../'; ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-  <title>Insurable Risks | <?php echo APP_TITLE; ?></title>
-  <?php require '../layout/general_css.php' ?>
-  <link rel="stylesheet" href="../assets/css/index.custom.css">
-  <link rel="stylesheet" href="../assets/css/main.css">
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Insurable Risks | Resources</title>
 
-<body>
-    <div class="loader"></div>
-    <div id="app">
-        <div class="main-wrapper main-wrapper-1">
-        <div class="navbar-bg"></div>
-        <?php require '../layout/header_main.php' ?>
-        <!-- Main Content -->
-        <div class="main-content">
-            <section class="section">
-            <div class="section-body">
-                <div class="card" style="padding: 30px 0px 30px 0px;font-weight:400;">
-					<div class="card-header"><h3 class="card-header-h">Insurable Risks</h3></div>
-                    <div class="card-body custom-p">
-						<p>Insurance is a small part of the whole Risk Management process.  It allows your organisation to receive financial compensation in the case of loss through the operation of your organisation. However, it does not prevent an incident occurring. Insurance should be employed as a “safety net”in case of an incident.  It should be applied as a part of a comprehensive risk management strategy which aims to avoid, reduce and control risks. While it’s important to insure your business against major business risks, your first line of defence should always be risk management.</p> 
-						<p>Once you identify all of your risks, taking out the right insurance will help protect your business from financial loss and minimise its exposure to certain risks.Risks that could have major consequences but are relatively unlikely to happen are often insurable.</p> 
-						<p>Then there are the company killers. These risks can sink startups and corporate giants alike. The survival of your venture depends on your ability to identify and mitigate the company killers.</p>
-						<p>Risk management refers to a broad range of mitigation strategies and insurance is just one of these strategies.</p> 
-						<p>Here are a few common forms of insurance and the risks they cover:</p>
-						
-						<ul>
-							<li>Property &amp; Casualty Insurance can mitigate losses from fire, theft, and natural disasters;</li>
-							<li>Key Executive Insurance can mitigate losses from the death or incapacitation of a management team member;</li>
-							<li>Errors &amp; Omissions Insurance can mitigate lawsuits from disgruntled customers; and</li>
-							<li>Directors &amp; Officers Insurance can mitigate lawsuits in cases of negligence, harassment, or discrimination.</li>
-							<li>Public liability insurance - Public liability insurance should cover you and your business against the financial risk of being found liable to a third party for death or injury, loss or damage of property or economic loss resulting from the business's or your negligence.</li>
-							<li>Worker's compensation insurance - In Australia, it is compulsory to maintain appropriate accident and sickness insurance for all employees and certain contractors you engage in your business.</li>
-							<li>Personal accident and illness insurance - This insurance is important if you are self-employed and not covered by workers' compensation insurance.</li>
-							<li>Motor vehicle insurance - It is compulsory to insure all your business vehicles for third party injury liability.</li>
-							<li>Burglary cover - Business assets should be protected against burglary by this type of insurance.</li>
-							<li>Professional indemnity insurance - This type of insurance is important if your business involves providing  professional advice.</li>
-							<li>Fidelity guarantee - Losses resulting from misappropriating by employees who embezzle or steal should be covered by this insurance.</li>
-							<li>Machinery breakdown insurance - This insurance should cover your business for any losses incurred if plant and machinery break down.</li>
-							<li>Product liability insurance - This insurance provides cover for injury or damage caused by goods your business sells, supplies or delivers - even in the form of repairs or services.</li>
-						</ul>
-					</div>
-                </div>
-            </div>
-            </section>
-        </div>
-        <?php require '../layout/footer.php' ?>
-        </footer>
-        </div>
+    <link rel="stylesheet" href="/assets/css/_style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel='shortcut icon' type='image/x-icon' href='/assets/favicon/favicon.ico' />
+  </head>
+  <body class="flex flex-col gap-[30px]">
+    <?php include '../layout/header.layout.php' ?>
+
+    <div class="mt-[55px]"></div>
+
+    <div
+      class="flex flex-col px-[20px] py-[100px] sm:py-[100px] sm:px-[50px] mb-[20px] bg-gray-100"
+    >
+      <div class="text-[13px] text-gray-500">
+        <a href="/" class="bb">Home</a> |
+        <a href="/risksafe-resources" class="text-gray-500">Our Resources</a> |
+        <a href="#" class="text-gray-500">Insurable Risks</a>
+      </div>
+      <h3 class="mb-[20px] font-bold text-4xl">Insurable Risks</h3>
+      <div class="text-[14px] w-full sm:max-w-[600px]">
+        <p>
+          Understanding the importance of insurance as a part of your risk
+          management strategy helps to safeguard your business against major
+          risks that can lead to financial loss. Here's a breakdown of insurable
+          risks.
+        </p>
+      </div>
     </div>
-    <?php require '../layout/general_js.php' ?>
-	<style>
-        .main-footer{
-            margin-top: -17px !important;
-        }
-    </style>
-</body>
+
+    <div class="bg-white px-[20px]">
+      <div class="main-content py-8">
+        <section class="section">
+          <div class="container mx-auto px-4">
+            <div class="section-body">
+              <!-- Card -->
+              <div
+                class="card flex flex-col sm:flex-row bg-white shadow-lg border border-gray-200 rounded-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 ease-in-out"
+              >
+                <!-- Card Content -->
+                <div class="p-6 sm:w-1/2">
+                  <div class="card-header mb-4">
+                    <h3 class="text-2xl header-text text-primary">
+                      Insurable Risks
+                    </h3>
+                  </div>
+                  <div class="card-body text-gray-700 leading-relaxed custom-p">
+                    <p class="mb-4">
+                      Insurance is a small part of the whole Risk Management
+                      process. It allows your organization to receive financial
+                      compensation in case of loss, but it doesn't prevent
+                      incidents from happening. Insurance should be viewed as a
+                      “safety net” rather than a preventive measure.
+                    </p>
+                    <p class="mb-4">
+                      Identifying your risks and taking out the right insurance
+                      will help protect your business from financial loss and
+                      minimize exposure. Risks that have major consequences but
+                      are unlikely to happen are often insurable.
+                    </p>
+                    <p class="mb-4">
+                      Risk management encompasses a wide range of strategies,
+                      with insurance being just one of these strategies.
+                    </p>
+                    <p class="mb-4">
+                      Here are common forms of insurance and the risks they
+                      cover:
+                    </p>
+
+                    <ul class="list-disc pl-6 mb-4">
+                      <li>
+                        <strong>Property & Casualty Insurance</strong>:
+                        Mitigates losses from fire, theft, and natural
+                        disasters.
+                      </li>
+                      <li>
+                        <strong>Key Executive Insurance</strong>: Protects
+                        against losses due to the death or incapacitation of a
+                        management team member.
+                      </li>
+                      <li>
+                        <strong>Errors & Omissions Insurance</strong>: Covers
+                        lawsuits from disgruntled customers.
+                      </li>
+                      <li>
+                        <strong>Directors & Officers Insurance</strong>:
+                        Mitigates lawsuits related to negligence, harassment, or
+                        discrimination.
+                      </li>
+                      <li>
+                        <strong>Public Liability Insurance</strong>: Covers
+                        financial risk of being found liable to a third party
+                        for injury, property damage, or economic loss due to
+                        negligence.
+                      </li>
+                      <li>
+                        <strong>Workers' Compensation Insurance</strong>:
+                        Compulsory in Australia, it covers accident and sickness
+                        insurance for employees and certain contractors.
+                      </li>
+                      <li>
+                        <strong>Personal Accident and Illness Insurance</strong
+                        >: Crucial for self-employed individuals not covered by
+                        workers' compensation insurance.
+                      </li>
+                      <li>
+                        <strong>Motor Vehicle Insurance</strong>: Compulsory for
+                        third-party injury liability coverage for business
+                        vehicles.
+                      </li>
+                      <li>
+                        <strong>Burglary Cover</strong>: Protects business
+                        assets against theft.
+                      </li>
+                      <li>
+                        <strong>Professional Indemnity Insurance</strong>:
+                        Essential for businesses providing professional advice.
+                      </li>
+                      <li>
+                        <strong>Fidelity Guarantee</strong>: Covers losses due
+                        to employee embezzlement or theft.
+                      </li>
+                      <li>
+                        <strong>Machinery Breakdown Insurance</strong>: Protects
+                        against losses from plant and machinery breakdowns.
+                      </li>
+                      <li>
+                        <strong>Product Liability Insurance</strong>: Provides
+                        cover for injury or damage caused by products your
+                        business sells, supplies, or delivers (including repairs
+                        and services).
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <!-- End of Card -->
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <div class="sm:mx-[50px] mx-[20px] mt-[-40px] mb-10">
+      <div class="flex flex-col sm:flex-row justify-between">
+        <div
+          class="flex-1 sm:mr-4 bg-white border border-gray-200 shadow-lg rounded-lg p-6 mb-4 sm:mb-0 hover:shadow-xl transition-shadow duration-300 ease-in-out"
+        >
+          <small class="text-sm font-semibold text-primary mb-2"
+            ><i class="fa fa-caret-left"></i> Previous</small
+          >
+          <a
+            href="./risk-management-for-community-&-charity-groups"
+            class="hover:underline"
+          >
+            <p class="text-gray-700 mt-4 text-[17px]">
+              Risk Management for Community & Charity Groups
+            </p>
+          </a>
+        </div>
+
+        <div
+          class="flex-1 sm:ml-4 bg-white border border-gray-200 shadow-lg rounded-lg p-6 hover:shadow-xl transition-shadow duration-300 ease-in-out text-right"
+        >
+          <small class="text-sm font-semibold text-primary mb-2"
+            >Next <i class="fa fa-caret-right"></i
+          ></small>
+          <a href="./reduce-insurance-premuim" class="hover:underline">
+            <p class="text-gray-700 mt-4 text-[17px]">
+              How to Reduce Your Insurance Premiums
+            </p>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-center items-center">
+      <div
+        class="cta w-full flex flex-col rounded-[10px] gap-[20px] p-[50px] justify-center items-center sm:w-[80%]"
+      >
+        <h1 class="font-bold text-[30px] text-center">
+          Ready to Take Control of Your Business Risks?
+        </h1>
+        <div class="sm:w-[500px] w-full text-center">
+          Join countless businesses in managing their risks with expert support
+          from RiskSafe. Get started today and protect your business for
+          tomorrow.
+        </div>
+        <div class="mt-[10px]">
+          <a
+            href="/auth/sign-up"
+            class="btn btn-secondary flex items-center justify-center"
+            >Get Started Now <i class="fa fa-caret-right ml-[5px]"></i
+          ></a>
+        </div>
+      </div>
+    </div>
+
+    <?php include '../layout/footer.layout.php' ?>
+  </body>
 </html>

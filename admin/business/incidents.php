@@ -170,6 +170,34 @@
                                         <label>Status :</label>
                                         <div class="description-text"><?php echo $info['in_status']; ?></div>
                                     </div>
+                                    
+                                    
+                                    <!-- Treatment -->
+                                    <div class="user-description col-12" style='margin-top:10px;'>
+                                        <h3>Treatment Plans</h3>
+                                    </div>
+                                    
+                                    <div class="user-description col-12">
+                                        <div class="form-group">
+                                            <label class="help-label">
+                                                Selected Treatments
+                                            </label>
+                                            <div class="r_desc">
+                                                <?php if($info['treatment_type'] === 'na'){ ?>
+                                                Treatment Not Assessed!
+                                                <?php    }else{
+                                                echo '<ul>';
+                                                
+                                                    $treatments = unserialize($info['treatment']);
+                                                    foreach($treatments as $treatment){
+                                                ?>
+                                                <li><?php echo ucfirst(__getAssessmentTreatment($info['treatment_type'], $treatment, $company_id, $con)); ?></li>
+                                                
+                                                <?php } echo '</ul>'; } ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>

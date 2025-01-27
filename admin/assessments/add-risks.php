@@ -64,6 +64,7 @@
                 $kri = sanitizePlus($_POST["kri"]);
                 
                 $causes = serialize($_POST["causes"]);
+                $incidents = serialize($_POST["incidents"]);
                 
                 if($control_type === 'recommended'){
                     $control = serialize($_POST["existing_ct"]);
@@ -77,6 +78,7 @@
                     $error = true;
                     array_push($message, 'Error 402: Control Type Error!!');
                 }
+                
                 
                 if($treatment_type === 'saved'){
                     $treatment = serialize($_POST["saved-treatment"]);
@@ -97,8 +99,8 @@
                     $rating = calculateRating($likelihood, $consequence, $con);
                     $rating_r = calculateRating($likelihood_r, $consequence_r, $con);
                     
-                    $InsertRisk = "INSERT INTO as_assessment_new (industry, kri, causes, rating_residual, likelihood_residual, consequence_residual, risk_type, risk, sub_risk, description, likelihood, consequence, rating, control_type, control, control_effectiveness, control_action, treatment_type, treatment, owner, due_date, created_on, c_id, assessment, risk_id) 
-                    VALUES ('$riskType', '$kri', '$causes', '$rating_r', '$likelihood_r', '$consequence_r', '$risk_type', '$risk', '$hazard', '$descript', '$likelihood', '$consequence', '$rating', '$control_type', '$control', '$effectiveness', '$actiontake', '$treatment_type', '$treatment', '$owner', '$date', '$created', '$company_id', '$assessmentId', '$ri_id')";
+                    $InsertRisk = "INSERT INTO as_assessment_new (industry, incidents, kri, causes, rating_residual, likelihood_residual, consequence_residual, risk_type, risk, sub_risk, description, likelihood, consequence, rating, control_type, control, control_effectiveness, control_action, treatment_type, treatment, owner, due_date, created_on, c_id, assessment, risk_id) 
+                    VALUES ('$riskType', '$incidents', '$kri', '$causes', '$rating_r', '$likelihood_r', '$consequence_r', '$risk_type', '$risk', '$hazard', '$descript', '$likelihood', '$consequence', '$rating', '$control_type', '$control', '$effectiveness', '$actiontake', '$treatment_type', '$treatment', '$owner', '$date', '$created', '$company_id', '$assessmentId', '$ri_id')";
                     $RiskInserted = $con->query($InsertRisk);  
                     if ($RiskInserted) {
                         if ($hasValue == 'true') {
@@ -116,6 +118,7 @@
                         
                         #redir
                         header("Location: risks?id=".$ri_id);
+                        // echo $notificationResult;
                         exit();
                     } else {
                         array_push($message, 'Error 502: Error 01!!');
@@ -286,6 +289,32 @@
                             </div>
                         </div>
                         
+                        <div class='div_divider'></div>
+                                
+                                <!-- Incidents -->
+                                <div class="card-header">
+                                    <h3 class="d-inline">Risk Incidents</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                            <label class="help-label">
+                                               Incidents
+                                            </label>
+                                            <div class="add-customs">
+                                                <div style='width:100%;margin-right:5px;' id='fh4nfve_1111'>
+                                                    <select name="incidents[]" class="form-control" required>
+                                                        <?php echo __listCompanyIncidents($company_id, $con); ?>
+                                                    </select>
+                                                </div>
+                                                <a href='../business/new-incident?redirect=true' target='_blank' class="btn btn-sm btn-primary" id='fn4h9nf' style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>
+                                                <buttton id='f93nfo0_1111' class="btn btn-sm btn-primary" type='button' data-toggle="tooltip" title="Refresh Customs List" data-placement="left" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
+                                                <button type="button" class="btn btn-sm btn-primary" id="btn-append-incident" style='margin-left:5px;'>+ Add</button>
+                                            </div>
+                                            
+                                            <div id='add-incident' style='margin-top:5px;'></div>
+                                    </div>
+                                </div>
+                                
                         <div class='div_divider'></div>
 
                         <!-- Controls -->
@@ -521,6 +550,10 @@
         $('#btn-append-rec-control').hide();
         let fieldHTMLTreatent = 'empty';
         let userRisks = <?php $query="SELECT * FROM as_customrisks WHERE c_id = '$company_id'"; $result=$con->query($query); if ($result->num_rows > 0){ ?> [ <?php while($row=$result->fetch_assoc()){ ?> "<?php echo $row['risk_id']; ?>", <?php } echo ']'; }else{ echo "'empty';"; } ?> 
+        
+        $("#f93nfo0_1111").click(function (e) {
+          $("#fh4nfve_1111").load(" #fh4nfve_1111 > *");
+        });
         
         $("#getControls").submit(function (event) {
           event.preventDefault();
@@ -850,6 +883,30 @@ $("#likelihood_residual").change(function (e) {
             });
             
             
+            // incidents
+            var _maxFieldTeatmen = 10; //Input fields increment limitation
+            var _adButtonTreatmen = $('#btn-append-incident'); //Add button selector
+            var _wraperTreatmen = $('#add-incident'); //Input field wrapperTreatment
+            var _fieldHTLTreatmen = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> <select name="incidents[]" class="form-control" required> <?php echo __listCompanyIncidents($company_id, $con); ?> </select> <buttton class="btn btn-sm btn-primary remove_button_t" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
+            var _x_Treatmens = 1; //Initial field counter is 1
+            
+            // Once add button is clicked
+            $(_adButtonTreatmen).click(function(){
+                //Check maximum number of input fields
+                if(_x_Treatmens < _maxFieldTeatmen){ 
+                    _x_Treatmens++; //Increase field counter
+                    $(_wraperTreatmen).append(_fieldHTLTreatmen); //Add field html
+                }else{
+                    alert('A maximum of '+_maxFieldTeatmen+' fields are allowed to be added. ');
+                }
+            });
+            
+            // Once remove button is clicked
+            $(_wraperTreatmen).on('click', '.remove_button_t', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove(); //Remove field html
+                _x_Treatmens--; //Decrease field counter
+            });
     </script>
     
     <style>

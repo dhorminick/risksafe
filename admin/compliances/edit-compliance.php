@@ -27,6 +27,8 @@
                 $compliancestatus = sanitizePlus($_POST["compliancestatus"]);
                 $officer = sanitizePlus($_POST["officer"]);
                 
+                $incidents = serialize($_POST["incidents"]);
+                
                 if(isset($_POST['imported_control'])){
                     $imported_control = sanitizePlus($_POST['imported_control']);
                 }else{
@@ -116,7 +118,7 @@
                 
                 if($error === false){
                     $date = date("Y-m-d");
-                    $query = "UPDATE as_compliancestandard SET control_type = '$control_type', treatment_type = '$treatment_type', module = '$module', com_compliancestandard = '$compliancestandard', imported_controls = '$imported_control', imported_treatments = '$imported_treatment', com_legislation = '$legislation', com_controls = '$control_req', com_training = '$training', co_status = '$compliancestatus', com_officer = '$officer', com_documentation = '$targetFilePath', existing_ct = '$control', existing_tr = '$treatment', frequency = '$freq' WHERE c_id = '$company_id' AND compli_id = '$id'";              
+                    $query = "UPDATE as_compliancestandard SET control_type = '$control_type', incidents = '$incidents', treatment_type = '$treatment_type', module = '$module', com_compliancestandard = '$compliancestandard', imported_controls = '$imported_control', imported_treatments = '$imported_treatment', com_legislation = '$legislation', com_controls = '$control_req', com_training = '$training', co_status = '$compliancestatus', com_officer = '$officer', com_documentation = '$targetFilePath', existing_ct = '$control', existing_tr = '$treatment', frequency = '$freq' WHERE c_id = '$company_id' AND compli_id = '$id'";              
                     $sql = mysqli_query($con, $query);
                     if ($sql) {
                         array_push($message, 'Compliance Values Updated Successfully!!');
@@ -309,6 +311,51 @@
                             </div> <!-- Close Card Body -->
                             
                             <div class='div_divider'></div>
+                            
+                            <!-- Incidents -->
+                                <div class="card-header">
+                                    <h3 class="d-inline">Compliance Incidents</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                    <label class="help-label">
+                                        Incidents
+                                    </label>
+                                    <div class="add-customs">
+                                        <?php 
+                                            $controls = unserialize($info['incidents']);
+                                            $controls_more = $controls;
+                                            $c_count = 0;
+                                            foreach($controls as $control){
+                                                $c_count++;
+                                                echo "<div style='width:100%;margin-right:5px;' id='fh4nfve_1111'>";
+                                                echo __listCompanyIncidents_Selected($company_id, $con, $control);
+                                                echo "</div>";
+                                                break;
+                                            }
+                                        ?>
+                                        
+                                        <a href='../customs/new-incident?redirect=true' target='_blank' class="btn btn-sm btn-primary" id='fn4h9nf' style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>
+                                        <buttton id='f93nfo0_1111' class="btn btn-sm btn-primary" type='button' data-toggle="tooltip" title="Refresh Customs List" data-placement="left" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
+                                        <button type="button" class="btn btn-sm btn-primary" id="btn-append-incident" style='margin-left:5px;'>+ Add</button>
+                                    </div>
+                                    
+                                    <div id='add-incident' style='margin-top:5px;'>
+                                        <?php 
+                                            unset($controls_more[0]);
+                                            foreach($controls_more as $_control){
+                                        ?>
+                                        <div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> 
+                                            <?php echo __listCompanyIncidents_Selected($company_id, $con, $_control); ?>
+                                            <buttton class="btn btn-sm btn-primary remove_button_t rmv_btn" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;' type="button"><i class="fas fa-minus"></i></buttton>
+                                        </div>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                                </div>
+                                
+                                <div class='div_divider'></div>
+                                
                             <style>
                                 <?php if($info['control_type'] == 'recommended'){ ?>
                                 #saved_type,
@@ -440,7 +487,7 @@
                                                 $c_count = 0;
                                                 foreach($controls as $control){
                                                     $c_count++;
-                                                    echo "<div style='width:100%;margin-right:5px;' id='fh4nfve_11'>";
+                                                    echo "<div style='width:100%;margin-right:5px;' id='fh4nfve_110'>";
                                                     echo listCompanyControlSelected_New($company_id, $control, $con);
                                                     echo "</div>";
                                                     break;
@@ -448,7 +495,7 @@
                                             ?>
                                             
                                             <a href='../customs/new-control?redirect=true' target='_blank' class="btn btn-sm btn-primary" id='fn4h9nf' style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>
-                                            <buttton id='f93nfo0_11' class="btn btn-sm btn-primary" type='button' data-toggle="tooltip" title="Refresh Customs List" data-placement="left" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
+                                            <buttton id='f93nfo0_110' class="btn btn-sm btn-primary" type='button' data-toggle="tooltip" title="Refresh Customs List" data-placement="left" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
                                             <button type="button" class="btn btn-sm btn-primary" id="btn-append-saved-control" style='margin-left:5px;'>+ Add</button>
                                         </div>
                                         
@@ -766,6 +813,15 @@
         }
     </style>
     <script>
+    
+     $("#f93nfo0_1111").click(function (e) {
+          $("#fh4nfve_1111").load(" #fh4nfve_1111 > *");
+        });
+        
+        $("#f93nfo0_110").click(function (e) {
+          $("#fh4nfve_110").load(" #fh4nfve_110 > *");
+        });
+        
         <?php if($toDisplay === true && $info !== null && $info['module'] !== null){ ?>
         let fieldHTMLTreatent = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> <?php echo listComplianceRecommendedControl_Selected($info["module"], "null", $con); ?> <buttton class="btn btn-sm btn-primary remove_button_t" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
         <?php }else{ ?>
@@ -964,6 +1020,31 @@
                 e.preventDefault();
                 $(this).parent('div').remove(); //Remove field html
                 x_Treatmens--; //Decrease field counter
+            });
+            
+            // incidents
+            var _maxFieldTeatmen = 10; //Input fields increment limitation
+            var _adButtonTreatmen = $('#btn-append-incident'); //Add button selector
+            var _wraperTreatmen = $('#add-incident'); //Input field wrapperTreatment
+            var _fieldHTLTreatmen = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> <select name="incidents[]" class="form-control" required> <?php echo __listCompanyIncidents($company_id, $con); ?> </select> <buttton class="btn btn-sm btn-primary remove_button_t" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
+            var _x_Treatmens = 1; //Initial field counter is 1
+            
+            // Once add button is clicked
+            $(_adButtonTreatmen).click(function(){
+                //Check maximum number of input fields
+                if(_x_Treatmens < _maxFieldTeatmen){ 
+                    _x_Treatmens++; //Increase field counter
+                    $(_wraperTreatmen).append(_fieldHTLTreatmen); //Add field html
+                }else{
+                    alert('A maximum of '+_maxFieldTeatmen+' fields are allowed to be added. ');
+                }
+            });
+            
+            // Once remove button is clicked
+            $(_wraperTreatmen).on('click', '.remove_button_t', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove(); //Remove field html
+                _x_Treatmens--; //Decrease field counter
             });
     </script>
 </body>

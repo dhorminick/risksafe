@@ -1,0 +1,8 @@
+[24-Jan-2025 19:23:19 Africa/Lagos] PHP Warning:  Undefined array key "userId" in /home/portfol1/public_html/layout/admin_config.php on line 18
+[24-Jan-2025 19:23:19 Africa/Lagos] PHP Warning:  Undefined array key "userMail" in /home/portfol1/public_html/layout/admin_config.php on line 19
+[24-Jan-2025 19:23:19 Africa/Lagos] PHP Warning:  Undefined array key "userPaymentStatus" in /home/portfol1/public_html/layout/admin_config.php on line 20
+[24-Jan-2025 19:23:19 Africa/Lagos] PHP Warning:  Undefined array key "u_datetime" in /home/portfol1/public_html/layout/admin_config.php on line 21
+[24-Jan-2025 19:23:19 Africa/Lagos] PHP Warning:  Undefined array key "u_expire" in /home/portfol1/public_html/layout/admin_config.php on line 22
+[24-Jan-2025 19:23:19 Africa/Lagos] PHP Warning:  Undefined array key "company_name" in /home/portfol1/public_html/layout/admin_config.php on line 23
+[24-Jan-2025 19:23:19 Africa/Lagos] PHP Warning:  Undefined array key "role" in /home/portfol1/public_html/layout/admin_config.php on line 42
+[24-Jan-2025 19:23:19 Africa/Lagos] PHP Warning:  Undefined array key "company_id" in /home/portfol1/public_html/layout/admin_config.php on line 43

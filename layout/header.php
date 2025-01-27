@@ -119,7 +119,7 @@
                     while($datainfo = mysqli_fetch_assoc($NotifExist)){
                     if ($NotifExist->num_rows > 0) {
                 ?>
-                <a href="<?php echo $datainfo['link']; ?>" class="dropdown-item dropdown-item-unread">
+                <a href="/<?php echo $datainfo['link']; ?>" class="dropdown-item dropdown-item-unread">
                   <span class="dropdown-item-icon bg-primary text-white"> 
                     <i class="fas fa-bell"></i>
                   </span> 

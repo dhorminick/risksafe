@@ -1,5 +1,131 @@
 <?php
+require 'mail.php';
 #funcs
+    
+    function __getAssessmentTreatment($type, $id, $company, $con){
+        if($type == 'custom'){
+            $response = ucfirst($id);
+        }else if($type == 'saved'){
+            $query="SELECT * FROM as_customtreatments WHERE c_id = '$company'";
+    		$result=$con->query($query);
+    		if ($result->num_rows > 0) {
+        		$response = 'Treatment Error!!';
+        		while ($row=$result->fetch_assoc()) {
+        			if($row['treatment_id'] == strtolower($id)){
+        			    $response = ucfirst($row['title']);
+        			}
+        		}  
+    		}else{
+    		    $response = 'Company Error!!';
+    		}
+        }else{
+            $response = 'Treatment Type Error!!';
+        }
+        
+        return $response;
+    }
+    
+    function __listCompanyTreatmentSelected_New($company_id, $id, $con) {
+        
+        if($id == 'null'){
+            $response = __listCompanyTreatment($company_id, $con);
+        }else{
+    		$response="";
+    		$query="SELECT * FROM as_customtreatments WHERE c_id = '$company_id'";
+    		$result=$con->query($query);
+    		if ($result->num_rows > 0) {
+    		    $response.='<select name="saved-treatment[]" class="form-control" required>';
+        		while ($row=$result->fetch_assoc()) {
+        			$response.='<option value="' . $row["treatment_id"] . '"';
+                    if (strtolower($row["treatment_id"]) == strtolower($id)) $response.=' selected';
+    			    $response.='>' . ucfirst($row["title"]) . '</option>';
+        		}  
+        		$response.='</select>';
+    		}else{
+    		    $response.='Error Fetching Saved Treatment!!';
+    		}
+        }
+	
+		return $response;
+	
+	}
+	
+    function __listCompanyTreatment($id, $con) {
+	
+		$response="";
+		$query="SELECT * FROM as_customtreatments WHERE c_id = '$id'";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {
+    		$response.='<option value="null" selected>No Custom Treatment Selected!!</option>';
+    		while ($row=$result->fetch_assoc()) {
+    			$response.='<option value="' . $row["treatment_id"] . '">' . $row["title"] . '</option>';
+    		}   
+		}else{
+		    $response.='<option value="null" selected>No Custom Treatment Created Yet!!</option>';
+		}
+		return $response;
+	
+	}
+	
+	function __listCompanyIncidents($id, $con, $selected = null) {
+	
+		$response="";
+		$query="SELECT * FROM as_incidents WHERE c_id = '$id'";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {
+    		$response.='<option value="null" selected>No Incident Selected!!</option>';
+    		while ($row=$result->fetch_assoc()) {
+    // 			$response.='<option value="' . $row["in_id"] . '">' . $row["in_title"] . '</option>';
+    			
+    			$response.='<option value="' . $row["in_id"] . '"';
+                if ($selected !== null && strtolower($selected) === strtolower($row["in_id"])) $response.=' selected';
+    			$response.='>' . ucfirst($row["in_title"]) . '</option>';
+    		}   
+		}else{
+		    $response.='<option value="null" selected>No Incident Created Yet!!</option>';
+		}
+		return $response;
+	
+	}
+	
+	function __getIncident($company_id, $id, $con) {
+	
+		$response="";
+		$query="SELECT * FROM as_incidents WHERE c_id = '$company_id' AND in_id = '$id'";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {
+    		$row=$result->fetch_assoc();
+    		return $row['in_title'];
+		}else{
+		    return 'Error Fetching Incident!';
+		}
+
+	}
+	
+	function __listCompanyIncidents_Selected($id, $con, $selected = null) {
+	
+		$response="";
+		$query="SELECT * FROM as_incidents WHERE c_id = '$id'";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {
+		    $response.='<select name="saved-treatment[]" class="form-control" required>';
+    		$response.='<option value="null" selected>No Incident Selected!!</option>';
+    		while ($row=$result->fetch_assoc()) {
+    // 			$response.='<option value="' . $row["in_id"] . '">' . $row["in_title"] . '</option>';
+    			
+    			$response.='<option value="' . $row["in_id"] . '"';
+                if ($selected !== null && strtolower($selected) === strtolower($row["in_id"])) $response.=' selected';
+    			$response.='>' . ucfirst($row["in_title"]) . '</option>';
+    		}   
+		}else{
+		    $response.='<option value="null" selected>No Incident Created Yet!!</option>';
+		}
+		$response.='</select>';
+		
+		return $response;
+	
+	}
+	
     function getUserDetailsWithId($company_id, $get_user_id, $con){
         #confirm user
         $ConfirmUserExist = "SELECT * FROM users WHERE company_id = '$company_id'";
@@ -446,15 +572,49 @@
         
         return $notified;
     }
+    
+    function __getCompanyData($id, $con){
+        $query_details = "SELECT * FROM users WHERE company_id = '$id' LIMIT 1";
+        $UserExist = $con->query($query_details);
+        if ($UserExist->num_rows > 0) {
+            $_data = $UserExist->fetch_assoc();
+            
+            return $_data;
+        }else{
+            return 'false';
+        }
+    }
 
     function createNotification($company_id, $notification_message, $datetime, $notifier, $link, $type, $case, $conn, $sitee){
-        $link = $link;
+        $company_data = __getCompanyData($company_id, $conn);
+        if($company_data === 'false'){
+            return 'false';
+        }
+        
+        // $link = $link;
         $role = $GLOBALS['role'];
         $n_case_custom = $case.'-'.$type;
         $query_details = "INSERT INTO notification (n_message, n_datetime, n_sender, link, c_id, status, type, n_case, n_case_custom, role) VALUES ('$notification_message', '$datetime', '$notifier', '$link', '$company_id', 'unread', '$type', '$case', '$n_case_custom', '$role')";
         $query_completed = $conn->query($query_details);
         if ($query_completed) {
-            $notified = 'true';
+            
+            #send notif email
+            if($company_data['user_loginstatus'] === 0 || $company_data['user_loginstatus'] === '0'){
+                
+                $full_link = $sitee.$link;
+                $_n_case_custom = $case.' '.$type;
+                $_n_case_custom = ucwords($_n_case_custom);
+                
+                $sent = _sendNotifMail($full_link, $datetime, $notification_message, $company_data['u_mail'], $_n_case_custom, $type, $sitee);
+                if($sent['sent'] === 'true'){
+                    $notified = 'true';
+                }else{
+                    $notified = 'false - mail, error: '.$sent['error'];
+                }
+            }else{
+                $notified = 'true';
+            }
+            
         }else{
             $notified = 'false';
         }

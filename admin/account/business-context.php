@@ -44,20 +44,28 @@
            array_push($message, 'Error 502: Context Error!!');
        }
     }
+    
 
     $ConfirmUserExist = "SELECT * FROM as_context WHERE c_id = '$company_id'";
     $ConfirmedUser = $con->query($ConfirmUserExist);
     if ($ConfirmedUser->num_rows > 0) {
        $row = $ConfirmedUser->fetch_assoc();
-       #$filtered = array_map('htmlspecialchars', array_map('stripslashes', $row));
-       $datainfo = $row;
     }else{
-       $datainfo = [];
+        $row = array(
+            'cx_objectives' => '',
+            'cx_processes' => '',
+            'cx_products' => '',
+            'cx_projects' => '',
+            'cx_systems' => '',
+            'cx_relation' => '',
+            'cx_internallosses' => '',
+            'cx_externallosses' => '',
+            'cx_competitors' => '',
+            'cx_environment' => '',
+            'cx_regulatory' => ''
+        );
     }
-
     
-
-     
 ?>
 
 <!DOCTYPE html>
@@ -82,6 +90,7 @@
         <div class="main-content">
             <section class="section">
             <div class="section-body">
+
                 <div class="card" style='padding:10px;'>
                     <?php include '../../layout/alert.php'; ?>
                     <div class="card-header">
@@ -92,47 +101,47 @@
                         <form method="post">
                             <div class="form-group">
                               <label>Business Strategies and Objectives</label>
-                              <textarea name="objectives" class="form-control" placeholder="Enter business strategies and objectives..."><?php echo isset($datainfo["cx_objectives"]) ? $datainfo["cx_objectives"] : ''; ?></textarea>
+                              <textarea name="objectives" class="form-control" placeholder="Enter business strategies and objectives..."><?php echo $row["cx_objectives"]; ?></textarea>
                             </div>
                             <div class="form-group">
                               <label>Critical Business Processes</label>
-                              <textarea name="processes" class="form-control" placeholder="Enter critical processes..."><?php echo isset($datainfo["cx_processes"]) ? $datainfo["cx_processes"]:'';?></textarea>
+                              <textarea name="processes" class="form-control" placeholder="Enter critical processes..."><?php echo $row["cx_processes"]; ?></textarea>
                             </div>
                                                <div class="form-group">
                               <label>Products &amp; Services</label>
-                              <textarea name="products" class="form-control" placeholder="Enter products & services..."><?php echo isset($datainfo["cx_products"])? $datainfo["cx_products"]:'' ;?></textarea>            
+                              <textarea name="products" class="form-control" placeholder="Enter products & services..."><?php echo $row["cx_products"]; ?></textarea>            
                             </div>
                                                <div class="form-group">
                               <label>Projects &amp; Initiatives</label>
-                              <textarea name="projects" class="form-control" placeholder="Enter projecta & initiatives..."><?php echo isset($datainfo["cx_projects"]) ? $datainfo["cx_projects"]:'';?></textarea>            
+                              <textarea name="projects" class="form-control" placeholder="Enter projecta & initiatives..."><?php echo $row["cx_projects"];?></textarea>            
                             </div>
                                                <div class="form-group">
                               <label>Key / Critical Technology Systems</label>
-                              <textarea name="systems" class="form-control" placeholder="Enter key systems..."><?php echo isset($datainfo["cx_systems"])? $datainfo["cx_systems"]:'';?></textarea>             
+                              <textarea name="systems" class="form-control" placeholder="Enter key systems..."><?php echo $row["cx_systems"];?></textarea>             
                             </div>
                                                <div class="form-group">
                               <label>Key Relationships (Internal &amp; 3rd Party Outsourcing)</label>
-                              <textarea name="relationships" class="form-control" placeholder="Enter key relationships..."><?php echo isset($datainfo["cx_relation"]) ? $datainfo["cx_relation"]:'';?></textarea>            
+                              <textarea name="relationships" class="form-control" placeholder="Enter key relationships..."><?php echo $row["cx_relation"];?></textarea>            
                             </div>
                                                <div class="form-group">
                               <label>Previous Internal Losses</label>
-                              <textarea name="internallosses" class="form-control" placeholder="Enter previous internal losses..."><?php echo isset($datainfo["cx_internallosses"]) ? $datainfo["cx_internallosses"] : '';?></textarea>            
+                              <textarea name="internallosses" class="form-control" placeholder="Enter previous internal losses..."><?php echo $row["cx_internallosses"];?></textarea>            
                             </div>
                                                <div class="form-group">
                               <label>Relevant External Loss Events</label>
-                              <textarea name="externallosses" class="form-control" placeholder="Enter previous external losses..."><?php echo isset($datainfo["cx_externallosses"]) ? $datainfo["cx_externallosses"]:'';?></textarea>            
+                              <textarea name="externallosses" class="form-control" placeholder="Enter previous external losses..."><?php echo $row["cx_externallosses"];?></textarea>            
                             </div>
                                                <div class="form-group">
                               <label>Competitors</label>
-                              <textarea name="competitors" class="form-control" placeholder="Enter competitors..."><?php echo isset($datainfo["cx_competitors"]) ? $datainfo["cx_competitors"]:'';?></textarea>
+                              <textarea name="competitors" class="form-control" placeholder="Enter competitors..."><?php echo $row["cx_competitors"];?></textarea>
                             </div>
                                                <div class="form-group">
                               <label>Changes in External Environment</label>
-                              <textarea name="environment" class="form-control" placeholder="Enter changes in the environment..."><?php echo isset($datainfo["cx_environment"]) ? $datainfo["cx_environment"]: '';?></textarea>
+                              <textarea name="environment" class="form-control" placeholder="Enter changes in the environment..."><?php echo $row["cx_environment"];?></textarea>
                             </div>
                                                <div class="form-group">
                               <label>Regulatory Environment</label>
-                              <textarea name="regulatory" class="form-control" placeholder="Enter regulatory environment..."><?php echo isset($datainfo["cx_regulatory"])? $datainfo["cx_regulatory"]:'';?></textarea>            
+                              <textarea name="regulatory" class="form-control" placeholder="Enter regulatory environment..."><?php echo $row["cx_regulatory"];?></textarea>            
                             </div>
                             <div class="form-group" style='margin-top:10px;'>
                               <button type="submit" class="btn btn-md btn-primary" name="save-context">Save Business Context</button>

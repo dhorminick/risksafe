@@ -45,16 +45,16 @@
           $next = date("Y-m-d", strtotime($next));
           $aud_id = secure_random_string(10);
           
-          if($control_to_be_auditted == 'custom'){
-              $control = sanitizePlus($_POST["control"]);
-              $subControl = 'null';
-          }else if($control_to_be_auditted == 'recommended'){
+          if($control_to_be_auditted == 'recommended'){
               $control = sanitizePlus($_POST["existing"]);
               if(isset($_POST["subControl"])){
                   $subControl = sanitizePlus($_POST["subControl"]);
               }else{
                   $subControl = 'null';
               };
+          }else{
+              $control = sanitizePlus($_POST["control"]);
+              $subControl = 'null';
           }
 			
           $typeOfControl = $control;
@@ -126,14 +126,18 @@
                                 <div class="form-group __ss__">
                                   <label>Select Control To Be Auditted:</label>
                                   <div style='display:flex;'>
-                                  <div class='__ss_main'>
-                                  <input type='radio' id='custom_audit' value='custom' checked name='control_to_be_auditted' />
-                                  <label>Custom Controls</label>
-                                  </div>
-                                  <div class='__ss_main'>
-                                  <input type='radio' id='recommended_audit' value='recommended' name='control_to_be_auditted' />
-                                  <label>Recommended Controls</label>
-                                  </div>
+                                      <div class='__ss_main'>
+                                          <input type='radio' id='custom_audit' value='custom' checked name='control_to_be_auditted' />
+                                          <label>Custom Controls</label>
+                                      </div>
+                                      <div class='__ss_main'>
+                                          <input type='radio' id='monitoring_audit' value='monitoring' name='control_to_be_auditted' />
+                                          <label>Monitorings</label>
+                                      </div>
+                                      <div class='__ss_main'>
+                                          <input type='radio' id='recommended_audit' value='recommended' name='control_to_be_auditted' />
+                                          <label>Recommended Controls</label>
+                                      </div>
                                   </div>
                                 </div>
                                 <div class="form-group" id='form_reccommended'>
@@ -145,20 +149,35 @@
                                 </div>
                                 <div class="form-group" id='form_custom'>
                                   <label>Select Custom Control:</label>
-                                    <?php 
-                                        $query = "SELECT * FROM as_customcontrols WHERE c_id = '$company_id' ORDER BY id DESC";
-                                        $result=$con->query($query);
-            		                      if ($result->num_rows > 0) { $i=0;
-                                    ?>
-                                    <select name="control" id="control-type" class="form-control" required>
-                                        <option value="0" selected>Please select type...</option>
-                                        <?php while($item = $result->fetch_assoc()){ $i++; ?>
-                                        <option value="<?php echo $item['id']; ?>"><?php echo $item['title'] ?></option>
-                                        <?php } ?>
-                                    </select>
-                                    <?php }else{ ?>
-                                    <div>No Custom Control Created Yet!!</div>
-                                    <?php } ?>
+                                    
+                                    
+                                    <div class="add-customs">
+                                            <div style='width:100%;margin-right:5px;' id='fh4nfve_110'>
+                                                <select name="control" class="form-control" required>
+                                                    <?php echo listCompanyControl($company_id, $con); ?>
+                                                </select>
+                                            </div>
+                                            <a href='../customs/new-control?redirect=true' target='_blank' class="btn btn-sm btn-primary" id='fn4h9nf' style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>
+                                            <buttton id='f93nfo0_110' class="btn btn-sm btn-primary" type='button' data-toggle="tooltip" title="Refresh Customs List" data-placement="left" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
+                                    </div>
+                                    
+                                    <div id='add-ctrl' style='margin-top:5px;'></div>
+                                    
+                                </div>
+                                <div class="form-group" id='form_monitoring'>
+                                  <label>Select Monitoring:</label>
+                                    
+                                    
+                                    <div class="add-customs">
+                                            <div style='width:100%;margin-right:5px;' id='fh4nfve_1100'>
+                                                <select name="control" class="form-control" required>
+                                                    <?php echo listMonitorings($company_id, $con); ?>
+                                                </select>
+                                            </div>
+                                            <a href='../monitoring/new-monitoring?redirect=true' target='_blank' class="btn btn-sm btn-primary" id='fn4h9nff' style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>
+                                            <buttton id='f93nfo0_1100' class="btn btn-sm btn-primary" type='button' data-toggle="tooltip" title="Refresh Customs List" data-placement="left" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
+                                    </div>
+                                    
                                 </div>
                                 
                                 <div class="form-group">
@@ -332,6 +351,14 @@
         }
     </style>
     <script>
+    $("#f93nfo0_110").click(function (e) {
+          $("#fh4nfve_110").load(" #fh4nfve_110 > *");
+        });
+        
+        $("#f93nfo0_1100").click(function (e) {
+          $("#fh4nfve_1100").load(" #fh4nfve_1100 > *");
+        });
+        
       $(".sub-control").hide();
       $("#control-type").change(function(e) { 
         var riskValue = $("#control-type").val();
@@ -367,19 +394,53 @@
             if($(this).prop("checked") && type == 'custom_audit') { 
                 $("#form_reccommended").hide();
                 $("#form_custom").show();
+                $("#form_monitoring").hide();
                 $('.sub-control').hide();
             }else if($(this).prop("checked") && type == 'recommended_audit') { 
                 $("#form_reccommended").show();
                 $('.sub-control').show();
                 $("#form_custom").hide();
+                $("#form_monitoring").hide();
+            }else if($(this).prop("checked") && type == 'monitoring_audit') { 
+                $("#form_reccommended").hide();
+                $('.sub-control').show();
+                $("#form_custom").hide();
+                $("#form_monitoring").show();
             }else{
                 $("#form_reccommended").hide();
                 $("#form_custom").show();
                 $('.sub-control').hide();
+                $("#form_monitoring").hide();
             }
         });
         $("#form_reccommended").hide();
         $("#form_custom").show();
+        $("#form_monitoring").hide();
+        
+        // incidents
+            var _maxFieldTeatmen = 10; //Input fields increment limitation
+            var _adButtonTreatmen = $('#btn-append-ctrl'); //Add button selector
+            var _wraperTreatmen = $('#add-ctrl'); //Input field wrapperTreatment
+            var _fieldHTLTreatmen = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> <select name="control[]" class="form-control" required> <?php echo listCompanyControl($company_id, $con); ?> </select> <buttton class="btn btn-sm btn-primary remove_button_t" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
+            var _x_Treatmens = 1; //Initial field counter is 1
+            
+            // Once add button is clicked
+            $(_adButtonTreatmen).click(function(){
+                //Check maximum number of input fields
+                if(_x_Treatmens < _maxFieldTeatmen){ 
+                    _x_Treatmens++; //Increase field counter
+                    $(_wraperTreatmen).append(_fieldHTLTreatmen); //Add field html
+                }else{
+                    alert('A maximum of '+_maxFieldTeatmen+' fields are allowed to be added. ');
+                }
+            });
+            
+            // Once remove button is clicked
+            $(_wraperTreatmen).on('click', '.remove_button_t', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove(); //Remove field html
+                _x_Treatmens--; //Decrease field counter
+            });
     </script>
 </body>
 </html>

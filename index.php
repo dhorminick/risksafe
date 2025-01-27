@@ -1,376 +1,533 @@
-<?php include 'layout/config.php';?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-  <title><?php echo APP_TITLE; ?></title>
-  <?php require 'layout/general_css.php' ?>
-  <link rel="stylesheet" href="assets/css/index.custom.css">
-  <link rel="stylesheet" href="assets/css/main.css">
-  <!-- <link rel="stylesheet" href="assets/css/new.css"> -->
-  <link rel="stylesheet" href="assets/bundles/owlcarousel2/dist/assets/owl.carousel.min.css">
-  <link rel="stylesheet" href="assets/bundles/owlcarousel2/dist/assets/owl.theme.default.min.css">
-  <link rel="stylesheet" href="assets/bundles/izitoast/css/iziToast.min.css">
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RiskSafe | Risk Assessment & Management</title>
 
-<body>
-    <div class="loader"></div>
-    <div id="app">
-        <div class="main-wrapper main-wrapper-1">
-        <div class="navbar-bg"></div>
-        <?php require 'layout/header_main.php' ?>
-        <?php #require 'layout/sidebar.php' ?>
-        <!-- Main Content -->
-        <div class="main-content">
-            <section class="section">
-            <div class="section-body">
-                <section class="section-headers new">
-                    <div class='row'>
-                        <div class='col-lg-8 col-12'>
-                            <h1>Risk Assessment Made Easy</h1>
-                            <p class="f">Conduct Risk Assessments, Audit of Controls, Track Incidents, Create Treatment Plans and manage your Compliance risks</p>
-                            <p class="s">Built by Compliance Risk and Audit professionals with over a decade of experience</p>
-                            <hr>
-                            <div style="display: inline;">
-                                <a href="login" class="btn btn-primary btn-icon icon-left mr-2"> Try RiskSafe</a>
-                                <a href="book-demo-link" class="btn btn-primary btn-icon icon-left">Book Demo</a>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <!-- <section class="section-info"></section> -->
-                <section class="section-details" style="display: none;">
-                    <div class="row">
-                        <div class="col-lg-5 col-12">
-                            <img src="assets/images/shutterstock_2102677933-scaled.jpg" class="section-text-image" alt="image">
-                        </div>
-                        <div class="col-lg-7 col-12 section-text">
-                            <h2 class="section-text-heading">What RiskSafe offers!!</h2>
-                            <p class="section-p">
-                                <ul class="section-ul">
-                                    <li>Compliance Policies.</li>
-                                    <li>Risk Assessments through various modules including Health & Safety, AML, Community and Not for Profit.</li>
-                                    <li>Download Risk Registers.</li>
-                                    <li>Controls to monitor environment.</li>
-                                    <li>Customise Controls Checklist for routine inspections.</li>
-                                    <li>Create Incidents and track remediation and treatment.</li>
-                                    <li>Get comfort that you are operating in a safe work environment.</li>
-                                    <li>Demonstrate to customers and regulators you are running a safe shop.</li>
-                                </ul>
-                            </p>
-                        </div>
-                    </div>
-                </section>
-                <section class="section-details new rm">
-                    <div class="row"> 
-                        <div class="col-lg-5">
-                            <h2 class="section-text-heading">What Is Risk Management?</h2>
-                            <p>When you remove risk, you increase the value of your business.  Success comes to those who quickly identify and eliminate risks in the right order.</p>
-                            <p>The key question is “What’s the most important uncertainty?” and the answer should be targeted early.</p>
-                            <p>Risk management is all about identifying and mitigating the uncertainties — especially the company killers.</p>
-                            <p>Luckily, with RiskSafe, Risk management can be performed in just 5 simple steps:</p>
-                        </div>
-                        <div class="col-lg-7">
-                            <div class="activities new">
-                                <div class="activity">
-                                    <div class="activity-icon bg-success text-white">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <div class="activity-detail">
-                                        <p class="head-p">1. Define Business Context</p>
-                                        <p class="desc-p">what are the goals of the business, what environment do you operate in and what limitations does your business have?</p>
-                                    </div>
-                                </div>
-                                <div class="activity">
-                                    <div class="activity-icon bg-success text-white">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <div class="activity-detail">
-                                        <p class="head-p">2. Identify the Risks & Hazards</p>
-                                        <p class="desc-p">Find out what could go wrong or cause harm in your business</p>
-                                    </div>
-                                </div>
-                                <div class="activity">
-                                    <div class="activity-icon bg-success text-white">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <div class="activity-detail">
-                                        <p class="head-p">3. Assess, understand and document risks</p>
-                                        <p class="desc-p">Understand the nature of the consequence that could becaused by the Risk or Hazard and the likelihood of it happening</p>
-                                    </div>
-                                </div>
-                                <div class="activity">
-                                    <div class="activity-icon bg-success text-white">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <div class="activity-detail">
-                                        <p class="head-p">4. Control risks</p>
-                                        <p class="desc-p">Create custom controls and treatments, then Implement the most effective measure that is realistic</p>
-                                    </div>
-                                </div>
-                                <div class="activity">
-                                    <div class="activity-icon bg-success text-white">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <div class="activity-detail">
-                                        <p class="head-p">5. Review </p>
-                                        <p class="desc-p">Ensure implemented controls and treatments are performing as expected, document improvements and print risk reports</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> 
-                    </div>
-                </section>
-                <section class="section-details new whento">
-                    <div class="row upsideup">
-                        <div class="col-lg-7 col-12 section-text">
-                            <div class="section-text-heading"><h3>When Should You Perform Risk Assessment?</h3></div>
-                            <div>
-                                <p>A strong risk assessment investigates all areas of the workplace and considers elements such as hazards, tasks and organizational strategies to curtail them. They look at the state of electrical and fire safety, hazardous substances, stress, violence, cleaning and working hours, to name just a few.</p>
-                                <p>Risk Assessment is a neccessity to business growth and management, and should be performed:</p>
-                                <ul style="margin-left: -20px;">
-                                    <li>As soon as possible, if a risk assessment has not yet been completed for your work tasks / activities</li>
-                                    <li>Whenever any new work is planned</li>
-                                    <li>Whenever a significant change occurs</li>
-                                    <li>After an incident or an accident</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-lg-5 col-12 hide-sm scimg">
-                            <img src="assets/images/thinking-edit.jpg" class="section-text-images custom" alt="image">
-                        </div>
-                    </div>
-                </section>
-                <section class="section-details new bfits">
-                    <div class="section-text row">
-                        <h2 class="section-text-heading">Benefits Of Risk Management?</h2>
-                        <div class="intro-text">
-                            <p>Risk assessments with <span class="risksafe">RiskSafe</span> enable you to gather more knowledge on the risks present in your workplace that could cause falls, broken bones and fires. Additionally, risk assessments can help save money –- by helping reduce incidents and subsequent legal liability. In this case, a risk assessment can protect the organization.</p>
-                            <p>A few of the benefits includes:</p>
-                        </div>
-                        <div class="owl-carousel owl-theme slider custom slider-body" id="slider">
-                            <div>
-                                <p class="benefit-header">1. Greater Awareness of Risks in the Workplace</p>
-                                <p class="benefit-text">First and foremost, risk assessments will provide clarity around how hazards and risks have been identified and minimized or eliminated. This helps your EHS team understand what hazards and risks they must be most aware of in their place of work.</p>
-                            </div>
-                            <div>
-                                <p class="benefit-header">2. Employee Education</p>
-                                <p class="benefit-text">Carrying out a risk assessment properly means ensuring all the relevant staff members are made aware of the required procedures and guidelines for tackling risk in the workplace. Many organizations benefit from the use of Staff Engagement software to provide dynamic training to help them immerse health and safety awareness within day to day activity. </p>
-                            </div>
-                            <div>
-                                <p class="benefit-header">3. Identification of Likeliness and Scale of Potential Risks</p>
-                                <p class="benefit-text">A successful risk assessment doesn’t just list hazards and risks. By using a risk matrix, companies can identify the most urgent risks and outline the severity and likelihood of impact for each.</p>
-                            </div>
-                            <div>
-                                <p class="benefit-header">4. Determine What Actions Are Required</p>
-                                <p class="benefit-text">Carrying out a successful risk assessment often means you’ll be left with new, very useful data. This data will help you identify the areas within your workplace that need the most attention and enable you to put effective control measures in place to reduce risk.</p>
-                            </div>
-                            <div>
-                                <p class="benefit-header">5. Proper Documentation</p>
-                                <p class="benefit-text">There is simply no way to get around the need for documents. A risk assessment will help create a repository of hazard findings. This is not only beneficial for transparency across the company but can help with carrying out audits and passing legal safety measures. Compliance software can help streamline the recordkeeping process for you so you can quickly and easily demonstrate your compliance with regulations when required.</p>
-                            </div>
-                            <div>
-                                <p class="benefit-header">6. Help With Budget Allocation</p>
-                                <p class="benefit-text">With a risk assessment carried out, your organization has a much clearer understanding of the required health and safety budget moving forward. Knowing the severity and likelihood of a hazard will allow your organization to budget accordingly to control or eliminate found hazards.</p>
-                            </div>
-                            <div>
-                                <p class="benefit-header">7. Reduced Incidents in the Workplace</p>
-                                <p class="benefit-text">But most importantly, the benefit of risk assessments is simple: the minimization and hopeful removal of risks. By carefully inspecting your workplace and taking proper next steps, you can substantially reduce the number of incidents at your place of work. A lower incident number displays an organization’s integrity and dedication when it comes to caring for their employees, which is beneficial for customer support.</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <section class="section-details new bg" style="display: none;">
-                    <div class="row">
-                        <!-- <div class="col-lg-6 col-12">
-                            <img src="assets/images/offers.jpg" class="section-text-image new" alt="image">
-                        </div> -->
-                        <div class="section-text col-lg-8">
-                            <h2 class="section-text-heading" style="margin-bottom: 30px !important;">What RiskSafe offers!!</h2>
-                            <div>
-                                <p>Why do Businesses Fail?</p>
-                                <p class="section-p">Poor Risk Management? Improper Planning... Avoid the headaches and stay up to date with Regulatory Requirements and Business Risks.</p>
-                                <p class="section-p">RiskSafe Helps You:</p>
-                            </div>
-                            <div class="activities new">
-                                <div class="activity">
-                                    <div class="activity-icon bg-success text-white">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <div class="activity-detail">
-                                        <p>Compliance Policies</p>
-                                    </div>
-                                </div>
-                                <div class="activity">
-                                    <div class="activity-icon bg-success text-white">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <div class="activity-detail">
-                                        <p>Risk Assessments through various modules including Health & Safety, AML, Community and Non-Profit</p>
-                                    </div>
-                                </div>
-                                <div class="activity">
-                                    <div class="activity-icon bg-success text-white">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <div class="activity-detail">
-                                        <p>Downloadable Risk Reports and Registers</p>
-                                    </div>
-                                </div>
-                                <div class="activity" style="display: none;">
-                                    <div class="activity-icon bg-success text-white">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <div class="activity-detail">
-                                        <p>Controls to monitor environment</p>
-                                    </div>
-                                </div>
-                                <div class="activity">
-                                    <div class="activity-icon bg-success text-white">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <div class="activity-detail">
-                                        <p>Customise Treatments and Controls Checklist for routine inspections</p>
-                                    </div>
-                                </div>
-                                <div class="activity">
-                                    <div class="activity-icon bg-success text-white">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <div class="activity-detail">
-                                        <p>Create Incidents and track remediation and treatment</p>
-                                    </div>
-                                </div>
-                                <div class="activity" style="display: none;">
-                                    <div class="activity-icon bg-success text-white">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <div class="activity-detail">
-                                        <p>Get comfort that you are operating in a safe work environment</p>
-                                    </div>
-                                </div>
-                                <div class="activity">
-                                    <div class="activity-icon bg-success text-white">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <div class="activity-detail">
-                                        <p>Demonstrate to customers and regulators you are running a safe shop</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <section class="section-details new" style="display: none;">
-                    <div class="row">
-                        <div class="col-12 section-text">
-                            <h2 class="section-text-heading">Get the Customer Service you deserve</h2>
-                            <p class="section-p">Our team is made up of Risk Managers with experience in banking, safety, startups and small business. Get in touch with us with any of your questions.</p>
-                        </div>
-                        <div class="col-12 section-text up">
-                            <!-- <h2 class="section-text-heading">Sign Up Today And Start Operating Safely</h2>
-                            <p class="section-p">
-                                <form role="form" class="lead form-sign-up index" action="rs/controller/users.php" method="post">
-                                    <div class="row section-row">    
-                                    <div class="form-group col-lg-6 col-12">
-                                        <label>E-mail Address:</label>
-                                        <input name="email" type="email" maxlength="50" class="form-control" placeholder="Enter your e-mail..." required>
-                                    </div>
-                                    <div class="form-group col-lg-6 col-12">
-                                        <label>Password:</label>
-                                        <input name="password" type="password" maxlength="50" class="form-control" placeholder="Enter password..." required>
-                                    </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Full Name:</label>
-                                        <input name="name" type="text" maxlength="50" class="form-control" placeholder="Enter your full name..." required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Company:</label>
-                                        <input name="company" type="text" maxlength="50" class="form-control" placeholder="Enter your company name...">
-                                    </div>
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn-primary" id="btn_save">Sign up</button>
-                                        <input name="action" type="hidden" value="signup">
-                                    </div>
-                                </form>
-                            </p> -->
-                            <p class="section-p">
-                                <form role="form" class="lead form-sign-up index" action="rs/controller/users.php" method="post">
-                                    <div class="row section-row">    
-                                    <div class="form-group col-lg-6 col-12">
-                                        <label>E-mail Address:</label>
-                                        <input name="email" type="email" maxlength="50" class="form-control" placeholder="Enter your E-Mail Address..." required>
-                                    </div>
-                                    <div class="form-group col-lg-6 col-12">
-                                        <label>Full Name:</label>
-                                        <input type="text" name="name" class="form-control" placeholder="Enter your full name..." required>
-                                    </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Message:</label>
-                                        <textarea name="password" class="form-control" placeholder="Questions ? Feedback ? Trouble ? Let us know as much detail as you can." required style="min-height: 100px;resize: none;"></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn-primary btn-icon">Send Message</button>
-                                    </div>
-                                </form>
-                            </p>
-                        </div>
-                    </div>
-                </section>
-            </div>
-            </section>
-            <div class="extra">
-                <h2 class="section-text-heading">Why Choose RiskSafe?</h2>
-                <p>Our team is made up of Risk Managers with experience in banking, safety, startups and small business. If you want the best,</p>
-                <a href='login' class="btn btn-primary btn-lg">Try RiskSafe Now</a>
-            </div>
+    <link rel="stylesheet" href="/assets/css/_style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel='shortcut icon' type='image/x-icon' href='/assets/favicon/favicon.ico' />
+  </head>
+  <body class="flex flex-col gap-[0px]">
+    <?php include 'layout/header.layout.php' ?>
+
+    <div class="mt-[85px]"></div>
+
+    <!-- 1 -->
+    <div
+      class="flex justify-between bg-[var(--light-blue)]"
+      style="min-height: calc(100dvh - 90px)"
+    >
+      <div
+        class="w-full sm:w-[50%] flex flex-col justify-start mt-[50px] sm:mt-0 sm:justify-center p-[30px] sm:p-[50px]"
+      >
+        <h1 class="font-bold text-[45px]">Risk Assessment Made Easy</h1>
+        <div class="my-[20px] flex w-full gap-[10px] flex-col">
+          <p>
+            Conduct Risk Assessments, Audit of Controls, Track Incidents, Create
+            Treatment Plans and Manage your Compliance Risks
+          </p>
+          <p>
+            Built by Compliance Risk and Audit professionals with over a decade
+            of experience
+          </p>
         </div>
-        <div class="contact-popup-opener">
-            <svg aria-hidden="true" class="drift-default-icon drift-default-icon--chat-square" width="24" height="24" viewBox="0 0 20 20"><path fill="#FFFFFF" d="M4.583 14.894l-3.256 3.78c-.7.813-1.26.598-1.25-.46a10689.413 10689.413 0 0 1 .035-4.775V4.816a3.89 3.89 0 0 1 3.88-3.89h12.064a3.885 3.885 0 0 1 3.882 3.89v6.185a3.89 3.89 0 0 1-3.882 3.89H4.583z"></path></svg>
+        <div class="mt-[20px]">
+          <a href="/book-demo" class="btn btn-primary">Try RiskSafe</a>
+          <a href="/auth/sign-in" class="btn btn-secondary">Get Started</a>
         </div>
-        <div class="contact-popup">
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-header-h">Contact Us:</span>
-                </div>
-                <form id="mail" class='contact-popup-form'>
-                    <div class="card-body">
-                            <p>Get in touch with us with any of your questions.</p>
-                            <div class="form-group">
-                                <label>Email Address:</label>
-                                <input type="email" name="popup-email" class="form-control" required>
-                                <label>Sender Name:</label>
-                                <input type="text" class="form-control" name="popup-name">
-                                <textarea name="popup-message" id='popup-textarea' placeholder="Questions ? Feedback ? Trouble ? Let us know as much detail as you can." class="form-control" required></textarea>
-                            </div>
-                    </div>
-                <div class="card-footer">
-                    <button type="submit" class="btn btn-primary btn-icon icon-left">Send <span class="hide-sm">Message</span></button>
-                </div>
-                </form>
-            </div>
-            
-        </div>
-        <?php require 'layout/footer.php' ?>
-        </footer>
-        </div>
-        <div class="res"></div>
+      </div>
+      <div class="hidden sm:block w-[50%]">
+        <img
+          class="h-[auto] w-full"
+          src="/assets/images/home/risk-management-flow-chart-hand-sketching-red-marker-transparent-wipe-board-92790683-removebg-preview.png"
+        />
+      </div>
     </div>
-    <?php require 'layout/general_js.php' ?>
-    <script src="assets/bundles/izitoast/js/iziToast.min.js"></script>
-    <script src="assets/bundles/owlcarousel2/dist/owl.carousel.min.js"></script>
-    <script>
-        $("#slider").owlCarousel({
-            items: 1,
-            nav: true,
-            navText: ['<i class="fas fa-chevron-left"></i>', '<i class="fas fa-chevron-right"></i>'],
-            autoplay:true,
-                autoplayTimeout:6000,
-                autoplayHoverPause:true
-        });
-    </script>
-</body>
+
+    <!-- new 2: grid md:grid-cols-2 -->
+    <div
+      class="flex flex-col gap-[10px] px-[30px] sm:px-[100px] py-[50px] my-[20px]"
+    >
+      <div class="mb-[40px] text-center">
+        <h2
+          class="text-gray-800 text-[25px] sm:text-[30px] font-extrabold mb-[5px]"
+        >
+          Comprehensive Risk Management Suite
+        </h2>
+        <div class="text-[14px]">
+          RiskSafe simplifies operations, scales forms, and ensures data
+          accuracy for better decision-making.
+        </div>
+      </div>
+      <div class="flex justify-between items-center gap-[10px]">
+        <div class="w-full sm:w-[35%] flex flex-col gap-[10px] h-[max-content]">
+          <div class="active image-setter" data-img="compliance_no_sidebar.png">
+            <div class="head">Easy to Use Dashboard</div>
+            <div class="desc">
+              Navigate with ease. Our intuitive interface ensures you spend less
+              time learning and more time achieving your goals, making
+              management a breeze.
+            </div>
+          </div>
+          <div class="image-setter" data-img="form.png">
+            <div class="head">Flexible Form System</div>
+            <div class="desc">
+              Adaptable tools designed to customize and scale your forms
+              effortlessly, meeting all your needs with powerful and flexible
+              options.
+            </div>
+          </div>
+          <div class="image-setter" data-img="risks.png">
+            <div class="head">Efficient Data Management and Presentation</div>
+            <div class="desc">
+              Organize, store, and present data with precision. Implementing
+              robust practices ensures accuracy, drives informed decisions, and
+              streamlines operations.
+            </div>
+          </div>
+        </div>
+        <div class="hidden sm:block sm:w-[65%]">
+          <div class="h-[max-content] w-full p-[20px]">
+            <img
+              src="/assets/images/home/compliance_no_sidebar.png"
+              class="transition-opacity duration-500 ease-in-out"
+              id="mainImage"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- new 3 -->
+    <div class="flex justify-between bg-[var(--light-blue)]">
+      <div class="flex flex-col w-full sm:w-[50%] p-[30px] sm:p-[100px]">
+        <h3 class="header-text !mb-[20px]">
+          Built for Compliance and Risk Officers
+        </h3>
+        <div>
+          One Platform for all of your Compliance Risk Management Monitoring.
+        </div>
+        <div class="mt-[5px]">
+          We bring together automated assurance, risk assessments, audit,
+          incident management and reporting.
+        </div>
+        <div class="mt-[5px]">
+          Built by Risk & Compliance professionals with over a decade of
+          experience.
+        </div>
+        <a
+          href="/auth/sign-in"
+          class="mt-[30px] btn btn-primary w-[max-content] flex justify-center items-center gap-[5px]"
+          >Get Started <i class="fa fa-arrow-right"></i>
+        </a>
+      </div>
+      <div class="w-[50%] hidden sm:flex justify-center">
+        <img src="/assets/images/home/when.jpeg" class="" />
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div>
+      <div class="bg-[var(--primary)] px-[30px] sm:px-[100px] py-16 font-sans">
+        <div class="grid md:grid-cols-2 items-center gap-12 mx-auto">
+          <div>
+            <h1 class="text-4xl font-bold text-white">Why choose RiskSafe?</h1>
+            <div
+              class="mt-6 flex flex-col gap-[10px] text-sm text-white leading-relaxed"
+            >
+              <p>
+                Whether or not you have prior experience in risk management,
+                RiskSafe is designed to guide you through the process with ease.
+              </p>
+              <p>
+                Our platform comes equipped with predefined data sets and tools,
+                enabling you to quickly understand and implement effective risk
+                management strategies.
+              </p>
+              <p>
+                RiskSafe Automated monitoring solution saves us from doing
+                manual testing and all the co-ordination headaches
+              </p>
+            </div>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-6">
+            <div
+              class="bg-white flex flex-col items-center text-center rounded-md md:p-8 p-6"
+            >
+              <h3
+                class="lg:text-5xl text-3xl font-extrabold text-[var(--primary)]"
+              >
+                3x
+              </h3>
+              <div class="mt-4">
+                <p class="text-sm text-[var(--primary)]">
+                  return on investment in a year
+                </p>
+              </div>
+            </div>
+            <div
+              class="bg-white flex flex-col items-center text-center rounded-md md:p-8 p-6"
+            >
+              <h3
+                class="lg:text-5xl text-3xl font-extrabold text-[var(--primary)]"
+              >
+                $220k
+              </h3>
+              <div class="mt-4">
+                <p class="text-sm text-[var(--primary)]">
+                  savings per year when using full suite of tools
+                </p>
+              </div>
+            </div>
+            <div
+              class="bg-white flex flex-col items-center text-center rounded-md md:p-8 p-6"
+            >
+              <h3
+                class="lg:text-5xl text-3xl font-extrabold text-[var(--primary)]"
+              >
+                3 FTE
+              </h3>
+              <div class="mt-4">
+                <p class="text-sm text-[var(--primary)]">
+                  reduced from compliance team
+                </p>
+              </div>
+            </div>
+            <div
+              class="bg-white flex flex-col items-center text-center rounded-md md:p-8 p-6"
+            >
+              <h3
+                class="lg:text-5xl text-3xl font-extrabold text-[var(--primary)]"
+              >
+                24/7
+              </h3>
+              <div class="mt-4">
+                <p class="text-sm text-[var(--primary)]">Customer Support</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-[20px]">
+      <div class="bg-[var(--light-blue)] min-h-[500px]">
+        <div class="py-16 px-4 mx-[30px] sm:mx-[50px]">
+          <h2 class="text-gray-800 text-4xl font-extrabold text-center">
+            What RiskSafe offers?
+          </h2>
+          <div class="mb-[40px] text-[14] text-center">
+            With RiskSafe, you’re equipped with the tools to manage risks
+            effectively and confidently
+          </div>
+          <div class="!hidden flex flex-col gap-[5px] mb-16">
+            <p>
+              When you remove risk, you increase the value of your business.
+              Success comes to those who quickly identify and eliminate risks in
+              the right order.
+            </p>
+          </div>
+
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-md:max-w-md mx-auto"
+          >
+            <div
+              class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all"
+            >
+              <div class="p-8">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#007bff"
+                  class="w-8 mb-6"
+                  viewBox="0 0 32 32"
+                >
+                  <path
+                    d="M28.068 12h-.128a.934.934 0 0 1-.864-.6.924.924 0 0 1 .2-1.01l.091-.091a2.938 2.938 0 0 0 0-4.147l-1.511-1.51a2.935 2.935 0 0 0-4.146 0l-.091.091A.956.956 0 0 1 20 4.061v-.129A2.935 2.935 0 0 0 17.068 1h-2.136A2.935 2.935 0 0 0 12 3.932v.129a.956.956 0 0 1-1.614.668l-.086-.091a2.935 2.935 0 0 0-4.146 0l-1.516 1.51a2.938 2.938 0 0 0 0 4.147l.091.091a.935.935 0 0 1 .185 1.035.924.924 0 0 1-.854.579h-.128A2.935 2.935 0 0 0 1 14.932v2.136A2.935 2.935 0 0 0 3.932 20h.128a.934.934 0 0 1 .864.6.924.924 0 0 1-.2 1.01l-.091.091a2.938 2.938 0 0 0 0 4.147l1.51 1.509a2.934 2.934 0 0 0 4.147 0l.091-.091a.936.936 0 0 1 1.035-.185.922.922 0 0 1 .579.853v.129A2.935 2.935 0 0 0 14.932 31h2.136A2.935 2.935 0 0 0 20 28.068v-.129a.956.956 0 0 1 1.614-.668l.091.091a2.935 2.935 0 0 0 4.146 0l1.511-1.509a2.938 2.938 0 0 0 0-4.147l-.091-.091a.935.935 0 0 1-.185-1.035.924.924 0 0 1 .854-.58h.128A2.935 2.935 0 0 0 31 17.068v-2.136A2.935 2.935 0 0 0 28.068 12ZM29 17.068a.933.933 0 0 1-.932.932h-.128a2.956 2.956 0 0 0-2.083 5.028l.09.091a.934.934 0 0 1 0 1.319l-1.511 1.509a.932.932 0 0 1-1.318 0l-.09-.091A2.957 2.957 0 0 0 18 27.939v.129a.933.933 0 0 1-.932.932h-2.136a.933.933 0 0 1-.932-.932v-.129a2.951 2.951 0 0 0-5.028-2.082l-.091.091a.934.934 0 0 1-1.318 0l-1.51-1.509a.934.934 0 0 1 0-1.319l.091-.091A2.956 2.956 0 0 0 4.06 18h-.128A.933.933 0 0 1 3 17.068v-2.136A.933.933 0 0 1 3.932 14h.128a2.956 2.956 0 0 0 2.083-5.028l-.09-.091a.933.933 0 0 1 0-1.318l1.51-1.511a.932.932 0 0 1 1.318 0l.09.091A2.957 2.957 0 0 0 14 4.061v-.129A.933.933 0 0 1 14.932 3h2.136a.933.933 0 0 1 .932.932v.129a2.956 2.956 0 0 0 5.028 2.082l.091-.091a.932.932 0 0 1 1.318 0l1.51 1.511a.933.933 0 0 1 0 1.318l-.091.091A2.956 2.956 0 0 0 27.94 14h.128a.933.933 0 0 1 .932.932Z"
+                    data-original="#000000"
+                  />
+                  <path
+                    d="M16 9a7 7 0 1 0 7 7 7.008 7.008 0 0 0-7-7Zm0 12a5 5 0 1 1 5-5 5.006 5.006 0 0 1-5 5Z"
+                    data-original="#000000"
+                  />
+                </svg>
+                <h3 class="text-gray-800 text-xl font-semibold mb-3">
+                  Data Management
+                </h3>
+                <div class="text-gray-500 text-sm leading-relaxed ml-[15px]">
+                  <ul class="list-disc">
+                    <li>
+                      Streamline Compliance requirements, Risk Assessments,
+                      Policies and Reporting
+                    </li>
+                    <li>
+                      No more wasting time manually capturing risk and
+                      compliance information across so many documents
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all"
+            >
+              <div class="p-8">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#007bff"
+                  class="w-8 mb-6"
+                  viewBox="0 0 682.667 682.667"
+                >
+                  <defs>
+                    <clipPath id="a" clipPathUnits="userSpaceOnUse">
+                      <path d="M0 512h512V0H0Z" data-original="#000000" />
+                    </clipPath>
+                  </defs>
+                  <g
+                    fill="none"
+                    stroke="#007bff"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-miterlimit="10"
+                    stroke-width="40"
+                    clip-path="url(#a)"
+                    transform="matrix(1.33 0 0 -1.33 0 682.667)"
+                  >
+                    <path
+                      d="M256 492 60 410.623v-98.925C60 183.674 137.469 68.38 256 20c118.53 48.38 196 163.674 196 291.698v98.925z"
+                      data-original="#000000"
+                    />
+                    <path
+                      d="M178 271.894 233.894 216 334 316.105"
+                      data-original="#000000"
+                    />
+                  </g>
+                </svg>
+                <h3 class="text-gray-800 text-xl font-semibold mb-3">
+                  Dashboard Overview
+                </h3>
+                <div class="text-gray-500 text-sm leading-relaxed ml-[15px]">
+                  <ul class="list-disc">
+                    <li>
+                      Easily view risk position and compliance effectiveness on
+                      a clear dashboard
+                    </li>
+                    <li>Capture all key risk information in one place</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all"
+            >
+              <div class="p-8">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#007bff"
+                  class="w-8 mb-6"
+                  viewBox="0 0 24 24"
+                >
+                  <g fill-rule="evenodd" clip-rule="evenodd">
+                    <path
+                      d="M17.03 8.97a.75.75 0 0 1 0 1.06l-4.2 4.2a.75.75 0 0 1-1.154-.114l-1.093-1.639L8.03 15.03a.75.75 0 0 1-1.06-1.06l3.2-3.2a.75.75 0 0 1 1.154.114l1.093 1.639L15.97 8.97a.75.75 0 0 1 1.06 0z"
+                      data-original="#000000"
+                    />
+                    <path
+                      d="M13.75 9.5a.75.75 0 0 1 .75-.75h2a.75.75 0 0 1 .75.75v2a.75.75 0 0 1-1.5 0v-1.25H14.5a.75.75 0 0 1-.75-.75z"
+                      data-original="#000000"
+                    />
+                    <path
+                      d="M3.095 3.095C4.429 1.76 6.426 1.25 9 1.25h6c2.574 0 4.57.51 5.905 1.845C22.24 4.429 22.75 6.426 22.75 9v6c0 2.574-.51 4.57-1.845 5.905C19.571 22.24 17.574 22.75 15 22.75H9c-2.574 0-4.57-.51-5.905-1.845C1.76 19.571 1.25 17.574 1.25 15V9c0-2.574.51-4.57 1.845-5.905zm1.06 1.06C3.24 5.071 2.75 6.574 2.75 9v6c0 2.426.49 3.93 1.405 4.845.916.915 2.419 1.405 4.845 1.405h6c2.426 0 3.93-.49 4.845-1.405.915-.916 1.405-2.419 1.405-4.845V9c0-2.426-.49-3.93-1.405-4.845C18.929 3.24 17.426 2.75 15 2.75H9c-2.426 0-3.93.49-4.845 1.405z"
+                      data-original="#000000"
+                    />
+                  </g>
+                </svg>
+                <h3 class="text-gray-800 text-xl font-semibold mb-3">
+                  Quality Re-assurance
+                </h3>
+                <div class="text-gray-500 text-sm leading-relaxed ml-[15px]">
+                  <ul class="list-disc">
+                    <li>
+                      Demonstrate to customers and regulators you are running a
+                      safe shop.
+                    </li>
+                    <li>
+                      Get comfort that you are operating in a safe work
+                      environment.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all"
+            >
+              <div class="p-8">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#007bff"
+                  class="w-8 mb-6"
+                  viewBox="0 0 32 32"
+                >
+                  <path
+                    d="M28.068 12h-.128a.934.934 0 0 1-.864-.6.924.924 0 0 1 .2-1.01l.091-.091a2.938 2.938 0 0 0 0-4.147l-1.511-1.51a2.935 2.935 0 0 0-4.146 0l-.091.091A.956.956 0 0 1 20 4.061v-.129A2.935 2.935 0 0 0 17.068 1h-2.136A2.935 2.935 0 0 0 12 3.932v.129a.956.956 0 0 1-1.614.668l-.086-.091a2.935 2.935 0 0 0-4.146 0l-1.516 1.51a2.938 2.938 0 0 0 0 4.147l.091.091a.935.935 0 0 1 .185 1.035.924.924 0 0 1-.854.579h-.128A2.935 2.935 0 0 0 1 14.932v2.136A2.935 2.935 0 0 0 3.932 20h.128a.934.934 0 0 1 .864.6.924.924 0 0 1-.2 1.01l-.091.091a2.938 2.938 0 0 0 0 4.147l1.51 1.509a2.934 2.934 0 0 0 4.147 0l.091-.091a.936.936 0 0 1 1.035-.185.922.922 0 0 1 .579.853v.129A2.935 2.935 0 0 0 14.932 31h2.136A2.935 2.935 0 0 0 20 28.068v-.129a.956.956 0 0 1 1.614-.668l.091.091a2.935 2.935 0 0 0 4.146 0l1.511-1.509a2.938 2.938 0 0 0 0-4.147l-.091-.091a.935.935 0 0 1-.185-1.035.924.924 0 0 1 .854-.58h.128A2.935 2.935 0 0 0 31 17.068v-2.136A2.935 2.935 0 0 0 28.068 12ZM29 17.068a.933.933 0 0 1-.932.932h-.128a2.956 2.956 0 0 0-2.083 5.028l.09.091a.934.934 0 0 1 0 1.319l-1.511 1.509a.932.932 0 0 1-1.318 0l-.09-.091A2.957 2.957 0 0 0 18 27.939v.129a.933.933 0 0 1-.932.932h-2.136a.933.933 0 0 1-.932-.932v-.129a2.951 2.951 0 0 0-5.028-2.082l-.091.091a.934.934 0 0 1-1.318 0l-1.51-1.509a.934.934 0 0 1 0-1.319l.091-.091A2.956 2.956 0 0 0 4.06 18h-.128A.933.933 0 0 1 3 17.068v-2.136A.933.933 0 0 1 3.932 14h.128a2.956 2.956 0 0 0 2.083-5.028l-.09-.091a.933.933 0 0 1 0-1.318l1.51-1.511a.932.932 0 0 1 1.318 0l.09.091A2.957 2.957 0 0 0 14 4.061v-.129A.933.933 0 0 1 14.932 3h2.136a.933.933 0 0 1 .932.932v.129a2.956 2.956 0 0 0 5.028 2.082l.091-.091a.932.932 0 0 1 1.318 0l1.51 1.511a.933.933 0 0 1 0 1.318l-.091.091A2.956 2.956 0 0 0 27.94 14h.128a.933.933 0 0 1 .932.932Z"
+                    data-original="#000000"
+                  />
+                  <path
+                    d="M16 9a7 7 0 1 0 7 7 7.008 7.008 0 0 0-7-7Zm0 12a5 5 0 1 1 5-5 5.006 5.006 0 0 1-5 5Z"
+                    data-original="#000000"
+                  />
+                </svg>
+                <h3 class="text-gray-800 text-xl font-semibold mb-3">
+                  Flexible Data Export Options
+                </h3>
+                <div class="text-gray-500 text-sm leading-relaxed ml-[15px]">
+                  <ul class="list-disc">
+                    <li>
+                      Export your data in various formats including CSV, Excel
+                      (XLS), and Excel (XLSX), ensuring compatibility with your
+                      preferred software and systems.
+                    </li>
+                    <li>
+                      Seamlessly convert and manage your data files, making it
+                      easy to handle and analyze information across different
+                      platforms.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all"
+            >
+              <div class="p-8">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#007bff"
+                  class="w-8 mb-6"
+                  viewBox="0 0 32 32"
+                >
+                  <path
+                    d="M28.068 12h-.128a.934.934 0 0 1-.864-.6.924.924 0 0 1 .2-1.01l.091-.091a2.938 2.938 0 0 0 0-4.147l-1.511-1.51a2.935 2.935 0 0 0-4.146 0l-.091.091A.956.956 0 0 1 20 4.061v-.129A2.935 2.935 0 0 0 17.068 1h-2.136A2.935 2.935 0 0 0 12 3.932v.129a.956.956 0 0 1-1.614.668l-.086-.091a2.935 2.935 0 0 0-4.146 0l-1.516 1.51a2.938 2.938 0 0 0 0 4.147l.091.091a.935.935 0 0 1 .185 1.035.924.924 0 0 1-.854.579h-.128A2.935 2.935 0 0 0 1 14.932v2.136A2.935 2.935 0 0 0 3.932 20h.128a.934.934 0 0 1 .864.6.924.924 0 0 1-.2 1.01l-.091.091a2.938 2.938 0 0 0 0 4.147l1.51 1.509a2.934 2.934 0 0 0 4.147 0l.091-.091a.936.936 0 0 1 1.035-.185.922.922 0 0 1 .579.853v.129A2.935 2.935 0 0 0 14.932 31h2.136A2.935 2.935 0 0 0 20 28.068v-.129a.956.956 0 0 1 1.614-.668l.091.091a2.935 2.935 0 0 0 4.146 0l1.511-1.509a2.938 2.938 0 0 0 0-4.147l-.091-.091a.935.935 0 0 1-.185-1.035.924.924 0 0 1 .854-.58h.128A2.935 2.935 0 0 0 31 17.068v-2.136A2.935 2.935 0 0 0 28.068 12ZM29 17.068a.933.933 0 0 1-.932.932h-.128a2.956 2.956 0 0 0-2.083 5.028l.09.091a.934.934 0 0 1 0 1.319l-1.511 1.509a.932.932 0 0 1-1.318 0l-.09-.091A2.957 2.957 0 0 0 18 27.939v.129a.933.933 0 0 1-.932.932h-2.136a.933.933 0 0 1-.932-.932v-.129a2.951 2.951 0 0 0-5.028-2.082l-.091.091a.934.934 0 0 1-1.318 0l-1.51-1.509a.934.934 0 0 1 0-1.319l.091-.091A2.956 2.956 0 0 0 4.06 18h-.128A.933.933 0 0 1 3 17.068v-2.136A.933.933 0 0 1 3.932 14h.128a2.956 2.956 0 0 0 2.083-5.028l-.09-.091a.933.933 0 0 1 0-1.318l1.51-1.511a.932.932 0 0 1 1.318 0l.09.091A2.957 2.957 0 0 0 14 4.061v-.129A.933.933 0 0 1 14.932 3h2.136a.933.933 0 0 1 .932.932v.129a2.956 2.956 0 0 0 5.028 2.082l.091-.091a.932.932 0 0 1 1.318 0l1.51 1.511a.933.933 0 0 1 0 1.318l-.091.091A2.956 2.956 0 0 0 27.94 14h.128a.933.933 0 0 1 .932.932Z"
+                    data-original="#000000"
+                  />
+                  <path
+                    d="M16 9a7 7 0 1 0 7 7 7.008 7.008 0 0 0-7-7Zm0 12a5 5 0 1 1 5-5 5.006 5.006 0 0 1-5 5Z"
+                    data-original="#000000"
+                  />
+                </svg>
+                <h3 class="text-gray-800 text-xl font-semibold mb-3">
+                  Customized & Recommended Data
+                </h3>
+                <div class="text-gray-500 text-sm leading-relaxed ml-[15px]">
+                  <ul class="list-disc">
+                    <li>
+                      Utilize RiskSafe's expert-recommended controls and
+                      treatments if you're new to risk management, ensuring you
+                      follow best practices right from the start.
+                    </li>
+                    <li>
+                      Create and integrate your custom data throughout the
+                      dashboard for a tailored risk management strategy that
+                      fits your specific needs.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="flex justify-center items-center z-[2] mt-[20px]">
+      <div
+        class="cta w-full flex flex-col rounded-[0] sm:rounded-[10px] gap-[20px] p-[30px] sm:p-[50px] justify-center items-center sm:w-[80%]"
+      >
+        <h1 class="font-bold sm:w-[700px] w-full text-[30px] text-center">
+          Discover why RiskSafe is loved by Compliance Risk Officers around the
+          world
+        </h1>
+        <!-- <div class="sm:w-[500px] w-full text-center">
+          Discover why RiskSafe is loved by Compliance Risk Officers around the
+          world!
+        </div> -->
+        <div class="mt-[10px] flex gap-[10px]">
+          <a href="/book-demo" class="btn btn-secondary">Book Demo</a>
+          <a
+            href="/book-demo"
+            class="btn btn-secondary gap-[5px] justify-center items-center"
+            >Get Started <i class="fa fa-arrow-right"></i
+          ></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- footer -->
+    <?php include 'layout/footer.layout.php' ?>
+  </body>
 </html>
+
+<script>
+  $(".image-setter").click(function (e) {
+    var img = $(this).attr("data-img");
+    $(".image-setter").removeClass("active");
+    $("#mainImage").attr("src", `/assets/images/home/${img}`);
+    $(this).addClass("active");
+  });
+</script>
+<style lang="scss">
+  img#mainImage {
+    border-radius: 10px;
+    /* border: 3px solid rgba(235, 235, 235, 0.5); */
+    border: 1px solid var(--primary);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -webkit-user-drag: none;
+    cursor: pointer;
+  }
+  .image-setter {
+    border: 1px solid rgba(235, 235, 235, 0.5);
+    border-left: 10px solid rgba(235, 235, 235, 0.5);
+    border-radius: 5px;
+    min-height: 200px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 30px;
+
+    .head {
+      font-size: 23px;
+      font-weight: 700;
+    }
+    .desc {
+      font-size: 13px;
+      color: rgb(0, 0, 0, 0.7);
+    }
+    &.active {
+      border-left: 10px solid var(--primary);
+      background-color: #f7f9fc;
+
+      .head {
+        color: var(--primary);
+      }
+    }
+  }
+
+  .image-setter:not(.active):hover {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
+</style>

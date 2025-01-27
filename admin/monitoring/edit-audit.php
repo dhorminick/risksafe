@@ -29,31 +29,74 @@
     include '../ajax/audits.php';
     include $file_dir.'layout/admin__config.php';
     
-        if(isset($_POST["update-audit"]) && isset($_POST['c__id'])){
+    if(isset($_POST["update-audit"]) && isset($_POST['c__id']) && isset($_POST["control_to_be_auditted"]) == 'custom' || isset($_POST["update-audit"]) && isset($_POST['c__id']) && isset($_POST["control_to_be_auditted"]) == 'recommended'){
             $id = sanitizePlus($_POST["c__id"]);
-              $company = sanitizePlus($_POST["company"]);
-              $industry = sanitizePlus($_POST["industry"]);
-              $team = sanitizePlus($_POST["team"]);
-              $task = sanitizePlus($_POST["task"]);
-              $assessor = sanitizePlus($_POST["assessor"]);
-              $site = sanitizePlus($_POST["site"]);
-              $date = sanitizePlus($_POST["date"]);
-              $date = date("Y-m-d", strtotime($date));
-              $time = sanitizePlus($_POST["time"]);
-              $street = sanitizePlus($_POST["street"]);
-              $building = sanitizePlus($_POST["building"]);
-              $zipcode = sanitizePlus($_POST["zipcode"]);
-              $state = sanitizePlus($_POST["state"]);
-              $country = sanitizePlus($_POST["country"]);
-              $existing = sanitizePlus($_POST["existing"]);
-            //   $audi_treatment = sanitizePlus($_POST["audi_treatment"]);
-              $Effectivness = sanitizePlus($_POST["Effectivness"]);
-              $freq = sanitizePlus($_POST["freq"]);
-              $next = getNext($date, $freq);
-              $next = date("Y-m-d", strtotime($next));
+            //   $company = sanitizePlus($_POST["company"]);
+            //   $industry = sanitizePlus($_POST["industry"]);
+            //   $team = sanitizePlus($_POST["team"]);
+            //   $task = sanitizePlus($_POST["task"]);
+            //   $assessor = sanitizePlus($_POST["assessor"]);
+            //   $site = sanitizePlus($_POST["site"]);
+            //   $date = sanitizePlus($_POST["date"]);
+            //   $date = date("Y-m-d", strtotime($date));
+            //   $time = sanitizePlus($_POST["time"]);
+            //   $street = sanitizePlus($_POST["street"]);
+            //   $building = sanitizePlus($_POST["building"]);
+            //   $zipcode = sanitizePlus($_POST["zipcode"]);
+            //   $state = sanitizePlus($_POST["state"]);
+            //   $country = sanitizePlus($_POST["country"]);
+            //   $existing = sanitizePlus($_POST["existing"]);
+            // //   $audi_treatment = sanitizePlus($_POST["audi_treatment"]);
+            //   $Effectivness = sanitizePlus($_POST["Effectivness"]);
+            //   $freq = sanitizePlus($_POST["freq"]);
+            //   $next = getNext($date, $freq);
+            //   $next = date("Y-m-d", strtotime($next));
+            
+            $company = sanitizePlus($_POST["company"]);
+			$industry = sanitizePlus($_POST["industry"]);
+			$team = sanitizePlus($_POST["team"]);
+			$task = sanitizePlus($_POST["task"]);
+			$assessor = sanitizePlus($_POST["assessor"]);
+			
+			$root_cause = sanitizePlus($_POST["root_cause"]);
+			$rationale = sanitizePlus($_POST["rationale"]);
+			
+			
+			$site = sanitizePlus($_POST["site"]);
+			$date = sanitizePlus($_POST["date"]);
+            $date = date("Y-m-d", strtotime($date));
 
+			$time = sanitizePlus($_POST["time"]);
+			$street = sanitizePlus($_POST["street"]);
+			$building = sanitizePlus($_POST["building"]);
+			$zipcode = sanitizePlus($_POST["zipcode"]);
+			$state = sanitizePlus($_POST["state"]);
+			$country = sanitizePlus($_POST["country"]);
+			
+			$Effectivness = sanitizePlus($_POST["effectivness"]);
+			$freq = sanitizePlus($_POST["freq"]);
+     
+          $next = getNext($date, $freq);
+          $next = date("Y-m-d", strtotime($next));
+          
+          $control_to_be_auditted = sanitizePlus($_POST["control_to_be_auditted"]);
+
+          if($control_to_be_auditted == 'recommended'){
+              $control = sanitizePlus($_POST["existing"]);
+              if(isset($_POST["subControl"])){
+                  $subControl = sanitizePlus($_POST["subControl"]);
+              }else{
+                  $subControl = 'null';
+              };
+          }else{
+              $control = sanitizePlus($_POST["control"]);
+              $subControl = 'null';
+          }
+			
+          $typeOfControl = $control;
+              
                 // aud_treatment = '$audi_treatment', 
-              $query = "UPDATE as_auditcontrols SET con_company = '$company', con_industry = '$industry', con_team = '$team', con_task = '$task', con_assessor = '$assessor', con_site = '$site', con_date = '$date', con_time = '$time', con_street = '$street', con_building = '$building', con_zipcode = '$zipcode', con_state = '$state', con_country = '$country', con_effect = '$Effectivness', con_next = '$next', con_frequency = '$freq', con_control = '', subControl = '' WHERE aud_id = '$id' AND c_id = '$company_id'";
+              $query = "UPDATE as_auditcontrols SET con_company = '$company', con_industry = '$industry', con_team = '$team', control_type = '$control_to_be_auditted', con_task = '$task', con_assessor = '$assessor', con_site = '$site', con_date = '$date', con_time = '$time', con_street = '$street', con_building = '$building', con_zipcode = '$zipcode', con_state = '$state', con_country = '$country', con_control = '$typeOfControl', con_effect = '$Effectivness', subControl = '$subControl', con_next = '$next', con_observation = '$rationale', con_rootcause = '$root_cause', con_frequency = '$freq' WHERE c_id = '$company_id' AND aud_id = '$id'";
               $auditCreated = $con->query($query);
               if ($auditCreated) {
                 #send notif and redirect
@@ -124,14 +167,18 @@
                                 <div class="form-group __ss__">
                                   <label>Select Control To Be Auditted:</label>
                                   <div style='display:flex;'>
-                                  <div class='__ss_main'>
-                                  <input type='radio' id='custom_audit' value='custom' <?php if($control_type == 'custom'){ ?>checked <?php } ?> name='control_to_be_auditted' />
-                                  <label>Custom Controls</label>
-                                  </div>
-                                  <div class='__ss_main'>
-                                  <input type='radio' id='recommended_audit' value='recommended' <?php if($control_type == 'recommended'){ ?>checked <?php } ?> name='control_to_be_auditted' />
-                                  <label>Recommended Controls</label>
-                                  </div>
+                                      <div class='__ss_main'>
+                                          <input type='radio' id='custom_audit' value='custom' <?php if($control_type == 'custom'){ ?>checked <?php } ?> name='control_to_be_auditted' />
+                                          <label>Custom Controls</label>
+                                      </div>
+                                      <div class='__ss_main'>
+                                          <input type='radio' id='monitoring_audit' value='monitoring' <?php if($control_type == 'monitoring'){ ?>checked <?php } ?>  name='control_to_be_auditted' />
+                                          <label>Monitorings</label>
+                                      </div>
+                                      <div class='__ss_main'>
+                                          <input type='radio' id='recommended_audit' value='recommended' <?php if($control_type == 'recommended'){ ?>checked <?php } ?> name='control_to_be_auditted' />
+                                          <label>Recommended Controls</label>
+                                      </div>
                                   </div>
                                 </div>
                                 <div class="form-group" id='form_reccommended'>
@@ -143,20 +190,29 @@
                                 </div>
                                 <div class="form-group" id='form_custom'>
                                   <label>Select Custom Control:</label>
-                                    <?php 
-                                        $query = "SELECT * FROM as_customcontrols WHERE c_id = '$company_id' ORDER BY id DESC";
-                                        $result=$con->query($query);
-            		                      if ($result->num_rows > 0) { $i=0;
-                                    ?>
-                                    <select name="control" id="control-type" class="form-control" required>
-                                        <option value="0" selected>Please select type...</option>
-                                        <?php while($item = $result->fetch_assoc()){ $i++; ?>
-                                        <option value="<?php echo $item['id']; ?>" <?php if($control_type == 'custom'){if($item['id'] == $info['con_control']){ echo 'selected';}} ?>><?php echo $item['title'] ?></option>
-                                        <?php } ?>
-                                    </select>
-                                    <?php }else{ ?>
-                                    <div>No Custom Control Created Yet!!</div>
-                                    <?php } ?>
+                                  <div class="add-customs">
+                                            <div style='width:100%;margin-right:5px;' id='fh4nfve_110'>
+                                                <select name="control" class="form-control" required>
+                                                    <?php echo listCompanyControlSelected($company_id, $info['con_control'], $con); ?>
+                                                </select>
+                                            </div>
+                                            <a href='../customs/new-control?redirect=true' target='_blank' class="btn btn-sm btn-primary" id='fn4h9nf' style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>
+                                            <buttton id='f93nfo0_110' class="btn btn-sm btn-primary" type='button' data-toggle="tooltip" title="Refresh Customs List" data-placement="left" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
+                                    </div>
+                                  
+                                </div>
+                                <div class="form-group" id='form_monitoring'>
+                                  <label>Select Monitoring:</label>
+                                    <div class="add-customs">
+                                            <div style='width:100%;margin-right:5px;' id='fh4nfve_1100'>
+                                                <select name="control" class="form-control" required>
+                                                    <?php echo listMonitorings($company_id, $con, $info['con_control']); ?>
+                                                </select>
+                                            </div>
+                                            <a href='../monitoring/new-monitoring?redirect=true' target='_blank' class="btn btn-sm btn-primary" id='fn4h9nff' style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>
+                                            <buttton id='f93nfo0_1100' class="btn btn-sm btn-primary" type='button' data-toggle="tooltip" title="Refresh Customs List" data-placement="left" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
+                                    </div>
+                                    
                                 </div>
                                 
                                 <input type='hidden' name='c__id' value='<?php echo $info['aud_id']; ?>' />
@@ -174,7 +230,7 @@
                                 <div class="row custom-row">
                                 <div class="form-group col-lg-6 col-12">
                                     <label>Control Effectiveness:</label>
-                                    <select name="Effectivness" class="form-control" required>
+                                    <select name="effectivness" class="form-control" required>
                                         <option value="0" <?php if ($info["con_effect"] == 0) echo 'selected'; ?>>Unaccessed</option>
                                         <option value="1" <?php if ($info["con_effect"] == 1) echo 'selected'; ?>> Ineffective</option>
                                         <option value="2" <?php if ($info["con_effect"] == 2) echo 'selected'; ?>> Effective</option>
@@ -349,6 +405,14 @@
         }
     </style>
     <script>
+    $("#f93nfo0_110").click(function (e) {
+          $("#fh4nfve_110").load(" #fh4nfve_110 > *");
+        });
+        
+        $("#f93nfo0_1100").click(function (e) {
+          $("#fh4nfve_1100").load(" #fh4nfve_1100 > *");
+        });
+        
       $(".sub-control").hide();
       $("#control-type").change(function(e) { 
         var riskValue = $("#control-type").val();
@@ -386,24 +450,66 @@
                 $("#form_reccommended").hide();
                 $("#form_custom").show();
                 $('.sub-control').hide();
+                $("#form_monitoring").hide();
             }else if($(this).prop("checked") && type == 'recommended_audit') { 
                 $("#form_reccommended").show();
                 $('.sub-control').show();
                 $("#form_custom").hide();
+                $("#form_monitoring").hide();
+            }else if($(this).prop("checked") && type == 'monitoring_audit') { 
+                $("#form_reccommended").hide();
+                $('.sub-control').show();
+                $("#form_custom").hide();
+                $("#form_monitoring").show();
             }else{
                 $("#form_reccommended").hide();
                 $("#form_custom").show();
                 $('.sub-control').hide();
+                $("#form_monitoring").hide();
             }
         });
         <?php if($control_type == 'custom'){ ?>
         $("#form_reccommended").hide();
         $("#form_custom").show();
+        $("#form_monitoring").hide();
         <?php } ?>
         <?php if($control_type == 'recommended'){ ?>
         $("#form_reccommended").show();
         $("#form_custom").hide();
+        $("#form_monitoring").hide();
         <?php } ?>
+        <?php if($control_type == 'monitoring'){ ?>
+        $("#form_reccommended").hide();
+        $("#form_custom").hide();
+        $("#form_monitoring").show();
+        <?php } ?>
+        
+        
+        
+         // incidents
+            var _maxFieldTeatmen = 10; //Input fields increment limitation
+            var _adButtonTreatmen = $('#btn-append-ctrl'); //Add button selector
+            var _wraperTreatmen = $('#add-ctrl'); //Input field wrapperTreatment
+            var _fieldHTLTreatmen = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> <select name="control[]" class="form-control" required> <?php echo listCompanyControl($company_id, $con); ?> </select> <buttton class="btn btn-sm btn-primary remove_button_t" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
+            var _x_Treatmens = 1; //Initial field counter is 1
+            
+            // Once add button is clicked
+            $(_adButtonTreatmen).click(function(){
+                //Check maximum number of input fields
+                if(_x_Treatmens < _maxFieldTeatmen){ 
+                    _x_Treatmens++; //Increase field counter
+                    $(_wraperTreatmen).append(_fieldHTLTreatmen); //Add field html
+                }else{
+                    alert('A maximum of '+_maxFieldTeatmen+' fields are allowed to be added. ');
+                }
+            });
+            
+            // Once remove button is clicked
+            $(_wraperTreatmen).on('click', '.remove_button_t', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove(); //Remove field html
+                _x_Treatmens--; //Decrease field counter
+            });
     </script>
 </body>
 </html>

@@ -15,7 +15,7 @@
     function __getControl($s, $type, $con, $company_id){
         
         if($type == 'custom'){
-            $query = "SELECT * FROM as_customcontrols WHERE c_id = '$company_id' AND id = '$s' LIMIT 1";
+            $query = "SELECT * FROM as_customcontrols WHERE c_id = '$company_id' AND control_id = '$s' LIMIT 1";
             $result=$con->query($query);
             if ($result->num_rows > 0) {
                 $info = $result->fetch_assoc();
@@ -32,7 +32,18 @@
             }else{
                 $response = 'Error 402: Control Not Found!!';	    
             }
-        }else{
+        }else if($type === 'monitoring'){
+	        $query = "SELECT * FROM as_monitoring WHERE m_id = '$s'";
+    		$result = $con->query($query);
+    		
+    		if ($result->num_rows > 0) {
+    		    $row=$result->fetch_assoc();
+    		    
+        		$response = ucwords($row['title']);  
+    		}else{
+    		    $response = 'Error 402: Control Not Found!!';
+    		}
+	    }else{
             $response = 'Error 402: Control Not Found!!';
         }
 		

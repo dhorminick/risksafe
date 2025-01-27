@@ -103,7 +103,7 @@
                     foreach($query_run as $data) {
                         $ii++;
                         $as__id = $data['as_id'];
-                            
+                        
                         $sheet->getStyle('A'.$r.':J'.$r)->getFont()->setBold(true); #bold header values
                         #add assessment headers
                         $sheet->setCellValue('A'.$r, 'S/N');
@@ -205,7 +205,7 @@
                             $r++;
         
                             #empty row - no assessment addedd for this risk
-                            $spreadsheet->getActiveSheet()->mergeCells("A'.$r.':J".$r); 
+                            $spreadsheet->getActiveSheet()->mergeCells('A'.$r.':J'.$r); 
                             $sheet->setCellValue('A'.$r, "No Risk Registered For This Assessment Yet!!");
                         }
 

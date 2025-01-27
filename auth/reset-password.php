@@ -158,144 +158,244 @@
         
     }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-  <title>Reset Password | <?php echo $siteEndTitle; ?></title>
-  <?php require $file_dir.'layout/general_css.php' ?>
-  <link href='style.css' rel='stylesheet' />
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reset Password | <?php echo $siteEndTitle; ?></title>
 
-<body>
-    <div class="loader"></div>
-    <div id="app">
-        <div class="main-wrapper main-wrapper-1">
-        <!-- Main Content -->
-        <div class="navbar-bg"></div>
-        <?php include $file_dir.'layout/header_auth.php'; ?>
-                
-        <div class="main-content custom">
-            <div class="section-body row custom">
-                <div class='col-12 col-lg-8' style='margin-bottom:10px;'><?php include $file_dir.'layout/alert.php'; ?></div>
-                <div class="col-lg-8 col-12 fnhsgr8">       	
-                    <div class="login-panel card panel-default">
-                        <div class="card-header custom">
-                            <h4 class="card-header-h fu49zk">Reset Password:</h4>
+    <link rel="stylesheet" href="/assets/css/_style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel='shortcut icon' type='image/x-icon' href='/assets/favicon/favicon.ico' />
+  </head>
+  <body>
+    <div>
+      <div
+        class="min-h-screen w-full flex flex-col items-center pt-[50px] sm:pt-[100px] px-4"
+      >
+        <div class='mb-[10px] w-full'><?php include $file_dir.'layout/new_alert.php'; ?></div>
+          <div class='sm:w-[60%] w-full'>
+            <div class="mb-8">
+                <h3 class="text-gray-800 text-3xl font-extrabold">
+                    RiskSafe - Password Reset
+                </h3>
+                <p class="text-gray-500 text-sm mt-4 leading-relaxed">
+                    Reset account!
+                </p>
+            </div>
+          </div>
+        <?php if($authe == true){ #if get auth ?>
+            <?php if($toReset == true){ ?>
+                <form class="space-y-4 sm:w-[60%] w-full" method="post">
+                    <input type="hidden" name="__c__">
+                    <input type="hidden" name="__em__" value='<?php echo crc32(md5($em)); ?>'>
+
+                    <div>
+                        <label for="n" class="text-gray-800 text-sm mb-2 block">New Password:</label>
+                        <div class="relative flex items-center">
+                            <input
+                                id="n"
+                                name="n_pass"
+                                type="password"
+                                required
+                                class="w-full pass_input text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-blue-600"
+                                placeholder="Enter new password..."
+                            />
                         </div>
-                        <div class="card-body text-left" style='text-align:left;'>
-                            <div class="empty-state" style='padding:0px 0px 20px 0px;text-align:left !important;font-weight:400;'>
-                                <?php if($authe == true){ #if get auth ?>
-                                
-                                <?php if($toReset == true){ #if get auth ?>
-                                <form method="post" class='row' style='width:100%;'>
-                                    <div class='mb-20 col-12 col-lg-6'>
-                                        <label for="_m_">New Password:</label>
-                                        <input type="password" class="form-control" id="_m_" name="n_pass" />
-                                    </div>
-                                    <div class='col-12 col-lg-6'>
-                                        <label for="_n_">Confirm New Password:</label>
-                                        <input type="password" class="form-control" id="_n_" name="c_n_pass" />
-                                    </div>
-                                    <div class='c mb-20 col-12'>
-                                        <input type="checkbox" id="_cc_" />
-                                        <span>Show Passwords</span>
-                                    </div>
-                                    <input type="hidden" name="__c__">
-                                    <input type="hidden" name="__em__" value='<?php echo crc32(md5($em)); ?>'>
-                                    
-                                    <div class='text-right mt-10 col-12' style='width:100% !important;'>
-                                        <button type='submit' name='reset-password' class="btn btn-primary btn-lg mt-4 btn-icon icon-right">Reset Account Password</button>
-                                    </div>
-                                </form>
-                                <?php }else{ ?>
-                                <div class="empty-state-icon" style='display:flex;justify-content:center;align-items:center;'>
-                                    <i class="fas fa-question"></i>
-                                </div>
-                                <h2>Error 402: Authentication Error!!</h2>
-                                <a href="/" class="btn btn-primary mt-4 btn-icon icon-left"><i class='fas fa-arrow-left'></i> Go Back Home</a>
-                                <?php } ?>
-                                
-                                <?php }else{ ?>
-                                
-                                <?php if($signedIn == true){ #if signed in ?>
-                                <form method="post" class='row' style='width:100%;'>
-                                    <div class='mb-20 col-12'>
-                                        <label for="_o_">Old Password:</label>
-                                        <input type="password" class="form-control" id="_o_" name="o_pass" required />
-                                    </div>
-                                    <div class='mb-20 col-12 col-lg-6'>
-                                        <label for="_m_">New Password:</label>
-                                        <input type="password" class="form-control" id="_m_" name="n_pass" required />
-                                    </div>
-                                    <div class='col-12 col-lg-6'>
-                                        <label for="_n_">Confirm New Password:</label>
-                                        <input type="password" class="form-control" id="_n_" name="c_n_pass" required />
-                                    </div>
-                                    <div class='c mb-20 col-12'>
-                                        <input type="checkbox" id="_cc_" />
-                                        <span>Show Passwords</span>
-                                    </div>
-                                    <input type="hidden" name="__c__">
-                                    <div class='text-right mt-10 col-12' style='width:100% !important;'>
-                                        <button type='submit' name='reset_l' class="btn btn-primary btn-lg mt-4 btn-icon icon-right">Reset Account Password</button>
-                                    </div>
-                                </form>
-                                <?php }else{ ?>
-                                <form method="post" style='width:100%;'>
-                                    <div class='mb-20'>
-                                        <label for="_m_">Registered Email Address:</label>
-                                        <input type="email" class="form-control" id="_m_" name="email" required />
-                                    </div>
-                                    <input type="hidden" name="__c__">
-                                    <div class='text-right mt-10' style='width:100% !important;'>
-                                        <button type='submit' name='reset_nl' class="btn btn-primary btn-lg mt-4 btn-icon icon-right">Send Reset Link</button>
-                                    </div>
-                                </form>
-                                <?php } ?>
-                                
-                                <?php } ?>
-                                
+                    </div>
+
+                    <div>
+                        <label for="c" class="text-gray-800 text-sm mb-2 block">Confirm New Password:</label>
+                        <div class="relative flex items-center">
+                            <input
+                                id="c"
+                                name="c_n_pass"
+                                type="password"
+                                required
+                                class="w-full pass_input text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-blue-600"
+                                placeholder="Confirm new password"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex items-center">
+                            <input
+                                id="show_pass"
+                                type="checkbox"
+                                class="h-4 w-4 shrink-0 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <label
+                                for="show_pass"
+                                class="ml-3 block text-sm text-gray-800"
+                            >
+                                Show Passwords
+                            </label>
+                        </div>
+
+                        <div class="text-sm"></div>
+                    </div>
+
+                    <div class="!mt-8">
+                        <button
+                        name='reset-password'
+                        class="btn btn-primary w-full"
+                        >
+                        Reset Account Password
+                        </button>
+                    </div>
+                </form>
+            <?php }else{ ?>
+                <div class="border sm:w-[80%] w-full border-gray-300 rounded-lg p-6 shadow-[0_2px_22px_-4px_rgba(93,96,127,0.2)] sm:w-[60%] w-full">
+                    <div>
+                        <h2 class="text-[20px] font-bold mb-[20px]">Error 402: Authentication Error!!</h2>
+                        <div class="mb-[30px]">An error occured while verifying reset details!</div>
+                        <a href="/" class="btn btn-primary w-full"><i class='fas fa-arrow-left'></i> Go Back Home</a>
+                    </div>
+                </div>
+            <?php } ?>
+        <?php }else{ ?>
+            <?php if($signedIn == true){ #if signed in ?>
+                <form class="space-y-4 sm:w-[60%] w-full" method="post">
+                    <input type="hidden" name="__c__">
+
+                    <div>
+                        <label for='o' class="text-gray-800 text-sm mb-2 block">Old Password:</label>
+                        <div class="relative flex items-center">
+                            <input
+                                id='o'
+                                name="o_pass"
+                                type="password"
+                                required
+                                class="w-full pass_input text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-blue-600"
+                                placeholder="Enter old password..."
+                            />
+                        </div>
+                    </div>
+
+                    <div class='flex sm:flex-row flex-col gap-4 items-center'>
+                        <div>
+                            <label for="n" class="text-gray-800 text-sm mb-2 block">New Password:</label>
+                            <div class="relative flex items-center">
+                                <input
+                                    id="n"
+                                    name="n_pass"
+                                    type="password"
+                                    required
+                                    class="w-full pass_input text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-blue-600"
+                                    placeholder="Enter new password..."
+                                />
                             </div>
                         </div>
-                    </div>                
-                </div>
-                
-            </div>
-        </div>
-        
-        </div>
-    </div>
-    <?php require $file_dir.'layout/general_js.php' ?>
-</body>
-</html>
-<style>
-    .c {
-        display:flex;
-    }
-    #_cc_{
-        margin-right:5px;
-    }
-</style>
-<script>
-    var x = document.getElementById("_n_");
-    var y = document.getElementById("_m_");
-    var o = document.getElementById("_o_");
     
-    const someCheckbox = document.getElementById('_cc_');
+                        <div>
+                            <label for="c" class="text-gray-800 text-sm mb-2 block">Confirm New Password:</label>
+                            <div class="relative flex items-center">
+                                <input
+                                    id="c"
+                                    name="c_n_pass"
+                                    type="password"
+                                    required
+                                    class="w-full pass_input text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-blue-600"
+                                    placeholder="Confirm new password"
+                                />
+                            </div>
+                        </div>
+                    </div>
 
-    someCheckbox.addEventListener('change', e => {
-      if(e.target.checked === true) {
-        x.type = "text";
-        y.type = "text";
-        o.type = "text";
-      }
-      
-      if(e.target.checked === false) {
-        x.type = "password";
-        y.type = "password";
-        o.type = "password";
-      }
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex items-center">
+                            <input
+                                id="show_pass"
+                                type="checkbox"
+                                class="h-4 w-4 shrink-0 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <label
+                                for="show_pass"
+                                class="ml-3 block text-sm text-gray-800"
+                            >
+                                Show Passwords
+                            </label>
+                        </div>
+
+                        <div class="text-sm"></div>
+                    </div>
+
+                    <div class="!mt-8">
+                        <button
+                        name='reset_l'
+                        class="btn btn-primary w-full"
+                        >
+                        Reset Account Password
+                        </button>
+                    </div>
+                </form>
+            <?php }else{ ?>
+                <form class="space-y-4 sm:w-[60%] w-full" method='post'>
+                    <input type="hidden" name="__c__">
+
+                    <div>
+                        <label class="text-gray-800 text-sm mb-2 block">Registered Email Address:</label>
+                        <div class="relative flex items-center">
+                        <input
+                            name="email"
+                            type="email"
+                            required
+                            class="w-full text-sm text-gray-800 border border-gray-300 px-4 py-3 rounded-lg outline-blue-600"
+                            placeholder="Enter email address..."
+                        />
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="#bbb"
+                            stroke="#bbb"
+                            class="w-[18px] h-[18px] absolute right-4"
+                            viewBox="0 0 24 24"
+                        >
+                            <circle
+                            cx="10"
+                            cy="7"
+                            r="6"
+                            data-original="#000000"
+                            ></circle>
+                            <path
+                            d="M14 15H6a5 5 0 0 0-5 5 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 5 5 0 0 0-5-5zm8-4h-2.59l.3-.29a1 1 0 0 0-1.42-1.42l-2 2a1 1 0 0 0 0 1.42l2 2a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42l-.3-.29H22a1 1 0 0 0 0-2z"
+                            data-original="#000000"
+                            ></path>
+                        </svg>
+                        </div>
+                    </div>
+
+                    <div class="!mt-8">
+                        <button
+                        name='reset_nl'
+                        class="btn btn-primary w-full"
+                        >
+                        Send Reset Link
+                        </button>
+                    </div>
+                </form>
+            <?php } ?>
+        <?php } ?>
+
+      </div>
+    </div>
+  </body>
+</html>
+<script>
+    $("#show_pass").change(function (e) {
+        if( $(this).is(":checked") ){
+            $(".pass_input").attr('type') = 'text';
+        }else{
+            $(".pass_input").attr('type') = 'password';
+        }
     });
 </script>

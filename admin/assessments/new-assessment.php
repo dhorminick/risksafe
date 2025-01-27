@@ -155,7 +155,7 @@
                             <div class="card-body">
                                 <div class="form-group">
 									<label>Team or Company: </label>
-									<input name="team" type="text" maxlength="100" class="form-control" placeholder="Enter company or a team name..." required>
+									<input name="team" type="text" maxlength="100" class="form-control" value='<?php echo $company_name; ?>' placeholder="Enter company or a team name..." required>
 
 								</div>
 								<div class="form-group">
