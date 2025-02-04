@@ -33,7 +33,7 @@
 
                 $next = date("Y-m-d", strtotime($next));
 
-                $query = "UPDATE as_assessment SET as_type = '$type', as_team = '$team', as_task = '$task', as_descript = '$descript', as_owner = '$owner', as_next = '$next', as_assessor = '$assessor', as_approval = '$approval', as_date = '$next' WHERE as_id = '$assess_id' AND c_id = '$company_id'"; 
+                $query = "UPDATE as_assessment SET as_team = '$team', as_task = '$task', as_descript = '$descript', as_owner = '$owner', as_next = '$next', as_assessor = '$assessor', as_approval = '$approval', as_date = '$next' WHERE as_id = '$assess_id' AND c_id = '$company_id'"; 
                 $assessmentCreated = $con->query($query);
                 if ($assessmentCreated) {
                     #notify

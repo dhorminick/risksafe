@@ -66,7 +66,7 @@ if(isset($_POST['page'])){
                         $effect="Effective";
                         break;
                 }
-                function get_Frequency($freq){
+                function get___Frequency($freq){
 
                                         if ($freq == 7) {
                                             return "As Required";
@@ -97,7 +97,7 @@ if(isset($_POST['page'])){
                 <td><?php echo ucwords($item["con_control"]); ?></td>
                 <td><?php echo date("m/d/Y", strtotime($item["con_date"])); ?></td>
                 <td><?php echo ucwords($effect); ?></td>
-                <td><?php echo get_Frequency($item["con_frequency"]); ?></td>
+                <td><?php echo get___Frequency($item["con_frequency"]); ?></td>
                 <td>
                     <a href="<?php echo $viewLink; ?>" class="action-icons btn btn-primary btn-action mr-1"><i class="fas fa-eye"></i></a>
                     <a href="<?php echo $editLink; ?>" class="action-icons btn btn-info btn-action mr-1"><i class="fas fa-edit"></i></a>
