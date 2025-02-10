@@ -108,7 +108,7 @@ require 'mail.php';
 		$query="SELECT * FROM as_incidents WHERE c_id = '$id'";
 		$result=$con->query($query);
 		if ($result->num_rows > 0) {
-		    $response.='<select name="saved-treatment[]" class="form-control" required>';
+		    $response.='<select name="incidents[]" class="form-control" required>';
     		$response.='<option value="null" selected>No Incident Selected!!</option>';
     		while ($row=$result->fetch_assoc()) {
     // 			$response.='<option value="' . $row["in_id"] . '">' . $row["in_title"] . '</option>';

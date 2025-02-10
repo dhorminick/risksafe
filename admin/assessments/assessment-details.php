@@ -58,7 +58,7 @@
 			$assess_id = $ass_Id;
 			
             $user = $assessment_details['as_user'];
-            $type = $assessment_details['as_type'];
+            // $type = $assessment_details['as_type'];
             $team = $assessment_details['as_team'];
             $task = $assessment_details['as_task'];
             $descript = $assessment_details['as_descript'];

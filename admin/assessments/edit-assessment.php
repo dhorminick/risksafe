@@ -33,7 +33,7 @@
 
                 $next = date("Y-m-d", strtotime($next));
 
-                $query = "UPDATE as_assessment SET as_team = '$team', as_task = '$task', as_descript = '$descript', as_owner = '$owner', as_next = '$next', as_assessor = '$assessor', as_approval = '$approval', as_date = '$next' WHERE as_id = '$assess_id' AND c_id = '$company_id'"; 
+                $query = "UPDATE as_assessment SET as_type = '$type', as_team = '$team', as_task = '$task', as_descript = '$descript', as_owner = '$owner', as_next = '$next', as_assessor = '$assessor', as_approval = '$approval', as_date = '$next' WHERE as_id = '$assess_id' AND c_id = '$company_id'"; 
                 $assessmentCreated = $con->query($query);
                 if ($assessmentCreated) {
                     #notify
@@ -51,16 +51,16 @@
             $ass_exist = true;	
 
 			$info = $AssessmentDetailsExist->fetch_assoc();
-                $riskType = $info["as_type"];
+                // $riskType = $info["as_type"];
 
-                $query="SELECT * FROM as_types WHERE idtype = '$riskType'";
-                $result=$con->query($query);
-                if ($result->num_rows > 0) {
-                    $row = $result->fetch_assoc();
-                    $riskType = $row['ty_name'];
-                }else{
-                    $riskType = 'Error!';
-                }
+                // $query="SELECT * FROM as_types WHERE idtype = '$riskType'";
+                // $result=$con->query($query);
+                // if ($result->num_rows > 0) {
+                //     $row = $result->fetch_assoc();
+                //     $riskType = $row['ty_name'];
+                // }else{
+                //     $riskType = 'Error!';
+                // }
 
         }else{
             $ass_exist = false;

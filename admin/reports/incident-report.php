@@ -8,7 +8,7 @@
     }
     $message = [];
     include '../../layout/db.php';
-    include '../../layout/admin_config.php';
+    include '../../layout/admin__config.php';
     include '../ajax/incidents.php';
     // require_once $file_dir.'classes/PHPExcel.php';
     include_once 'summary.php';
