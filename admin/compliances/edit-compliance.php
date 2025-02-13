@@ -821,11 +821,13 @@
         $("#f93nfo0_110").click(function (e) {
           $("#fh4nfve_110").load(" #fh4nfve_110 > *");
         });
+
+        let fieldHTMLTreatent = '';
         
         <?php if($toDisplay === true && $info !== null && $info['module'] !== null){ ?>
-        let fieldHTMLTreatent = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> <?php echo listComplianceRecommendedControl_Selected($info["module"], "null", $con); ?> <buttton class="btn btn-sm btn-primary remove_button_t" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
+        fieldHTMLTreatent = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> <?php echo listComplianceRecommendedControl_Selected($info["module"], "null", $con); ?> <buttton class="btn btn-sm btn-primary remove_button_t" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
         <?php }else{ ?>
-        let fieldHTMLTreatent = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> <select name="existing_ct[]" class="form-control" required> <option value="null" selected>None Selected</option> <option>Error</option> </select> <buttton class="btn btn-sm btn-primary remove_button_t" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
+        fieldHTMLTreatent = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> <select name="existing_ct[]" class="form-control" required> <option value="null" selected>None Selected</option> <option>Error</option> </select> <buttton class="btn btn-sm btn-primary remove_button_t" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
         <?php } ?>
 
         $("#module").change(function (e) {

@@ -308,18 +308,6 @@
                                         
                                         <div class="form-group" id='na_type_t'> </div>
                                 
-                                    
-                                    
-                                    <div class='row custom-row'>
-                                        <div class="form-group col-lg-8 col-12">
-                                            <label>Action Owner</label>
-                                            <input name="owner" id="owner" type="text" maxlength="100" class="form-control" placeholder="Enter action owner..." required value="<?php echo ucwords($info['owner']);  ?>">
-                                        </div>
-                                        <div class="form-group col-lg-4 col-12">
-                                            <label>Due Date</label>
-                                            <input name="date" id="date" type="text" maxlength="100" class="form-control datepicker" placeholder="Select date..." required style="cursor:pointer;" value="<?php echo date("Y-m-d", strtotime($info['due_date'])); ?>">
-                                        </div>
-                                    </div>
                                 </div>
                         
                         

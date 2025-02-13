@@ -29,7 +29,9 @@
         $nature = sanitizePlus($_POST["nature"]);
         
         $owner = sanitizePlus($_POST["owner"]);
-        $steps = sanitizePlus($_POST["steps"]);
+
+        $steps = serialize($_POST["steps"]);
+
         $outcome = sanitizePlus($_POST["outcome"]);
         $audit_outcome = sanitizePlus($_POST["audit-outcome"]);
         $next = sanitizePlus($_POST["next"]);

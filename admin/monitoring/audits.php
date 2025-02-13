@@ -179,7 +179,7 @@
                                             $effect="Effective";
                                             break;
                                     }
-                                    function get__Frequency($freq){
+                                    function __get__Frequency($freq){
 
                                         if ($freq == 7) {
                                             return "As Required";
@@ -209,7 +209,7 @@
                                     <td><?php echo ucwords(getCtrlTitle($item["con_control"], $item["control_type"], $con)); ?></td>
                                     <td><?php echo date("m-d-Y", strtotime($item["con_date"])); ?></td>
                                     <td><?php echo ucwords($effect); ?></td>
-                                    <td><?php echo get__Frequency($item["con_frequency"]); ?></td>
+                                    <td><?php echo __get__Frequency($item["con_frequency"]); ?></td>
                                     <td>
                                         <a href="<?php echo $viewLink; ?>" class="action-icons btn btn-primary btn-action mr-1"><i class="fas fa-eye"></i></a>
                                         <a href="<?php echo $editLink; ?>" class="action-icons btn btn-info btn-action mr-1"><i class="fas fa-edit"></i></a>
