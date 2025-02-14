@@ -136,7 +136,7 @@
                 $site = $website__;
                 $help = $resetPassHelp;
                 
-                $_sentmail = _resetPass($sender, $recipient, $subject, $reset_link, $name, $site, $help);
+                $_sentmail = _resetPass($sender, $recipient, $subject, $reset_link, $name, $page_fb, $page_ig, $page_ln, $page_x, $siteMainLocation, $page_wt, $site, $help);
                 if ($_sentmail['sent'] == 'true' && $_sentmail['error'] == 'none') {
                     $updateUser = "UPDATE users SET reset_pass = 'true' WHERE u_mail = '$email' LIMIT 1";
                     $userUpdated = $con->query($updateUser);
