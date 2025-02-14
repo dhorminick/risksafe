@@ -68,7 +68,7 @@
                     
                     #mail
                     $mailSubject = 'RiskSafe - Confirm Account One-Time Password (OTP)';
-                    $mailRecipient = 'etiketochukwu@gmail.com';
+                    $mailRecipient = $email;
                     $mailSender = $signUpSender;
                     $mail = _reg($mailSender, $mailRecipient, $mailSubject, $confirmation_link, $name, $site__, $signUpHelp);
                     

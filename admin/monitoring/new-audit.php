@@ -16,7 +16,7 @@
 
     if(isset($_POST["create-audit"])){
         $control_to_be_auditted = sanitizePlus($_POST["control_to_be_auditted"]);
-        if(isset($_POST["control_to_be_auditted"]) == 'custom' || isset($_POST["control_to_be_auditted"]) == 'recommended'){
+        if(isset($_POST["control_to_be_auditted"]) == 'custom' || isset($_POST["control_to_be_auditted"]) == 'recommended' || isset($_POST["control_to_be_auditted"]) == 'monitoring'){
             $company = sanitizePlus($_POST["company"]);
 			$industry = sanitizePlus($_POST["industry"]);
 			$team = sanitizePlus($_POST["team"]);

@@ -10,7 +10,7 @@ $incorrectDetailsMail = 'error@sellit.com';
 $adminemailaddr = 'jay@risksafe.co';
 $siteEndTitle = 'RiskSafe - Risk Assessment';
 $website__ = 'https://portfolio.name.ng/';
-$site__ = 'https://portfolio.name.ng';
+$site__ = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]/";
 $siteMainLocation = 'Address, City, State, Country.';
 
 $page_fb = 'https://facebook.com/risksafe';
