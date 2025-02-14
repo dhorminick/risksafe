@@ -1,15 +1,15 @@
 <?php 
-$adminEmail = 'etiketochukwu@gmail.com';
-$reportEmail = 'etiketochukwu@gmail.com';
+$adminEmail = 'jay@risksafe.co';
+$reportEmail = 'jay@risksafe.co';
 $paymentMail = 'payments@sellit.com';
-$signUpSender = 'info@portfolio.name.ng';
-$resetPassSender = 'info@portfolio.name.ng';
+$signUpSender = 'jay@risksafe.co';
+$resetPassSender = 'jay@risksafe.co';
 $resetPassHelp = 'support@risksafe.co';
-$signUpHelp = 'support@risksafe.co';
-$incorrectDetailsMail = 'error@sellit.com';
+$signUpHelp = 'jay@risksafe.co';
+$incorrectDetailsMail = 'jay@risksafe.co';
 $adminemailaddr = 'jay@risksafe.co';
 $siteEndTitle = 'RiskSafe - Risk Assessment';
-$website__ = 'https://portfolio.name.ng/';
+$website__ = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]/";
 $site__ = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]/";
 $siteMainLocation = 'Address, City, State, Country.';
 
