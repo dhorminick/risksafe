@@ -111,12 +111,12 @@
                                 </div>
                                 
                                 <div class='row custom-row'>
-                                    <div class="form-group col-12 col-lg-8">
+                                    <!-- <div class="form-group col-12 col-lg-8">
                                         <label>Control Actions:</label>
                                         
-                                    </div>
+                                    </div> -->
                                     
-                                    <div class="form-group col-12 col-lg-4">
+                                    <div class="form-group col-12">
                                         <label for='owner'>Risk Owner:</label>
                                         <input id='owner' name="owner" type="text" class="form-control" placeholder="Enter Risk Owner..." required>
                                     </div>

@@ -130,7 +130,7 @@
                 <?php }else{ ?>
                 <div class="card">
                     <div class="card-header" style="margin-top: 20px;">
-                        <h3 class="d-inline">Custom Riskss</h3>
+                        <h3 class="d-inline">Custom Risks</h3>
                         <a class="btn btn-primary btn-icon icon-left header-a" href="new-risk"><i class="fas fa-plus"></i> New Risk</a>
                     </div>
                     
@@ -173,8 +173,8 @@
                         <div style="width:100%;min-height:400px;display:flex;justify-content:center;align-items:center;">
                             <div style="text-align: center;"> 
                                 <h3>Empty Data!!</h3>
-                                No Custom Treatment Created Yet,
-                                <p><a href="new-treatment" class="btn btn-primary btn-icon icon-left mt-2"><i class="fas fa-plus"></i> Create New Treatment</a></p>
+                                No Custom Risk Created Yet,
+                                <p><a href="new-risk" class="btn btn-primary btn-icon icon-left mt-2"><i class="fas fa-plus"></i> Create New Risk</a></p>
                             </div>
                         </div>
                         <?php } ?>

@@ -246,7 +246,7 @@
                                             foreach($causes as $cause){
                                                 $t_count++;
                                                 echo "<div class='add-customs' style='width:100%;'>";
-                                                echo '<input type="text" class="form-control" value='.ucfirst($treatment).' placeholder="Enter cause..." name="causes[]">';
+                                                echo '<input type="text" class="form-control" value="'.ucfirst($treatment).'" placeholder="Enter cause..." name="causes[]">';
                                                 echo '<button type="button" class="btn btn-sm btn-primary" id="btn-append-causes">+ Add</button>';
                                                 echo "</div>";
                                                 break;

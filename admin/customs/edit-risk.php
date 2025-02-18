@@ -107,11 +107,11 @@
                                 </div>
                                 
                                 <div class="row custom-row">
-                                    <div class="form-group col-12 col-lg-8">
+                                    <!-- <div class="form-group col-12 col-lg-8">
                                         <label>Control Actions:</label>
-                                    </div>
+                                    </div> -->
                                 
-                                    <div class="form-group col-12 col-lg-4">
+                                    <div class="form-group col-12">
                                         <label>Risk Owner:</label>
                                         <input name="owner" value="<?php echo $info["owner"]; ?>" type="text" class="form-control" placeholder="Enter Risk Owner..." required>
                                     </div>

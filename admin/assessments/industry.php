@@ -91,7 +91,7 @@
                             <?php require '../../layout/alert.php' ?>
                             <div class="card-header">
                                 <h3 class="d-inline">Select Company Industry:</h3>
-                                <button type='button' onclick="history.back()" class="btn btn-primary btn-icon icon-left header-a"><i class="fas fa-arrow-left"></i> Back</button>
+                                <a class="btn btn-primary btn-icon icon-left header-a" href="new-assessment"><i class="fas fa-plus"></i> Back To Assessments</a>
                             </div>
                             <div class="card-body">
                                 <div class="form-group">
