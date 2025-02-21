@@ -34,7 +34,7 @@
                     <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>">Dashboard</a></li>
                     <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>account/profile">Profile</a></li>
                     <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>account/payments">Payments</a></li>
-                    <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>account/instructions">RiskSafe Help</a></li>
+                    <li><a class="nav-link" href="/risksafe-resources">RiskSafe Help</a></li>
                     <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>account/business-context">Business Context</a></li>
                     <li><a class="nav-link" href="../<?php echo $accnt_dir; ?>account/users">All Users</a></li>
                 </ul>

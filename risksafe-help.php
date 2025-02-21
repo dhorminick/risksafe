@@ -22,7 +22,7 @@
     <div class="mt-[85px]"></div>
 
     <div>
-      <div class="bg-[var(--primary)] px-[30px] sm:px-[100px] py-16 font-sans">
+      <div class="px-[30px] sm:px-[100px] py-16">
           <div class="custom-p">                            
             <p><b>How does RiskSafe work?</b></p>
             <p>Great question! RiskSafe is a platform for tracking work and paying 1099 workers. Work can be entered directly through the app and user interface (UI) or via an integration with your company's other sources of work data.</p> 

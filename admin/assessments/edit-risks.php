@@ -152,8 +152,14 @@
                             </div>
                             <div class="form-group">
                                 <label>Risk</label>
-                                <div id="risk_div">
-                                    <?php echo listRisksNew($info['industry'], $info['risk'], $company_id, $con, 'hide'); ?>
+                                <div id="risk_div" style='display:flex;align-items:center;'>
+                                    <div style='width:100%;margin-right:5px;' id='_riskdiv'>
+                                        <?php echo listRisksNew($info['industry'], $info['risk'], $company_id, $con, 'hide'); ?>
+                                    </div>
+                                    <div style='display:flex;align-items:center;gap:10px;'>
+                                        <a href='../customs/new-risk?redirect=true' target='_blank' class="btn btn-sm btn-primary" style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>
+                                        <buttton id='_riskdivloader' class="btn btn-sm btn-primary" type='button' style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -836,6 +842,11 @@
      $("#f93nfo0_1111").click(function (e) {
           $("#fh4nfve_1111").load(" #fh4nfve_1111 > *");
         });
+        
+        $("#_riskdivloader").click(function (e) {
+          $("#_riskdiv").load(" #_riskdiv > *");
+        });
+
         
         let fieldHTMLTreatent = 'empty';
         let userRisks = <?php $query="SELECT * FROM as_customrisks WHERE c_id = '$company_id'"; $result=$con->query($query); if ($result->num_rows > 0){ ?> [ <?php while($row=$result->fetch_assoc()){ ?> "<?php echo $row['risk_id']; ?>", <?php } echo ']'; }else{ echo "'empty';"; } ?> 

@@ -144,23 +144,21 @@
     function listRisksNew($type, $selected, $company_id, $con, $null = false){
 		$query="SELECT * FROM as_newrisk WHERE industry = '$type' ORDER BY id";
 		$result=$con->query($query);
+		$response='<select name="risk" id="risk" class="form-control" required>';
+		if($null == false){
+			$response.='<option value="0">Please select risk...</option>';
+		}
+		if(listCustomRisks($company_id, $selected, $type, $con) !== 'empty'){
+			$response.= listCustomRisks($company_id, $selected, $type, $con);
+		}
 		if ($result->num_rows > 0) {	
-			$response='<select name="risk" id="risk" class="form-control" required>';
-			if($null == false){
-			    $response.='<option value="0">Please select risk...</option>';
-			}
-			if(listCustomRisks($company_id, $selected, $type, $con) !== 'empty'){
-			    $response.= listCustomRisks($company_id, $selected, $type, $con);
-			}
 			while ($row=$result->fetch_assoc()) {
 				$response.='<option value="' . $row["risk_id"] . '"';
 				if ($row["risk_id"]==$selected) $response.=' selected';
 				$response.='>' . ucwords($row["title"]) . '</option>';
 			}
-			$response.="</select>";
-		}else{
-			$response = 'error';
 		}
+		$response.="</select>";
 		return $response;
     }
     
@@ -706,8 +704,8 @@
 	if (isset($_POST["getRisk"])) {
 		include '../../layout/db.php';
 
-		function sanitizePlus($data) {
-			$data = trim($data);
+		function sanitizePlus($_data) {
+			$data = trim($_data);
 			$data = stripslashes($data);
 			$data = strip_tags($data);
 			$data = htmlspecialchars($data);
@@ -975,8 +973,8 @@
 	if (isset($_POST["delControl"])) {
 		include '../../layout/db.php';
 
-		function sanitizePlus($data) {
-			$data = trim($data);
+		function sanitizePlus($__data) {
+			$data = trim($__data);
 			$data = stripslashes($data);
 			$data = strip_tags($data);
 			$data = htmlspecialchars($data);

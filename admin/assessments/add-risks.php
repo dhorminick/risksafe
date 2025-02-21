@@ -182,8 +182,14 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label>Risk</label>
-                                <div id="risk_div">
-                                    <?php echo listRisksNew($riskType, $selrisk, $company_id, $con); ?>
+                                <div id="risk_div" style='display:flex;align-items:center;'>
+                                    <div style='width:100%;margin-right:5px;' id='_riskdiv'>
+                                        <?php echo listRisksNew($riskType, $selrisk, $company_id, $con); ?>
+                                    </div>
+                                    <div style='display:flex;align-items:center;gap:10px;'>
+                                        <a href='../customs/new-risk?redirect=true' target='_blank' class="btn btn-sm btn-primary" style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>
+                                        <buttton id='_riskdivloader' class="btn btn-sm btn-primary" type='button' style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group hazard">
@@ -553,6 +559,10 @@
         
         $("#f93nfo0_1111").click(function (e) {
           $("#fh4nfve_1111").load(" #fh4nfve_1111 > *");
+        });
+
+        $("#_riskdivloader").click(function (e) {
+          $("#_riskdiv").load(" #_riskdiv > *");
         });
         
         $("#getControls").submit(function (event) {
