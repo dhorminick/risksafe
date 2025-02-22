@@ -126,7 +126,7 @@
                       </p>
                     </div>
                     <a
-                      href="management-resources/conducting-risk-assestment.html"
+                      href="management-resources/conducting-risk-assestment"
                       class="text-blue-600 hover:text-blue-800 font-semibold hover:underline transition-colors"
                       >Read More</a
                     >
@@ -153,7 +153,7 @@
                       </p>
                     </div>
                     <a
-                      href="management-resources/common-risk-type.html"
+                      href="management-resources/common-risk-type"
                       class="text-blue-600 hover:text-blue-800 font-semibold hover:underline transition-colors"
                       >Read More</a
                     >
@@ -180,7 +180,7 @@
                       </p>
                     </div>
                     <a
-                      href="management-resources/control-self-assesment.html"
+                      href="management-resources/control-self-assesment"
                       class="text-blue-600 hover:text-blue-800 font-semibold hover:underline transition-colors"
                       >Read More</a
                     >
@@ -207,7 +207,7 @@
                       </p>
                     </div>
                     <a
-                      href="management-resources/how-can-a-controls-assessment-help-your-business.html"
+                      href="management-resources/how-can-a-controls-assessment-help-your-business"
                       class="text-blue-600 hover:text-blue-800 font-semibold hover:underline transition-colors"
                       >Read More</a
                     >
@@ -234,7 +234,7 @@
                       </p>
                     </div>
                     <a
-                      href="management-resources/workplace-health-and-safety-risk-assessments.html"
+                      href="management-resources/workplace-health-and-safety-risk-assessments"
                       class="text-blue-600 hover:text-blue-800 font-semibold hover:underline transition-colors"
                       >Read More</a
                     >
@@ -261,7 +261,7 @@
                       </p>
                     </div>
                     <a
-                      href="management-resources/risk-management-for-community-&-charity-groups.html"
+                      href="management-resources/risk-management-for-community-&-charity-groups"
                       class="text-blue-600 hover:text-blue-800 font-semibold hover:underline transition-colors"
                       >Read More</a
                     >
@@ -288,7 +288,7 @@
                       </p>
                     </div>
                     <a
-                      href="management-resources/insurable-risks.html"
+                      href="management-resources/insurable-risks"
                       class="text-blue-600 hover:text-blue-800 font-semibold hover:underline transition-colors"
                       >Read More</a
                     >
@@ -315,7 +315,7 @@
                       </p>
                     </div>
                     <a
-                      href="management-resources/reduce-insurance-premuim.html"
+                      href="management-resources/reduce-insurance-premuim"
                       class="text-blue-600 hover:text-blue-800 font-semibold hover:underline transition-colors"
                       >Read More</a
                     >

@@ -1080,6 +1080,14 @@ $("#likelihood_residual").change(function (e) {
                     $('#saved_type_t').show();
                     $('#na_type_t').hide();
                 }
+
+                if(val == 'na'){
+                    $("#owner").val('None');
+                    $("#owner").prop("readonly", true);
+                }else{
+                    $("#owner").val('');
+                    $("#owner").prop("readonly", false);
+                }
             }
         });
         
@@ -1161,30 +1169,30 @@ $("#likelihood_residual").change(function (e) {
             
             
             // causes
-            var _maxFieldTeatmen = 20; //Input fields increment limitation
-            var _adButtonTreatmen = $('#btn-append-causes'); //Add button selector
-            var _wraperTreatmen = $('#add-causes'); //Input field wrapperTreatment
-            var _fieldHTLTreatmen = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> <input type="text" class="form-control" placeholder="Enter cause..." name="causes[]"> <button type="button" class="btn btn-sm btn-primary remove_button_causes" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
-            var _x_Treatmens = 1; //Initial field counter is 1
+            var __maxFieldTeatmen = 20; //Input fields increment limitation
+            var __adButtonTreatmen = $('#btn-append-causes'); //Add button selector
+            var __wraperTreatmen = $('#add-causes'); //Input field wrapperTreatment
+            var __fieldHTLTreatmen = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"> <input type="text" class="form-control" placeholder="Enter cause..." name="causes[]"> <button type="button" class="btn btn-sm btn-primary remove_button_causes" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
+            var __x_Treatmens = 1; //Initial field counter is 1
             
             
             
             // Once add button is clicked
-            $(_adButtonTreatmen).click(function(){
+            $(__adButtonTreatmen).click(function(){
                 //Check maximum number of input fields
-                if(_x_Treatmens < _maxFieldTeatmen){ 
-                    _x_Treatmens++; //Increase field counter
-                    $(_wraperTreatmen).append(_fieldHTLTreatmen); //Add field html
+                if(__x_Treatmens < __maxFieldTeatmen){ 
+                    __x_Treatmens++; //Increase field counter
+                    $(__wraperTreatmen).append(__fieldHTLTreatmen); //Add field html
                 }else{
-                    alert('A maximum of '+_maxFieldTeatmen+' fields are allowed to be added. ');
+                    alert('A maximum of '+__maxFieldTeatmen+' fields are allowed to be added. ');
                 }
             });
             
             // Once remove button is clicked
-            $(_wraperTreatmen).on('click', '.remove_button_causes', function(e){
+            $(__wraperTreatmen).on('click', '.remove_button_causes', function(e){
                 e.preventDefault();
                 $(this).parent('div').remove(); //Remove field html
-                _x_Treatmens--; //Decrease field counter
+                __x_Treatmens--; //Decrease field counter
             });
             
             // incidents

@@ -140,7 +140,7 @@
     
     $hasModule = true;
     $moduleExists = true; #it exists initially, so we dont get false on page load and see module error message instead of select module message
-    $module_id = 'null';
+    #$module_id = 'null';
     
     if (isset($_GET['module']) && isset($_GET['module']) !== "") {
         $module_id = strtolower(sanitizePlus($_GET['module']));
