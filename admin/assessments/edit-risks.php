@@ -151,16 +151,17 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label>Risk</label>
-                                <div id="risk_div" style='display:flex;align-items:center;'>
-                                    <div style='width:100%;margin-right:5px;' id='_riskdiv'>
-                                        <?php echo listRisksNew($info['industry'], $info['risk'], $company_id, $con, 'hide'); ?>
-                                    </div>
-                                    <div style='display:flex;align-items:center;gap:10px;'>
+                                    <label class="help-label">
+                                        Risk
+                                    </label>
+                                    <div class="add-customs">
+                                        <div style='width:100%;margin-right:5px;' id='_riskdiv'>
+                                            <?php echo listRisksNew($info['industry'], $info['risk'], $company_id, $con, 'hide'); ?>
+                                        </div>
                                         <a href='../customs/new-risk?redirect=true' target='_blank' class="btn btn-sm btn-primary" style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>
-                                        <buttton id='_riskdivloader' class="btn btn-sm btn-primary" type='button' style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
+                                        <buttton id='_riskdivloader' class="btn btn-sm btn-primary" type='button' data-toggle="tooltip" title="Refresh Risk List" data-placement="left" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
                                     </div>
-                                </div>
+                                    
                             </div>
                             
                             <input type='hidden' name='risk_type' id='selected_risk_type' />
@@ -1223,9 +1224,6 @@ $("#likelihood_residual").change(function (e) {
         .c_type{
             display:flex;
             gap:10px;
-        }
-        button.btn.btn-sm.btn-primary.rmv_btn{
-            /*margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;*/
         }
         .c_type button{
             width:10% !important;
