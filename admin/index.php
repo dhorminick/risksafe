@@ -383,61 +383,7 @@
                     </div>
                 </div>
                 
-                <!-- audits -->
-                <div class="card custom-card !hidden">
-                  <div class="card-header">
-                    <h3 class="d-inline">Audit Controls - (<?php echo $totalCount; ?>)</h3>
-                    <a class="btn btn-primary btn-icon icon-left header-a" href="monitoring/audits"><i class="fas fa-arrow-left"></i> View All</a>
-                  </div>
-                  <div class="card-body">
-                    <div class="row">
-                    <div class="col-lg-4 col-md-4">
-                      <div class="panel panel-info">
-                        <div class="panel-heading redhead medium">
-                          Not effective
-                        </div>
-                        <div class="panel-body det">
-                          <div role="progressbar" class="ineffective" aria-valuenow="<?php echo $ineffectivePercentage; ?>" aria-valuemin="0" aria-valuemax="100" style="--value: <?php echo $ineffectivePercentage; ?>"></div>
-                          <span>Not effective Controls - (<?php echo $ineffectiveCount; ?>)</span>
-                        </div>
-                        <div class="panel-footer">
-                          <a href="./audits.php" type="button" style="border:none" class="btn btn-md redhead btn-det-custom progress-btn" btn="try_reporting">View Details</a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-lg-4 col-md-4">
-                      <div class="panel panel-info">
-                        <div class="panel-heading effectivegrn medium">
-                          Effective
-                        </div>
-                        <div class="panel-body det">
-                          <div role="progressbar" class="effective" aria-valuenow="<?php echo $effectivePercentage; ?>" aria-valuemin="0" aria-valuemax="100" style="--value: <?php echo $effectivePercentage; ?> "></div>
-                          <span>Effective Controls - (<?php echo $effectiveCount; ?>)</span>
-                        </div>
-                        <div class="panel-footer">
-                          <a href="./audits.php" type="button" style="border:none" class="btn btn-md btn-det-custom effectivegrn progress-btn" btn="try_reporting">View Details</a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-lg-4 col-md-4">
-                      <div class="panel panel-info">
-                        <div class="panel-heading ambarhead medium">
-                          Not Tested
-                        </div>
-                        <div class="panel-body det">
-                          <div role="progressbar" class="nottested" aria-valuenow="<?php echo $notSelectedPercentages; ?>" aria-valuemin="0" aria-valuemax="100" style="--value: <?php echo $notSelectedPercentages; ?>"></div>
-                          <span>Not Tested Controls - (<?php echo $not_slectedCount; ?>)</span>
-                          </div>
-                        <div class="panel-footer right_button">
-                          <a href="./audits.php" type="button" style="border:none" class="btn btn-md btn-det-custom ambarhead progress-btn" btn="try_reporting">View Details</a>
-                        </div>
-                      </div>
-                    </div>
-                    </div>
-                  </div>
-                </div>
-                
-                
+              
                 <!-- incidents -->
                 <div class="card custom-card">
                   <div class="card-header">
@@ -456,7 +402,7 @@
                             <span>Overdue Incidents - (<?php echo $OpenCount; ?>)</span>
                           </div>
                           <div class="panel-footer">
-                            <a href="./incidents" type="button" class="btn btn-md btn-det-custom redhead progress-btn" btn="try_reporting">View Details</a>
+                            <a href="./business/incidents" type="button" class="btn btn-md btn-det-custom redhead progress-btn" btn="try_reporting">View Details</a>
                           </div>
                         </div>
                       </div>
@@ -470,7 +416,7 @@
                             <span>Closed Incidents - (<?php echo $CloseCount; ?>)</span>
                           </div>
                           <div class="panel-footer">
-                            <a href="./incidents" type="button" class="btn btn-md btn-det-custom effectivegrn progress-btn" btn="try_reporting">View Details</a>
+                            <a href="./business/incidents" type="button" class="btn btn-md btn-det-custom effectivegrn progress-btn" btn="try_reporting">View Details</a>
                           </div>
                         </div>
                       </div>
@@ -484,7 +430,7 @@
                             <span>In Progress Incidents - (<?php echo $progressCount; ?>)</span>
                           </div>
                           <div class="panel-footer right_button">
-                            <a href="./incidents" type="button" class="btn btn-md btn-det-custom ambarhead progress-btn" btn="try_reporting">View Details</a>
+                            <a href="./business/incidents" type="button" class="btn btn-md btn-det-custom ambarhead progress-btn" btn="try_reporting">View Details</a>
                           </div>
                         </div>
                       </div>
@@ -511,7 +457,7 @@
                             <span>Complete Treatments - (<?php echo $successCount; ?>)</span>
                           </div>
                           <div class="panel-footer">
-                            <a href="./treatments" type="button" class="btn btn-md redhead btn-det-custom progress-btn" btn="try_reporting">View Details</a>
+                            <a href="./monitoring/treatments" type="button" class="btn btn-md redhead btn-det-custom progress-btn" btn="try_reporting">View Details</a>
                           </div>
                         </div>
                       </div>
@@ -525,7 +471,7 @@
                             <span>Closed Treatments - (<?php echo $CancelledCount; ?>)</span>
                           </div>
                           <div class="panel-footer">
-                            <a href="./treatments" type="button" class="btn btn-md btn-det-custom effectivegrn progress-btn" btn="try_reporting">View Details</a>
+                            <a href="./monitoring/treatments" type="button" class="btn btn-md btn-det-custom effectivegrn progress-btn" btn="try_reporting">View Details</a>
                           </div>
                         </div>
                       </div>
@@ -539,7 +485,7 @@
                             <span>In Progress Treatments - (<?php echo $progress_Count; ?>)</span>
                           </div>
                           <div class="panel-footer right_button">
-                            <a href="./treatments" type="button" class="btn btn-md btn-det-custom ambarhead progress-btn" btn="try_reporting">View Details</a>
+                            <a href="./monitoring/treatments" type="button" class="btn btn-md btn-det-custom ambarhead progress-btn" btn="try_reporting">View Details</a>
                           </div>
                         </div>
                       </div>
@@ -564,7 +510,7 @@
                             <span>Ineffective Compliance Standards - (<?php echo $ineffectiveComplianceCount; ?>)</span>
                           </div>
                           <div class="panel-footer">
-                            <a href="./compliances" type="button" class="btn btn-md redhead btn-det-custom progress-btn" btn="try_reporting">View Details</a>
+                            <a href="./compliances/all" type="button" class="btn btn-md redhead btn-det-custom progress-btn" btn="try_reporting">View Details</a>
                           </div>
                         </div>
                       </div>
@@ -578,7 +524,7 @@
                             <span>Effective Compliance Standards - (<?php echo $effectivComplianceCount; ?>)</span>
                           </div>
                           <div class="panel-footer">
-                            <a href="./compliances" type="button" class="btn btn-md btn-det-custom effectivegrn progress-btn" btn="try_reporting">View Details</a>
+                            <a href="./compliances/all" type="button" class="btn btn-md btn-det-custom effectivegrn progress-btn" btn="try_reporting">View Details</a>
                           </div>
                         </div>
                       </div>
@@ -592,58 +538,13 @@
                             <span> Overdue Reviews - (<?php echo $OverdueCount; ?>)</span>
                           </div>
                           <div class="panel-footer right_button">
-                            <a href="./applicables" type="button" class="btn btn-md btn-det-custom ambarhead progress-btn" btn="try_reporting">View Details</a>
+                            <a href="./compliances/applicable-policy" type="button" class="btn btn-md btn-det-custom ambarhead progress-btn" btn="try_reporting">View Details</a>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-
-                <div class="card custom-card !hidden">
-                  <div class="card-header">
-                    <h3 class="d-inline">Risk Charts</h1>
-                  </div>
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-lg-6 col-md-6">
-                        <div class="panel panel-info">
-                          <div class="panel-heading medium canva">
-                            Risk Chart - By Priority
-                          </div>
-                          <div class="panel-body canva">
-                            <canvas id="riskChart"></canvas>
-                            <ul class="p-t-30 list-unstyled">
-                              <li class="padding-5"><span><i class="fa fa-circle m-r-5 col-red"></i></span>Very High Risks<span
-                                  class="float-right"><?php echo $vhighCount; ?>%</span></li>
-                              <li class="padding-5"><span><i class="fa fa-circle m-r-5 col-orange"></i></span>High Risks<span
-                                  class="float-right"><?php echo $highCount; ?>%</span></li>
-                              <li class="padding-5"><span><i class="fa fa-circle m-r-5 col-yellow"></i></span>Medium Risks<span
-                                  class="float-right"><?php echo $mediumCount; ?>%</span></li>
-                                  <li class="padding-5"><span><i class="fa fa-circle m-r-5 col-green"></i></span>Low Risks<span
-                                  class="float-right"><?php echo $lowCount; ?>%</span></li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-6 col-md-6">
-                        <div class="panel panel-info">
-                          <div class="panel-heading medium canva">
-                            Risk - by Priority
-                          </div>
-                          <div class="panel-body">
-                            <?php if($data !== []) { ?>
-                            <canvas id="myPieChart"></canvas>
-                            <?php }else{ ?>
-                            <div class="nodata">-- No Data To Show --</div>
-                            <?php } ?>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
 
                 <!-- Users -->
                 <div class="card">

@@ -72,7 +72,7 @@
                                     <button class="btn btn-secondary" name='v_user'>Validate User</button>
                                 </form>
                                 <?php } ?>
-                                <a href="../" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Back</a>
+                                <a href="../admin-main/" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Back</a>
                             </div>
                         </div>
                         <div class="card-body">

@@ -19,7 +19,7 @@
     if(isset($_POST["update-control"]) && isset($_POST["id"])){
         
         $title = sanitizePlus($_POST["title"]);
-        $number = sanitizePlus($_POST["number"]);
+        // $number = sanitizePlus($_POST["number"]);
         $description = htmlentities(trim($_POST["description"]));
         $effectiveness = sanitizePlus($_POST["effectiveness"]);
         $frequency = sanitizePlus($_POST["frequency"]);
@@ -118,7 +118,7 @@
                                 <div class="row custom-row">
                                     <div class="form-group col-lg-3 col-12">
                                         <label>Control Number:</label>
-                                        <input name="number" type="text" class="form-control" value='<?php echo $info['number']; ?>' required>
+                                        <input name="number" disabled type="text" class="form-control" value='<?php echo $info['number']; ?>' required>
                                     </div>
                                     <div class="form-group col-lg-9 col-12">
                                         <label>Control Title:</label>

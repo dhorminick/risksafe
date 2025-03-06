@@ -129,7 +129,7 @@
                                 <div class="row custom-row">
                                     <div class="form-group col-lg-3 col-12">
                                         <label>Control Number:</label>
-                                        <input name="number" type="text" class="form-control" required>
+                                        <input name="number" type="text" class="form-control" value="<?php echo 'CT-'.strtoupper(secure_random_string(5)); ?>" readonly required>
                                     </div>
                                     <div class="form-group col-lg-9 col-12">
                                         <label>Control Title:</label>
