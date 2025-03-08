@@ -121,7 +121,7 @@
 
             <li class="menu-header">Logout</li>
             <li class="active">
-                <a class="nav-link" href="/logout"><i data-feather="file"></i><span>Log Out</span></a>
+                <a class="nav-link" href="/auth/sign-out"><i data-feather="file"></i><span>Log Out</span></a>
             </li>
             
             </ul>
