@@ -220,12 +220,14 @@
     </div>
 
     <div class="px-[30px] sm:px-[100px] py-16 mt-[20px]">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-[20px] py-[30px]">
-        <div class="flex items-center">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-[20px] py-[50px]">
+        <div class="flex items-center min-h-[300px]">
           <div>
             <h1 class="font-bold text-4xl mb-[20px]">Introducing 20X improvement with our Compliance AI Agent</h1>
             <div>Join the waitlist and be one of the first to try it out!</div>
-            <a class="btn btn-primary mt-[40px]" href="/waitlist/#join">Join</a>
+            <div class="mt-[50px]>
+              <a class="btn btn-primary" href="/waitlist/#join">Join</a>
+            </div>
           </div>
         </div>
         <div>
