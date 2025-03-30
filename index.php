@@ -229,14 +229,16 @@
           </div>
         </div>
         <div class="flex items-center">
-          <h3 class="mb-[20px] header-text">Compliance professionals struggle with:</h3>
-          <ul class="list-disc list-inside pl-[10px]">
-            <li><strong>Regulatory Complexity:</strong> Keeping up with changing laws.</li>
-            <li><strong>Manual Processes:</strong> Time-consuming audits, policy drafting, and risk assessments.</li>
-            <li><strong>False Positives in Monitoring:</strong> High noise in transaction monitoring & employee surveillance.</li>
-            <li><strong>Documentation Burden:</strong> Managing policies, training, and evidence for audits.</li>
-            <li><strong>Fraud & Insider Risk:</strong> Detecting anomalies in financial or operational data.</li>
-          </ul>
+          <div>
+            <h3 class="mb-[20px] header-text">Compliance professionals struggle with:</h3>
+            <ul class="list-disc list-inside pl-[10px]">
+              <li><strong>Regulatory Complexity:</strong> Keeping up with changing laws.</li>
+              <li><strong>Manual Processes:</strong> Time-consuming audits, policy drafting, and risk assessments.</li>
+              <li><strong>False Positives in Monitoring:</strong> High noise in transaction monitoring & employee surveillance.</li>
+              <li><strong>Documentation Burden:</strong> Managing policies, training, and evidence for audits.</li>
+              <li><strong>Fraud & Insider Risk:</strong> Detecting anomalies in financial or operational data.</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
