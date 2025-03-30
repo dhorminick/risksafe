@@ -216,7 +216,7 @@
                     ?>
                     <div class="col-lg-4 col-12">
                         <div class='price'>$<?php echo $p___config['price']; if($p___config['off'] !== '0'){echo ' ( -'.$p___config['off'].'% )';} ?></div>
-                        <button class="btn btn-primary btn-plan" data-id="<?php echo $p___config['pay_id']; ?>">Monthly</button>
+                        <button class="btn btn-primary btn-plan" data-id="<?php echo $p___config['pay_id']; ?>"><?php echo $p___config['title']; ?></button>
                     </div>
                     <?php }}else{ ?>
                     <div class="col-lg-4 col-12">
