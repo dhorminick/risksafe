@@ -220,18 +220,16 @@
     </div>
 
     <div class="px-[30px] sm:px-[100px] py-16 mt-[20px]">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-[20px] py-[50px]">
-        <div class="flex items-center min-h-[300px]">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-[30px] py-[50px]">
+        <div class="flex items-center min-h-[200px]">
           <div>
-            <h1 class="font-bold text-4xl mb-[20px]">Introducing 20X improvement with our Compliance AI Agent</h1>
+            <h1 class="font-bold text-4xl mb-[20px]">Introducing 20X improvement<br> with our Compliance AI Agent</h1>
             <div>Join the waitlist and be one of the first to try it out!</div>
-            <div class="mt-[50px]>
-              <a class="btn btn-primary" href="/waitlist/#join">Join</a>
-            </div>
+            <a class="mt-[30px] btn btn-primary w-[max-content] flex justify-center items-center gap-[5px]" href="/waitlist/#join">Join</a>
           </div>
         </div>
-        <div>
-          <div class="mb-[20px] font-semibold">Compliance professionals struggle with:</div>
+        <div class="flex items-center">
+          <h3 class="mb-[20px] header-text">Compliance professionals struggle with:</h3>
           <ul class="list-disc list-inside pl-[10px]">
             <li><strong>Regulatory Complexity:</strong> Keeping up with changing laws.</li>
             <li><strong>Manual Processes:</strong> Time-consuming audits, policy drafting, and risk assessments.</li>
