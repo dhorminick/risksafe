@@ -111,7 +111,7 @@
             the RiskSafe waitlist!
           </h1>
           <div class="mt-[10px] flex gap-[10px]">
-            <a href="/#join" class="btn btn-primary">Join the waitlist!</a>
+            <a href="/waitlist/#join" class="btn btn-primary">Join the waitlist!</a>
             <a
               href="https://risksafe.co/auth/sign-up"
               target="_blank"
