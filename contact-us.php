@@ -169,7 +169,7 @@
             </form>
 
             <div class="grid sm:grid-cols-2 gap-12">
-              <div class="flex items-start bg-white">
+              <!-- <div class="flex items-start bg-white">
                 <div
                   class="shadow-[0_0px_2px_0px_rgba(6,81,237,0.3)] rounded px-3 py-2"
                 >
@@ -217,7 +217,7 @@
                   <h4 class="text-gray-800 text-base font-bold">Call us</h4>
                   <p class="text-sm text-gray-500 mt-1">+6139-795-3170</p>
                 </div>
-              </div>
+              </div> -->
 
               <div class="flex items-start bg-white">
                 <div
@@ -248,7 +248,7 @@
                 </div>
               </div>
 
-              <div class="flex items-start bg-white">
+              <!-- <div class="flex items-start bg-white">
                 <div
                   class="shadow-[0_0px_2px_0px_rgba(6,81,237,0.3)] rounded px-3 py-2"
                 >
@@ -267,7 +267,7 @@
                   <h4 class="text-gray-800 text-base font-bold">Fax</h4>
                   <p class="text-sm text-gray-500 mt-1">+6139-7953-170</p>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
