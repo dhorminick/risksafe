@@ -29,9 +29,7 @@
       </div>
       <h3 class="mb-[20px] font-bold text-4xl">About RiskSafe</h3>
       <div class="text-[14px] w-full sm:max-w-[600px]">
-        With more simplified system design, RiskSafe was built by a team is made
-        up of Risk Managers with experience in banking, safety, startups and
-        small business.
+        Why do so many Small to Medium Size businesses and Startup" fail around the world... Poor Risk Management
       </div>
     </div>
 

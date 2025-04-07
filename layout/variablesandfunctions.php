@@ -16,7 +16,7 @@ $siteMainLocation = 'Address, City, State, Country.';
 $page_fb = 'https://facebook.com/risksafe';
     $page_ig = 'https://instagram.com/risksafe';
     $page_x = 'https://twitter.com/risksafe';
-    $page_ln = 'https://linkedin.com/risksafe';
+    $page_ln = 'https://www.linkedin.com/company/risksafe-co/people/?viewAsMember=true';
     $page_wt = 'https://whatsapp.com/';
     $page_yt = 'https://youtube.com/';
     

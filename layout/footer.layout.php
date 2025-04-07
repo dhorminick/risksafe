@@ -62,10 +62,10 @@
         </div>
         <div class="flex gap-[10px] mb-[10px] w-full">
           Follow us on :
-          <a href="https://facebook.com/risksafe" target="_blank">
+          <!-- <a href="https://facebook.com/risksafe" target="_blank">
             <i class="text-[20px] fa-brands fa-square-facebook"></i>
-          </a>
-          <a href="https://linedin.com/risksafe" target="_blank"
+          </a> -->
+          <a href="https://www.linkedin.com/company/risksafe-co/people/?viewAsMember=true" target="_blank"
             ><i class="text-[20px] fa-brands fa-linkedin"></i
           ></a>
         </div>
@@ -74,8 +74,8 @@
         >
           <div>&copy; RiskSafe - <?php echo date("Y"); ?></div>
           <div class="flex sm:gap-3 gap-[0px] sm:flex-row flex-col">
-            <a class="bb" href="/contact-us">Terms of service</a>
-            <a class="bb" href="/contact-us">Privacy Policy</a>
+            <a class="bb" href="/terms/terms-and-conditions.pdf">Terms of service</a>
+            <a class="bb" href="/terms/privacy-policy.pdf">Privacy Policy</a>
             <a class="bb hidden sm:block" href="/risksafe-help">RiskSafe Help</a>
           </div>
         </div>

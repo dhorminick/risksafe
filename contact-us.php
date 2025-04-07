@@ -241,8 +241,8 @@
                 <div class="ml-6">
                   <h4 class="text-gray-800 text-base font-bold">Chat to us</h4>
                   <p class="text-sm text-gray-500 mt-1">
-                    <a href="mailto:contact@risksafe.ca" class="bb"
-                      >contact@risksafe.ca</a
+                    <a href="mailto:info@risksafe.co" class="bb"
+                      >info@risksafe.co</a
                     >
                   </p>
                 </div>

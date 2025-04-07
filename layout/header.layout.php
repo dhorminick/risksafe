@@ -56,30 +56,37 @@
               </li>
               <li class="max-lg:border-b border-gray-300 max-lg:py-3 px-3">
                 <a
+                href="/book-consultation"
+                class="hover:text-[var(--primary)] text-gray-500 block font-semibold text-[15px]"
+                >Book Consultation</a
+                >
+              </li>
+              <li class="max-lg:border-b border-gray-300 max-lg:py-3 px-3">
+                <a
+                href="/risksafe-resources"
+                class="hover:text-[var(--primary)] text-gray-500 block font-semibold text-[15px]"
+                >Resources</a
+                >
+              </li>
+              <li class="max-lg:border-b border-gray-300 max-lg:py-3 px-3">
+                <a
+                href="/pricing"
+                class="hover:text-[var(--primary)] text-gray-500 block font-semibold text-[15px]"
+                >Pricing</a
+                >
+              </li>
+              <li class="max-lg:border-b border-gray-300 max-lg:py-3 px-3">
+                <a
+                href="/contact-us"
+                class="hover:text-[var(--primary)] text-gray-500 block font-semibold text-[15px]"
+                >Contact Us</a
+                >
+              </li>
+              <li class="max-lg:border-b border-gray-300 max-lg:py-3 px-3">
+                <a
                   href="/about-risksafe"
                   class="hover:text-[var(--primary)] text-gray-500 block font-semibold text-[15px]"
                   >About RiskSafe</a
-                >
-              </li>
-              <li class="max-lg:border-b border-gray-300 max-lg:py-3 px-3">
-                <a
-                  href="/risksafe-resources"
-                  class="hover:text-[var(--primary)] text-gray-500 block font-semibold text-[15px]"
-                  >Resources</a
-                >
-              </li>
-              <li class="max-lg:border-b border-gray-300 max-lg:py-3 px-3">
-                <a
-                  href="/pricing"
-                  class="hover:text-[var(--primary)] text-gray-500 block font-semibold text-[15px]"
-                  >Pricing</a
-                >
-              </li>
-              <li class="max-lg:border-b border-gray-300 max-lg:py-3 px-3">
-                <a
-                  href="/contact-us"
-                  class="hover:text-[var(--primary)] text-gray-500 block font-semibold text-[15px]"
-                  >Contact Us</a
                 >
               </li>
             </ul>
