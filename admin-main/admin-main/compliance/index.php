@@ -140,7 +140,10 @@
                               <tr style="font-weight: 400;">
                                 <td class="p-0 text-center"><?php echo $u; ?></td>
                                 <td><?php echo ucwords($info['title']); ?></td>
-                                <td><a href="upload-compliance?id=<?php echo strtolower($info['compliance_id']); ?>" class="btn btn-outline-primary btn-icon"><i class="fa fa-pen"></i></a></td>
+                                <td>
+                                    <a href="upload-compliance?id=<?php echo strtolower($info['compliance_id']); ?>" class="btn btn-outline-primary btn-icon" style='margin-right:5px;'><i class="fa fa-pen"></i></a>
+                                    <a href="upload-individual-compliance?id=<?php echo strtolower($info['compliance_id']); ?>" class="btn btn-primary">Upload Single Data</a>
+                                </td>
                               </tr>
                               <?php }}else{ ?>
                               <tr class="empty_div"><td class="p-0 text-center">#</td><td>No Compliance Module Created Yet!!</td></tr>
