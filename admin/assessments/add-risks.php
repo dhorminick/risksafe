@@ -26,7 +26,7 @@
 
 			$assessment_details = $AssessmentExist->fetch_assoc();
 			$hasValue = $assessment_details['has_values'];
-            // $riskType = $assessment_details["as_type"];
+
             $riskType = $_SESSION['risk_industry'];
 			
 			$toEdit = true;
@@ -186,7 +186,7 @@
                                     </label>
                                     <div class="add-customs">
                                         <div style='width:100%;margin-right:5px;' id='_riskdiv'>
-                                            <?php echo listRisksNew($riskType, $selrisk, $company_id, $con); ?>
+                                            <?php echo _listRisksNew($riskType, $selrisk, $company_id, $con); ?>
                                         </div>
                                         <a href='../customs/new-risk?redirect=true' target='_blank' class="btn btn-sm btn-primary" style='width: 15%;display:flex;justify-content:center;align-items:center;'>+ Create New</a>
                                         <buttton id='_riskdivloader' class="btn btn-sm btn-primary" type='button' data-toggle="tooltip" title="Refresh Risk List" data-placement="left" style='margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:0 10px;'><i class='fas fa-spinner'></i></buttton>
@@ -357,10 +357,10 @@
                                     </label>
                                     <div class='c_type' id='control_selctor'>
                                         <div id='fetchControls' style='width:100%;'>
-                                        <select name="existing_ct[]" id="existing_ct" class="form-control" required>
+                                        <!-- <select name="existing_ct[]" id="existing_ct" class="form-control" required>
                                             <option value="null" selected>None Selected</option>
-                                            <?php echo listControl($company_id, $con); ?>
-                                        </select>
+                                            <?php #echo listControl($company_id, $con); ?>
+                                        </select> -->
                                         </div>
                                         <button type="button" class="btn btn-sm btn-primary" id="btn-append-rec-control">+ Add</button>
                                     </div>
@@ -520,6 +520,10 @@
             <form id="getDescription" class="ajax-form">
                 <input type="hidden" name="category" id="get_desc">
             </form>
+
+            <form id="getData" class="ajax-form">
+                <input type="hidden" name="id" id="get_id">
+            </form>
             
             
             
@@ -584,26 +588,53 @@
             }, 0);
           });
         });
+
+        $("#getData").submit(function (event) {
+          event.preventDefault();
+        
+          var formValues = $(this).serialize();
+
+          $("#risk-description").val('Fetching Description...');
+          $("#hazard_div").html('Fetching Hazards...');
+          $(".hazard_empty").hide();
+
+          $.post("../ajax/assessment", {
+            getSumData: formValues,
+          }).done(function (data) {
+          
+            const jsonObject = JSON.parse(data);
+            $("#risk-description").val(jsonObject.description);
+            $("#hazard_div").html('<input type="text" name="hazard" class="form-control" value="'+jsonObject.hazard+'" />');
+            fieldHTMLTreatent = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"><select name="existing_ct[]" id="existing_ct" class="form-control" required> '+jsonObject.control+'</select> <buttton class="btn btn-sm btn-primary remove_button_t" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
+
+            $(".hazard_empty").hide();
+             $(".hazard").show();
+
+            setTimeout(function () {
+              $("#getData input").val("");
+            }, 0);
+          });
+        });
         
         $("#getRating_r").submit(function (event) {
-  // alert('first first stop!');
-  event.preventDefault();
+            // alert('first first stop!');
+            event.preventDefault();
 
-  var formValues = $(this).serialize();
-  $("#rating_residual").html('Calculating Rating...');
-  $.post("../ajax/assessment", {
-    getRating_r: formValues,
-  }).done(function (data) {
-    // alert(data);
-    $("#rating_residual").html(data);
-    $(".risk-rating").show();
-    setTimeout(function () {
-      $("#getRating_r input").val("");
-    }, 0);
+            var formValues = $(this).serialize();
+            $("#rating_residual").html('Calculating Rating...');
+            $.post("../ajax/assessment", {
+                getRating_r: formValues,
+            }).done(function (data) {
+                // alert(data);
+                $("#rating_residual").html(data);
+                $(".risk-rating").show();
+                setTimeout(function () {
+                $("#getRating_r input").val("");
+                }, 0);
 
-    // alert('second stop!');
-  });
-});
+                // alert('second stop!');
+            });
+        });
 
 $("#consequence_residual").change(function (e) {
   var riskConsequence = $(this).val();
@@ -690,18 +721,21 @@ $("#likelihood_residual").change(function (e) {
                     $('#selected_risk_type').val('site');
                     $('#owner').val('');
                     
-                    $("#get_hazard").val();
-                    $("#get_hazard").val(riskValue);
-                    $("#get_desc").val();
-                    $("#get_desc").val(riskValue);
+                    // $("#get_hazard").val();
+                    // $("#get_hazard").val(riskValue);
+                    // $("#get_desc").val();
+                    // $("#get_desc").val(riskValue);
                     
-                    $("#risk_val").val();
-                    $("#risk_val").val(riskValue);
+                    // $("#risk_val").val();
+                    // $("#risk_val").val(riskValue);
                                         
-                    $("#getControls").submit();
+                    // $("#getControls").submit();
                     
-                    $("#getHazard").submit();
-                    $("#getDescription").submit();
+                    // $("#getHazard").submit();
+                    // $("#getDescription").submit();
+
+                    $("#get_id").val(riskValue);
+                    $("#getData").submit();
                 }
               }
             

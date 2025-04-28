@@ -1,4 +1,130 @@
 <?php
+	if (isset($_POST["getSumData"])) {
+		include '../../layout/db.php';
+
+		function _sanitizePlus($data) {
+			$data = trim($data);
+			$data = stripslashes($data);
+			$data = strip_tags($data);
+			$data = htmlspecialchars($data);
+			return $data;
+		}
+		
+		$value = $_POST["getSumData"];
+        $getArray = getToArray($value);
+		
+        $id = _sanitizePlus($getArray['id']);
+
+		$response = getData($id, $con);
+		
+		echo $response;
+    }
+
+	function getDataFromArray($data) {
+		$response = '';
+		$data = @unserialize($data); // Suppress warnings with @
+
+		if ($data && is_array($data)) { // Check if unserialize was successful and data is an array
+			foreach ($data as $value) {
+				// Check if $value is an array and contains 'id' and 'text' keys
+				if (is_array($value) && isset($value['id']) && isset($value['text'])) {
+					$id = htmlspecialchars($value['id'], ENT_QUOTES, 'UTF-8');       //escape
+					$text = htmlspecialchars($value['text'], ENT_QUOTES, 'UTF-8'); //escape
+					$response .= "<option value='$id'>$text</option>";
+				} else {
+					// Handle the case where the data structure is not as expected
+					$response .= "<option value=''>Invalid Data</option>"; // Or you can log an error
+				}
+			}
+		} else {
+			// Handle the case where $data is not a valid serialized array or is empty
+			$response = "<option value=''>No Data Available</option>";
+		}
+
+		return $response;
+	}
+
+	function getData($id, $con){
+	    $query="SELECT * FROM updated_risk WHERE r_id = '$id' LIMIT 1";
+	    $result=$con->query($query);
+	    if ($result->num_rows > 0) {
+    		$row=$result->fetch_assoc();
+    		
+    		$response = array(
+    		    'description' => ucfirst(html_entity_decode($row['description'])),
+    		    'hazard' => html_entity_decode($row['sub_category']),
+    		    'control' => getDataFromArray($row['control']),
+    		    'hasData' => true,
+    		);
+
+		}else{
+		    
+		    $response = array(
+		        'description' => 'Error Fetching Description...',
+		        'hazard' => 'Error Fetching Hazard...',
+                'control' => 'Error!',
+    		    'hasData' => false
+		    );
+		}
+		
+		return json_encode($response);
+	}
+
+	function _listRisksNew($type, $selected, $company_id, $con, $null = false){
+		$query="SELECT * FROM updated_risk WHERE module = '$type' ORDER BY id";
+		$result=$con->query($query);
+		$response='<select name="risk" id="risk" class="form-control" required>';
+		if($null == false){
+			$response.='<option value="0">Please select risk...</option>';
+		}
+		if(listCustomRisks($company_id, $selected, $type, $con) !== 'empty'){
+			$response.= listCustomRisks($company_id, $selected, $type, $con);
+		}
+		if ($result->num_rows > 0) {	
+			while ($row=$result->fetch_assoc()) {
+				$response.='<option value="' . $row["r_id"] . '"';
+				if ($row["r_id"]==$selected) $response.=' selected';
+				$response.='>' . ucwords($row["name"]) . '</option>';
+			}
+		}
+		$response.="</select>";
+		return $response;
+    }
+
+	function _listControl_NewSelected($id, $selected, $con){
+		$response="";
+		$query="SELECT * FROM updated_risk WHERE r_id = '$id'";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {
+		    $row=$result->fetch_assoc();
+    		$control_list = unserialize($row['control']);
+    		$response.= '<select name="existing_ct[]" id="existing_ct" class="form-control" required>';
+    		foreach($control_list as $control){
+    		    $response.='<option value="' . $control['id'] . '"';
+    			if (strtolower($control['id']) == strtolower($selected)) $response.=' selected';
+    			$response.='>' . ucwords($control['text']) . '</option>';
+    		    #$response.= '<option value="'.ucwords($control).'">'.ucwords($control).'</option>';
+    		}
+    		$response.= '</select>';
+		}else{
+		    $response.='<option value="null" selected>No Control Recommended For This Risk!!</option>';
+		}
+		
+		return $response;
+	}
+
+	function _getRisks_New($id, $con){
+		$query="SELECT * FROM updated_risk WHERE r_id = '$id'";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {	
+			$row=$result->fetch_assoc();
+			$response = $row['title'];
+		}else{
+			$response = 'Error!!';
+		}
+		return $response;
+    }
+
     function getCustomRisks_New($id, $con){
 		$query="SELECT * FROM as_customrisks WHERE risk_id = '$id'";
 		$result=$con->query($query);
@@ -225,7 +351,7 @@
         if($id == ''){
            $response = 'None Selected'; 
         }else{
-            $query="SELECT * FROM as_newrisk_industry WHERE industry_id = '$id'";
+            $query="SELECT * FROM updated_module WHERE module_id = '$id'";
     		$result=$con->query($query);
     		if ($result->num_rows > 0) {	
     			$row=$result->fetch_assoc();

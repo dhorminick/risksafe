@@ -196,8 +196,8 @@
                         ?>
                             <tr>
                                 <td><?php echo $i; ?></td>
-                                <td><?php if($item['risk_type'] == 'custom'){echo ucwords(getCustomRisks_New($item['risk'], $con));}else{ echo ucwords(getRisks_New($item['risk'], $con)); }; ?></td>
-                                <td><?php if($item['risk_type'] == 'custom'){echo ucwords($item['sub_risk']);}else{ echo ucwords(getHazards_New($item['risk'], $item['sub_risk'], $con)); }; ?></td>
+                                <td><?php if($item['risk_type'] == 'custom'){echo ucwords(getCustomRisks_New($item['risk'], $con));}else{ echo ucwords(_getRisks_New($item['risk'], $con)); }; ?></td>
+                                <td><?php echo ucwords($item['sub_risk']); ?></td>
                                 <td>
                                     <a href="<?php echo $viewLink; ?>" class="action-icons btn btn-primary btn-action mr-1"><i class="fas fa-eye"></i></a>
                                     <a href="<?php echo $editLink; ?>" class="action-icons btn btn-info btn-action mr-1"><i class="fas fa-edit"></i></a>

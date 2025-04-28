@@ -18,15 +18,15 @@
             $selected = $id;
         }
             
-    		$query="SELECT * FROM as_newrisk_industry ORDER BY id";
+    		$query="SELECT * FROM updated_module ORDER BY id";
     		$result=$con->query($query);
     		if ($result->num_rows > 0) {	
     			$response='<select name="industry" class="form-control" required>';
     			$response.='<option value="0">-- Select Industry --</option>';
     			while ($row=$result->fetch_assoc()) {
-    				$response.='<option value="' . $row["industry_id"] . '"';
-    				if ($row["industry_id"]==$selected) $response.=' selected';
-    				$response.='>' . ucwords($row["title"]) . '</option>';
+    				$response.='<option value="' . $row["module_id"] . '"';
+    				if ($row["module_id"]==$selected) $response.=' selected';
+    				$response.='>' . ucwords($row["name"]) . '</option>';
     			}
     			$response.="</select>";
     		}else{

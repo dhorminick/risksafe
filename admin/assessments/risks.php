@@ -88,13 +88,13 @@
                             <div class="form-group">
                                 <label>Risk:</label>
                                 <div id="risk_div">
-                                    <div class="r_desc"><?php if($info['risk_type'] == 'custom'){echo ucwords(getCustomRisks_New($info['risk'], $con));}else{ echo ucwords(getRisks_New($info['risk'], $con)); }; ?></div>
+                                    <div class="r_desc"><?php if($info['risk_type'] == 'custom'){echo ucwords(getCustomRisks_New($info['risk'], $con));}else{ echo ucwords(_getRisks_New($info['risk'], $con)); }; ?></div>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label>Sub Risk:</label>
                                 <div id="hazard_div">
-                                    <div class="r_desc"><?php if($info['risk_type'] == 'custom'){echo ucwords($info['sub_risk']);}else{ echo ucwords(getHazards_New($info['risk'], $info['sub_risk'], $con)); }; ?></div>
+                                    <div class="r_desc"><?php echo ucwords($info['sub_risk']); ?></div>
                                 </div>
                             </div>
                             <div class="form-group">

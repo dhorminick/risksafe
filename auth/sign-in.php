@@ -19,8 +19,9 @@
 
     if (isset($_POST["sign-in"])) {
         
-        if($signedIn == true){
+        if($signedIn === true){
             array_push($message, "User Already Signed In!!");
+            header('refresh:2;url= /admin/');
         }else{
             $login = sanitizePlus($_POST["email"]);
             $password = sanitizePlus($_POST["password"]);
