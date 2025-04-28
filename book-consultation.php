@@ -38,6 +38,43 @@
       </div>
     </div>
 
+    <div class="px-[30px] sm:px-[100px] py-16 mt-[20px]">
+      <div class="grid grid-cols-1 sm:grid-cols-2">
+        <div>
+          <h3 class="text-gray-800 text-3xl font-extrabold mb-[20px]">
+            A Team of Practitioners<br /> Not Just Consultants
+          </h3>
+          <p>
+            Our team has worked inside banks, insurers, fintechs, and highly
+            regulated industries. We know what works, what auditors expect, and
+            how to get things done without overcomplicating your business.
+          </p>
+
+          <div class="mt-[20px] ml-[20px]">
+            <ul class="list-disc">
+              <li>15+ years' experience in Risk, Compliance, Audit</li>
+              <li>
+                AML/CTF, Data Protection & Cyber, Transformation Projects,
+                Fraud, Conduct & Consumer Protection, Crypto, AI, Quality
+                Assurance
+              </li>
+              <li>Fixed price and project-based options</li>
+              <li>Available for short-term or ongoing support</li>
+            </ul>
+
+            <a href="https://calendly.com/j-kanahara77/risk-compliance-support" target="_blank" class="mt-[30px] btn btn-primary">Get Started</a>
+            
+          </div>
+        </div>
+        <div>
+          <img
+            class="w-full object-center object-cover max-h-[400px] rounded-[5px]"
+            src="https://assets-us-01.kc-usercontent.com/56ac0847-da43-0017-b8aa-e0522019cff9/b303e764-5ef5-4c00-b057-0b1393a7bbd6/broker-feeds-min.png"
+          />
+        </div>
+      </div>
+    </div>
+
     <div class="px-[30px] sm:px-[100px] py-16">
       <h1 class="mt-[30px] text-3xl font-extrabold mb-[10px]">
         Tailored Services for Risk & Compliance Success
@@ -91,40 +128,6 @@
             Roll out RiskSafe quickly and align it with your existing
             frameworks, policies, and governance structures.
           </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="px-[30px] sm:px-[100px] py-16 mt-[20px]">
-      <div class="grid grid-cols-1 sm:grid-cols-2">
-        <div>
-          <h3 class="text-gray-800 text-3xl font-extrabold mb-[20px]">
-            A Team of Practitioners, Not Just Consultants
-          </h3>
-          <p>
-            Our team has worked inside banks, insurers, fintechs, and highly
-            regulated industries. We know what works, what auditors expect, and
-            how to get things done without overcomplicating your business.
-          </p>
-
-          <div class="mt-[20px] ml-[20px]">
-            <ul class="list-disc">
-              <li>15+ years' experience in Risk, Compliance, Audit</li>
-              <li>
-                AML/CTF, Data Protection & Cyber, Transformation Projects,
-                Fraud, Conduct & Consumer Protection, Crypto, AI, Quality
-                Assurance
-              </li>
-              <li>Fixed price and project-based options</li>
-              <li>Available for short-term or ongoing support</li>
-            </ul>
-          </div>
-        </div>
-        <div>
-          <img
-            class="w-full object-center object-cover max-h-[400px] rounded-[5px]"
-            src="https://assets-us-01.kc-usercontent.com/56ac0847-da43-0017-b8aa-e0522019cff9/b303e764-5ef5-4c00-b057-0b1393a7bbd6/broker-feeds-min.png"
-          />
         </div>
       </div>
     </div>

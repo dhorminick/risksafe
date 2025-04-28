@@ -345,7 +345,7 @@
         </section>
     </div>
 
-    <div class="mt-[20px]">
+    <div class="mt-[20px] hidden">
       <div class="bg-[var(--light-blue)] min-h-[500px]">
         <div class="py-16 px-4 mx-[30px] sm:mx-[50px]">
           <h2 class="text-gray-800 text-4xl font-extrabold text-center">
