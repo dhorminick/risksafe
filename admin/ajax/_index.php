@@ -152,6 +152,10 @@ function getRisksData($c_id, $con){
 }
 
 function calcPercentage($value, $total){
+    if($total === null || $total === 'null' || $total <= 0){
+        return 0;
+    }
+    
     return round(($value / $total) * 100, 2);
 }
 
