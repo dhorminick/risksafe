@@ -51,7 +51,7 @@
           </p>
 
           <div class="mt-[20px] ml-[20px]">
-            <ul class="list-disc">
+            <ul class="list-disc mb-[30px]">
               <li>15+ years' experience in Risk, Compliance, Audit</li>
               <li>
                 AML/CTF, Data Protection & Cyber, Transformation Projects,
@@ -62,7 +62,7 @@
               <li>Available for short-term or ongoing support</li>
             </ul>
 
-            <a href="https://calendly.com/j-kanahara77/risk-compliance-support" target="_blank" class="mt-[30px] btn btn-primary">Get Started</a>
+            <a href="https://calendly.com/j-kanahara77" target="_blank" class="btn btn-primary">Book a Meeting</a>
             
           </div>
         </div>

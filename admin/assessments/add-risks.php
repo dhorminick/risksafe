@@ -606,7 +606,12 @@
             $("#risk-description").val(jsonObject.description);
             $("#hazard_div").html('<input type="text" name="hazard" class="form-control" value="'+jsonObject.hazard+'" />');
             fieldHTMLTreatent = '<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:5px;"><select name="existing_ct[]" id="existing_ct" class="form-control" required> '+jsonObject.control+'</select> <buttton class="btn btn-sm btn-primary remove_button_t" type="button" style="margin-left:5px;display:flex;justify-content:center;align-items:center;font-size:20px;padding:12px 10px;"><i class="fas fa-minus"></i></buttton></div>';
-
+            
+            if(jsonObject.control === null || jsonObject.control === 'null'){
+                $("#fetchControls").html('<span style="font-weight:400;">No Recommended Control For Selected Risk!</span>');
+            }else{
+                $("#fetchControls").html('<select name="existing_ct[]" id="existing_ct" class="form-control" required> '+jsonObject.control+'</select>');
+            }
             $(".hazard_empty").hide();
              $(".hazard").show();
 

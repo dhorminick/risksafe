@@ -17,7 +17,7 @@
     return false;
   } 
 
-  if (isset($_POST["book"])) {
+  if (isset($_POST["contact"])) {
       $name = sanitizePlus($_POST["name"]);
       $email = sanitizePlus($_POST["email"]);
       $subject = sanitizePlus($_POST["subject"]);

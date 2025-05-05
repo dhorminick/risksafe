@@ -11,11 +11,11 @@
     include '../../layout/db.php';
     include '../../layout/admin__config.php';
     
-    function getIndustryTitle($id, $con){
+    function __getIndustryTitle($id, $con){
         if($id == ''){
            $response = 'None Selected'; 
         }else{
-            $query="SELECT * FROM as_newrisk_industry WHERE industry_id = '$id'";
+            $query="SELECT * FROM updated_risk WHERE module = '$id'";
     		$result=$con->query($query);
     		if ($result->num_rows > 0) {	
     			$row=$result->fetch_assoc();
@@ -139,7 +139,7 @@
                             <div class="card-body">
                                 <div class="form-group">
 									<label>Selected Risk Industry: </label>
-									<div class='form-control' style='border:none !important;padding:10px 0px !important;font-size:16px;font-weight:400;'><?php echo $getIndustry = ucwords(getIndustryTitle($risk__industry, $con)); ?></div>
+									<div class='form-control' style='border:none !important;padding:10px 0px !important;font-size:16px;font-weight:400;'><?php echo $getIndustry = ucwords(__getIndustryTitle($risk__industry, $con)); ?></div>
 									
 									<div style='margin-top:20px;'>
 									<?php if($getIndustry == 'None Selected'){ ?>

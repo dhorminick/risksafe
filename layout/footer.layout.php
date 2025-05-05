@@ -37,8 +37,7 @@
             <div>
               <div class="font-bold mb-[5px]">Contact Us</div>
               <ul>
-                <li>Email: jay@risksafe.co</li>
-                <!-- <li>Phone: 0000-000-000</li> -->
+                <li>Email: <a href="mailto:info@risksafe.co" class="bb" target="_blank">info@risksafe.co</a></li>
                 <li class="mt-[10px]">
                   <a class="bb" href="/risksafe-help">RiskSafe Help</a>
                 </li>

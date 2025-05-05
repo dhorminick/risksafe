@@ -16,6 +16,22 @@
     $noValue = true;
     $risk__industry = $_SESSION['risk_industry'];
 
+    function __getIndustryTitle($id, $con){
+        if($id == ''){
+           $response = 'None Selected'; 
+        }else{
+            $query="SELECT * FROM updated_risk WHERE module = '$id'";
+    		$result=$con->query($query);
+    		if ($result->num_rows > 0) {	
+    			$row=$result->fetch_assoc();
+    			$response = $row['title'];
+    		}else{
+    			$response = 'Error!!';
+    		}
+        }
+		return $response;
+    }
+
     if (isset($_GET['id']) && isset($_GET['id']) !== "") {
         $ri_id = sanitizePlus($_GET['id']);
         $toDisplay = true;
@@ -81,7 +97,7 @@
                             <div class="form-group" style='margin-bottom:20px;'>
                                 <label>Selected Risk Industry:</label>
                                 <div style='font-weight:400;font-size:16px;'>
-                                    <?php echo $getIndustry = ucwords(getIndustryTitle($risk__industry, $con)); ?>
+                                    <?php echo $getIndustry = ucwords(__getIndustryTitle($risk__industry, $con)); ?>
                                 </div>
                             </div>
                             

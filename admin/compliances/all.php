@@ -123,7 +123,8 @@
                                     $viewLink = 'compliance-details?id='.$item["compli_id"].'" data-toggle="tooltip" title="View Compliance" data-placement="right"';
                                     $editLink = 'edit-compliance?id='.$item["compli_id"].'" data-toggle="tooltip" title="Edit Compliance" data-placement="right"';
                                     $deleteLink = 'javascript:void(0);" class="delete action-icons btn btn-danger btn-action mr-1" data-toggle="modal" data-target="#deleteModal" data-type="compliance" data-id="'.$item["compli_id"];
-                                    $downloadLink = 'download?download=compliance&file=xls&id='.$item["compli_id"].'" data-toggle="tooltip" title="Download Compliance" data-placement="left"';
+                                    // $downloadLink = 'download?download=compliance&file=xls&id='.$item["compli_id"].'" data-toggle="tooltip" title="Download Compliance" data-placement="left"';
+                                    $downloadLink = 'javascript:void(0);" data-toggle="modal" data-target="#exportModal" export-data="compliance" export-id="'.$item["compli_id"];
                                     
                                     if($item['type'] == 'imported'){$c_control = $item['imported_controls'];}else{$c_control = $item['com_controls'];} if($c_control == '' || $c_control == null){$c_control = 'None Documented!!';}
                                     if($item["co_status"] == null || $item["co_status"] == ''){$item["co_status"] = 'Un-Assessed';}
@@ -137,7 +138,7 @@
                                         <a href="<?php echo $viewLink; ?>" class="action-icons btn btn-primary btn-action mr-1"><i class="fas fa-eye"></i></a>
                                         <a href="<?php echo $editLink; ?>" class="action-icons btn btn-info btn-action mr-1"><i class="fas fa-edit"></i></a>
                                         <a href="<?php echo $deleteLink; ?>"><i class="fas fa-trash-alt"></i></a>
-                                        <a href="<?php echo $downloadLink; ?>" class="action-icons btn btn-success btn-action "><i class="fas fa-download"></i></a>
+                                        <a href="<?php echo $downloadLink; ?>" class="export__data action-icons btn btn-success btn-action "><i class="fas fa-download"></i></a>
                                     </td>
                                 </tr> 
                             <?php 

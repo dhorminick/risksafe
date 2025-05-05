@@ -7,6 +7,72 @@ use PhpOffice\PhpSpreadsheet\Writer\Csv;
 
 $export = false; #data to be exported doesn't exist yet!!
 
+function get_date($date){
+        return date("D\. jS \of F Y", strtotime($date));
+    }
+
+    function list_out_control_com($c_id, $id, $con){
+        
+        $query="SELECT * FROM as_compliancestandard WHERE c_id = '$c_id' AND compli_id = '$id' LIMIT 1";
+		$result=$con->query($query);
+        if($result->num_rows > 0){
+            $row=$result->fetch_assoc();
+            $rc = $row["existing_ct"];
+            $sc = $row["saved_control"];
+            $cc = $row["custom_control"];
+            
+            $response = '';
+            
+            if($rc !== 'null' && $rc != '' && $rc != null){
+                $response .= ucwords(get_recommended_control($rc, $con))." \r\n";
+            }
+            if($sc !== 'null' && $sc != '' && $sc != null){
+                $response .= ucwords(get_custom_control($sc, $con))." \r\n";
+            }
+            if($cc !== 'null' && $cc != '' && $cc != null){
+                $cc = unserialize($cc);
+                foreach ($cc as $arr) {
+                    #$response .= $arr.'\n';
+                    $response .= ucwords($arr)." \r\n";
+                }
+            }
+            $response .= '';
+            
+        }else{
+            $response = 'Error!';
+        }
+		return $response;
+    }
+    
+    function list_out_treat_com($c_id, $id, $con){
+        
+        $query="SELECT * FROM as_compliancestandard WHERE c_id = '$c_id' AND compli_id = '$id' LIMIT 1";
+		$result=$con->query($query);
+        if($result->num_rows > 0){
+            $row=$result->fetch_assoc();
+            $sc = $row["saved_treatment"];
+            $cc = $row["custom_treatment"];
+            
+            $response = '';
+            
+            if($sc !== 'null' && $sc != '' && $sc != null){
+                $response .= ucwords(get_custom_treatment($sc, $con))." \r\n";
+            }
+            if($cc !== 'null' && $cc != '' && $cc != null){
+                $cc = unserialize($cc);
+                foreach ($cc as $arr) {
+                    #$response .= $arr.'\n';
+                    $response .= ucwords($arr)." \r\n";
+                }
+            }
+            $response .= '';
+            
+        }else{
+            $response = 'Error!';
+        }
+		return $response;
+    }
+
 if(isset($_POST["export_data"]) && isset($_POST["export-type"]) && isset($_POST["export-id"]) && isset($_POST["export-data"])){
         $company_id = $_SESSION["company_id"];
         $file_dir = '../../';
@@ -189,30 +255,75 @@ if(isset($_POST["export_data"]) && isset($_POST["export-type"]) && isset($_POST[
             #set and merge risksafe header
             $spreadsheet->getActiveSheet()->mergeCells("A1:E1"); 
             $sheet->getStyle('A1:E1')->getAlignment()->setHorizontal('center');
-            $sheet->setCellValue('A1', "Applicable Policy Data Export - RiskSAFE - " . date('d-m-Y'));
+            $sheet->setCellValue('A1', "Compliance Standard Data Export - RiskSAFE - " . date('d-m-Y'));
             
-            $query = "SELECT * FROM policyfields WHERE p_id = '$id' AND c_id = '$company_id' LIMIT 1"; 
+            $query = "SELECT * FROM as_compliancestandard WHERE compli_id = '$id' AND c_id = '$company_id' LIMIT 1"; 
             $query_run = mysqli_query($con, $query);
     
             if(mysqli_num_rows($query_run) > 0) {
                 $export = true; #data to be exported exists
-                $sheet->getStyle('A3:E3')->getFont()->setBold(true); #bold header values
+                // $sheet->getStyle('A3:E3')->getFont()->setBold(true); #bold header values
     
-                $sheet->setCellValue('A3', 'ID');
-                $sheet->setCellValue('B3', 'Full Name');
-                $sheet->setCellValue('C3', 'Email');
-                $sheet->setCellValue('D3', 'Phone');
-                $sheet->setCellValue('E3', 'Course');
+                // $sheet->setCellValue('A3', 'ID');
+                // $sheet->setCellValue('B3', 'Full Name');
+                // $sheet->setCellValue('C3', 'Email');
+                // $sheet->setCellValue('D3', 'Phone');
+                // $sheet->setCellValue('E3', 'Course');
+                $r = 3;
+
+                $sheet->getStyle('A'.$r.':L'.$r)->getFont()->setBold(true); #bold header values
+                #add assessment headers
+                $sheet->setCellValue('A'.$r, 'S/N');
+                $sheet->setCellValue('B'.$r, 'Compliance Task or Obligation');
+                $sheet->setCellValue('C'.$r, 'Reference / Legislation');
+                $sheet->setCellValue('D'.$r, 'Compliance Requirements');
+                $sheet->setCellValue('E'.$r, 'Compliance Officer');
+                $sheet->setCellValue('F'.$r, 'Compliance Status');
+                $sheet->setCellValue('G'.$r, 'Compliance Frequency');
+                $sheet->setCellValue('H'.$r, 'Documentation & Evidence');
+                $sheet->setCellValue('I'.$r, 'Compliance Controls');
+                $sheet->setCellValue('J'.$r, 'Control Requirements');
+                $sheet->setCellValue('K'.$r, 'Compliance Treatments');
+                $sheet->setCellValue('L'.$r, 'Date Created');
     
-                $rowCount = 4; #cellValue about++
-                foreach($query_run as $data) {
-                    $sheet->setCellValue('A'.$rowCount, $data['com_user_id']);
-                    $sheet->setCellValue('B'.$rowCount, $data['com_compliancestandard']);
-                    $sheet->setCellValue('C'.$rowCount, $data['com_legislation']);
-                    $sheet->setCellValue('D'.$rowCount, $data['com_controls']);
-                    $sheet->setCellValue('E'.$rowCount, $data['com_training']);
-                    $rowCount++;
+                // $rowCount = 4; #cellValue about++
+                // foreach($query_run as $data) {
+                //     $sheet->setCellValue('A'.$rowCount, $data['com_user_id']);
+                //     $sheet->setCellValue('B'.$rowCount, $data['com_compliancestandard']);
+                //     $sheet->setCellValue('C'.$rowCount, $data['com_legislation']);
+                //     $sheet->setCellValue('D'.$rowCount, $data['com_controls']);
+                //     $sheet->setCellValue('E'.$rowCount, $data['com_training']);
+                //     $rowCount++;
+                // }
+
+                $r = 4;
+                $date_1 = get_date($data['date_added']);
+                $evidence = $data['com_documentation'];
+                $controls = list_out_control_com($company_id, $data['compli_id'], $con);
+                $treatments = list_out_treat_com($company_id, $data['compli_id'], $con);
+    
+
+                $sheet->setCellValue('A'.$r, 1);
+                $sheet->setCellValue('B'.$r, ucwords($data['com_compliancestandard']));
+                $sheet->setCellValue('C'.$r, nl2br($data['com_legislation']));
+                $sheet->setCellValue('D'.$r, nl2br($data['com_training']));
+                $sheet->setCellValue('E'.$r, ucwords($data['com_officer']));
+                $sheet->setCellValue('F'.$r, ucwords($data['com_controls']));
+                $sheet->setCellValue('G'.$r, get_Frequency_com($data['frequency']));
+                
+                if($evidence == 'null'){
+                    $sheet->setCellValue('H'.$r, 'None Uploaded');
+                }else{
+                    $___link = 'https://risksafe.co/admin/compliances/evidence/'.$evidence;
+                    $sheet->getCell('H'.$r) ->setValueExplicit("Click Here To View Documentation");
+                    $sheet->getCell('H'.$r) ->getHyperlink() ->setUrl($___link); 
+                    $sheet->getStyle('H'.$r) ->applyFromArray(array( 'font' => array( 'color' => ['rgb' => '0000FF'], 'underline' => 'single' ) ));
                 }
+                
+                $sheet->setCellValue('I'.$r, $controls);
+                $sheet->setCellValue('J'.$r, $data['com_controls']);
+                $sheet->setCellValue('K'.$r, $treatments);
+                $sheet->setCellValue('L'.$r, $date_1);
     
                 #max width
                 $sheet->getColumnDimension('A')->setAutoSize(true);
@@ -220,12 +331,15 @@ if(isset($_POST["export_data"]) && isset($_POST["export-type"]) && isset($_POST[
                 $sheet->getColumnDimension('C')->setAutoSize(true);
                 $sheet->getColumnDimension('D')->setAutoSize(true);
                 $sheet->getColumnDimension('E')->setAutoSize(true);
+                $sheet->getColumnDimension('F')->setAutoSize(true);
+                $sheet->getColumnDimension('G')->setAutoSize(true);
+                $sheet->getColumnDimension('H')->setAutoSize(true);
     
                 #set values
                 $spreadsheet->getProperties()->setCreator("RiskSafe")
                             ->setLastModifiedBy("RiskSafe")
-                            ->setTitle("Applicable Policy Data Export - RiskSAFE")
-                            ->setSubject("Applicable Policy Data Export - RiskSAFE");
+                            ->setTitle("Compliance Standard Data Export - RiskSAFE")
+                            ->setSubject("Compliance Standard Data Export - RiskSAFE");
             } else {
                 echo "No Record Found";
                 // header('Location: index.php');
