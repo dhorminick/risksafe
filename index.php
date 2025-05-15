@@ -29,7 +29,7 @@
       <div
         class="w-full sm:w-[50%] flex flex-col justify-start mt-[50px] sm:mt-0 sm:justify-center p-[30px] sm:p-[50px]"
       >
-        <h1 class="font-bold text-[45px]">Risk Assessment Made Easy</h1>
+        <h1 class="font-bold text-[45px]">Simplify Risk & Compliance with an All in one GRC Platform with Ease</h1>
         <div class="my-[20px] flex w-full gap-[10px] flex-col">
           <p>
             Conduct Risk Assessments, Audit of Controls, Track Incidents, Create
@@ -64,8 +64,9 @@
           Comprehensive Risk Management Suite
         </h2>
         <div class="text-[14px]">
-          RiskSafe simplifies operations, scales forms, and ensures data
-          accuracy for better decision-making.
+          No more spreadsheets.  
+          No more disconnected tools and no more $100K+ licenses. 
+          RiskSafe brings all your governance, risk and compliance functions into one platform - so your team can focus on what matters: protecting your business and enabling growth. 
         </div>
       </div>
       <div class="flex justify-between items-center gap-[10px]">
@@ -73,25 +74,19 @@
           <div class="active image-setter" data-img="compliance_no_sidebar.png">
             <div class="head">Easy to Use Dashboard</div>
             <div class="desc">
-              Navigate with ease. Our intuitive interface ensures you spend less
-              time learning and more time achieving your goals, making
-              management a breeze.
+              Navigate with ease. Intuitive interface ensures you gain visibility and control over risks, obligations, incidents, controls, and policies with an all in one GRC tool kit.  
             </div>
           </div>
           <div class="image-setter" data-img="form.png">
-            <div class="head">Flexible Form System</div>
+            <div class="head">Adaptable Modules and Linkages</div>
             <div class="desc">
-              Adaptable tools designed to customize and scale your forms
-              effortlessly, meeting all your needs with powerful and flexible
-              options.
+             Input Risk, Compliance, Control, Treatment Plans, KRIs, and effortlessly link across the modules to achieve your risk management goals.
             </div>
           </div>
           <div class="image-setter" data-img="risks.png">
-            <div class="head">Efficient Data Management and Presentation</div>
+            <div class="head">Streamline your workflows </div>
             <div class="desc">
-              Organize, store, and present data with precision. Implementing
-              robust practices ensures accuracy, drives informed decisions, and
-              streamlines operations.
+              Easy to use Heat Maps and Reporting.
             </div>
           </div>
         </div>
@@ -150,9 +145,9 @@
             <div
               class="mt-6 flex flex-col gap-[10px] text-sm text-white leading-relaxed"
             >
-                <p>Whether or not you have prior experience in risk management, RiskSafe is designed to guide you through the process with ease. Our platform comes equipped with predefined data sets and tools, enabling you to quickly understand and implement effective risk management strategies. </p>
-                <p>RiskSafe Automated monitoring solution saves us from doing manual testing and all the co-ordination headaches. We’ve spent 15+ years inside compliance, risk, and audit teams—so we built RiskSafe to solve the real pain points we faced. It's practical, flexible, and powerful enough to scale with your business. </p>
-                
+                <p>Streamline risk assessments, compliance, incidents, and reporting in one intuitive system—designed for your industry. </p>
+                <p>Trusted by leading risk and compliance teams across Financial Services, Health Care, Accounting and Professional Services and more.</p>
+                <p>Built by Risk & Compliance professionals with over a decade of experience.  We’ve spent 15+ years inside compliance, risk, and audit teams — so we built RiskSafe to solve the real pain points we faced. It's practical, flexible, and powerful enough to scale with your business. </p>
                 <p class='mt-[20px]'>“RiskSafe helped us streamline compliance and save over 20 hours a month on manual tasks."<strong> – CEO of Edfin, Fintech, Taf Shamano</strong> </p>
             </div>
           </div>
@@ -163,11 +158,11 @@
               <h3
                 class="lg:text-5xl text-3xl font-extrabold text-[var(--primary)]"
               >
-                3x
+                $0.00
               </h3>
               <div class="mt-4">
                 <p class="text-sm text-[var(--primary)]">
-                  return on investment in a year
+                   implementation fees
                 </p>
               </div>
             </div>
@@ -177,11 +172,11 @@
               <h3
                 class="lg:text-5xl text-3xl font-extrabold text-[var(--primary)]"
               >
-                $220k
+                Affordable
               </h3>
               <div class="mt-4">
                 <p class="text-sm text-[var(--primary)]">
-                  savings per year when using full suite of tools
+                  simple pricing without blowing your budget
                 </p>
               </div>
             </div>
@@ -191,11 +186,11 @@
               <h3
                 class="lg:text-5xl text-3xl font-extrabold text-[var(--primary)]"
               >
-                3 FTE
+                100%
               </h3>
               <div class="mt-4">
                 <p class="text-sm text-[var(--primary)]">
-                  reduced from compliance team
+                  cloud-based and secure 
                 </p>
               </div>
             </div>
@@ -208,7 +203,7 @@
                 24/7
               </h3>
               <div class="mt-4">
-                <p class="text-sm text-[var(--primary)]">Customer Support</p>
+                <p class="text-sm text-[var(--primary)]">support from actual GRC experts </p>
               </div>
             </div>
           </div>

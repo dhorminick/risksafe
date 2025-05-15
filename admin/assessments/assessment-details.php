@@ -12,6 +12,22 @@
     include '../../layout/admin__config.php';
     include '../ajax/assessment.php';
 
+    function __getIndustryTitle($id, $con){
+        if($id == ''){
+           $response = 'None Selected'; 
+        }else{
+            $query="SELECT * FROM updated_risk WHERE module = '$id'";
+    		$result=$con->query($query);
+    		if ($result->num_rows > 0) {	
+    			$row=$result->fetch_assoc();
+    			$response = $row['name'];
+    		}else{
+    			$response = 'Error!!';
+    		}
+        }
+		return $response;
+    }
+
     switch ($role) {
         case 'user':
             $whois = 'Your Admin';
@@ -134,7 +150,7 @@
                         <div class="row section-rows customs">
                             <div class="user-description col-12 col-lg-12">
                                 <label>Assessment Industry :</label>
-                                <div class="description-text"><?php echo ucwords(getIndustryTitle($riskType, $con)); ?></div>
+                                <div class="description-text"><?php echo ucwords(__getIndustryTitle($riskType, $con)); ?></div>
                             </div>
                             
                             <hr>

@@ -363,7 +363,7 @@
                                         <?php foreach($riskSummary['toprisks'] as $item){ ?>
                                         <tr>
                                             <td class='left'><?php echo 'RO-'.strtoupper($item['id']); ?></td>
-                                            <td class='left'><?php echo _getIndustryTitle($item['industry'], $con) ?></td>
+                                            <td class='left'><?php echo __getIndustryTitle($item['industry'], $con) ?></td>
                                             <td class='left'><?php echo getRiskTitle($item['risk_type'], $item['risk'], $con); ?></td>
                                             <td><?php echo round($item['consequence'], 2); ?></td>
                                             <td><?php echo round($item['likelihood'], 2); ?></td>

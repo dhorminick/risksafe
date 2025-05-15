@@ -25,6 +25,22 @@
 // 		return $response;
 //}
 
+function __getIndustryTitle($id, $con){
+        if($id == ''){
+           $response = 'None Selected'; 
+        }else{
+            $query="SELECT * FROM updated_risk WHERE module = '$id'";
+    		$result=$con->query($query);
+    		if ($result->num_rows > 0) {	
+    			$row=$result->fetch_assoc();
+    			$response = $row['name'];
+    		}else{
+    			$response = 'Error!!';
+    		}
+        }
+		return $response;
+    }
+
 function getTopRisks($c_id, $con){
     $veryHighCount = 0;
     $highCount = 0;
@@ -71,9 +87,21 @@ function getSiteRisksTitle($id, $con){
 		return $response;
 }
 
+function _getRisks_New($id, $con){
+		$query="SELECT * FROM updated_risk WHERE r_id = '$id'";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {	
+			$row=$result->fetch_assoc();
+			$response = $row['title'];
+		}else{
+			$response = 'Error!!';
+		}
+		return $response;
+    }
+
 function getRiskTitle($type, $id, $con){
     if($type && strtolower($type) === 'site'){
-        return getSiteRisksTitle($id, $con);
+        return _getRisks_New($id, $con);
     }else if($type && strtolower($type) === 'custom'){
         return getCustomRisksTitle($id, $con);
     }else{

@@ -72,19 +72,28 @@
                     $mailSender = $signUpSender;
                     $mail = _reg($mailSender, $mailRecipient, $mailSubject, $confirmation_link, $name, $site__, $signUpHelp);
                     
-                    if ($mail['sent'] === 'true' && $mail['error'] === 'none') {
-                        #add user
-                        $createNewUser = "INSERT INTO users (`superuserid`, `u_mail`, `u_password`, `u_name`, `u_phone`, `u_location`, `c_company`, `c_address`, `c_city`, `c_state`, `c_postcode`, `c_country`, `u_complete`, `u_otp`, `u_datetime`, `u_expire`, `role`,`user_loginstatus`, `u_id`, `company_users`, `company_id`, `company_details`, `user_details`, `payment_status`, `payment_duration`)
-                          VALUES (0, '$email', '$password', '$name', '', '', '$company', '', '', '', '', '', 'false', '$otp', '$datetime', '$expire', 'admin', 0, '$u_id', 'a:0:{}', '$company_id', '$company_details', '$user_details', 'free', 'trial')";
+                    // if ($mail['sent'] === 'true' && $mail['error'] === 'none') {
+                    //     #add user
+                    //     $createNewUser = "INSERT INTO users (`superuserid`, `u_mail`, `u_password`, `u_name`, `u_phone`, `u_location`, `c_company`, `c_address`, `c_city`, `c_state`, `c_postcode`, `c_country`, `u_complete`, `u_otp`, `u_datetime`, `u_expire`, `role`,`user_loginstatus`, `u_id`, `company_users`, `company_id`, `company_details`, `user_details`, `payment_status`, `payment_duration`)
+                    //       VALUES (0, '$email', '$password', '$name', '', '', '$company', '', '', '', '', '', 'true', '$otp', '$datetime', '$expire', 'admin', 0, '$u_id', 'a:0:{}', '$company_id', '$company_details', '$user_details', 'free', 'trial')";
+                    //     $userCreated = $con->query($createNewUser);
+                    //     if ($userCreated) {
+                    //         array_push($message, 'Account Details Registered Successfully, Login To "'.$email.'" To Authenticate The Account!! ');
+                    //     }else{
+                    //         array_push($message, "Error 502: Server Error!! Contact Our Support Team For More Info.");
+                    //     }
+                    // } else {
+                    //     array_push($message, "Error 502: Error Sending OTP!! ".$mail['error']);
+                    // }
+
+                    $createNewUser = "INSERT INTO users (`superuserid`, `u_mail`, `u_password`, `u_name`, `u_phone`, `u_location`, `c_company`, `c_address`, `c_city`, `c_state`, `c_postcode`, `c_country`, `u_complete`, `u_otp`, `u_datetime`, `u_expire`, `role`,`user_loginstatus`, `u_id`, `company_users`, `company_id`, `company_details`, `user_details`, `payment_status`, `payment_duration`)
+                          VALUES (0, '$email', '$password', '$name', '', '', '$company', '', '', '', '', '', 'true', '$otp', '$datetime', '$expire', 'admin', 0, '$u_id', 'a:0:{}', '$company_id', '$company_details', '$user_details', 'free', 'trial')";
                         $userCreated = $con->query($createNewUser);
                         if ($userCreated) {
                             array_push($message, 'Account Details Registered Successfully, Login To "'.$email.'" To Authenticate The Account!! ');
                         }else{
                             array_push($message, "Error 502: Server Error!! Contact Our Support Team For More Info.");
                         }
-                    } else {
-                        array_push($message, "Error 502: Error Sending OTP!! ".$mail['error']);
-                    }
                     
                 }
             }

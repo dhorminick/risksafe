@@ -19,7 +19,7 @@
     		$result=$con->query($query);
     		if ($result->num_rows > 0) {	
     			$row=$result->fetch_assoc();
-    			$response = $row['title'];
+    			$response = $row['name'];
     		}else{
     			$response = 'Error!!';
     		}
@@ -139,7 +139,7 @@
                             <div class="card-body">
                                 <div class="form-group">
 									<label>Selected Risk Industry: </label>
-									<div class='form-control' style='border:none !important;padding:10px 0px !important;font-size:16px;font-weight:400;'><?php echo $getIndustry = ucwords(__getIndustryTitle($risk__industry, $con)); ?></div>
+									<div class='form-control' style='border:none !important;padding:10px 0px !important;font-size:16px;font-weight:400;'><?php echo ucwords(__getIndustryTitle($risk__industry, $con)); ?></div>
 									
 									<div style='margin-top:20px;'>
 									<?php if($getIndustry == 'None Selected'){ ?>
