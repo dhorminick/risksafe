@@ -16,6 +16,27 @@
     $noValue = true;
     $risk__industry = $_SESSION['risk_industry'];
 
+    function ___getCotrolTitle($risk, $id, $con){
+        $respose = 'Error!!!';
+
+        $query="SELECT * FROM updated_risk WHERE r_id = '$risk' LIMIT 1";
+        $result=$con->query($query);
+    		if ($result->num_rows > 0) {	
+    			$row=$result->fetch_assoc();
+    			$ctrls = $row['control'];
+                $ctrls = unserialize($ctrls);
+                
+                foreach($ctrls as $control){
+                    if (strtolower($control['id']) == strtolower($id)){
+                        $respose = $control['text'];
+                    }
+                }
+
+    		}
+
+            return $respose;
+    }
+
     function __getIndustryTitle($id, $con){
         if($id == ''){
            $response = 'None Selected'; 
@@ -245,7 +266,7 @@
                                     <li>
                                         <?php 
                                         if($info['control_type'] == 'recommended'){
-                                            echo ucfirst(getControlTitle($info['risk'], $control, $con)); 
+                                            echo ucfirst(___getCotrolTitle($info['risk'], $control, $con)); 
                                         }else if($info['control_type'] == 'saved'){
                                             echo ucfirst(getControlTitle_Saved($info['risk'], $control, $con)); 
                                         }else{

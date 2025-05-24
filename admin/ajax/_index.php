@@ -92,7 +92,7 @@ function _getRisks_New($id, $con){
 		$result=$con->query($query);
 		if ($result->num_rows > 0) {	
 			$row=$result->fetch_assoc();
-			$response = $row['title'];
+			$response = $row['name'];
 		}else{
 			$response = 'Error!!';
 		}
