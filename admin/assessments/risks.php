@@ -209,6 +209,27 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- kri -->
+                        <div class='div_divider'></div>
+                        
+                        <!-- Treatment -->
+                        <div class="card-header hh">
+                            <h3 class="d-inline">KRI</h3>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label class="help-label">
+                                    Selected KRI
+                                </label>
+                                <div class="r_desc">
+                                    <ul>
+                                    <li><?php echo getKRI($info['kri'], $con); ?></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                         
                         <!-- Incident -->
                             <div class='div_divider'></div>

@@ -256,6 +256,7 @@
 		$result=$con->query($query);
 		$response = '';
 		if ($result->num_rows > 0) {	
+			$response.='<option value="null">None Required</option>';
 			while ($row=$result->fetch_assoc()) {
 				$response.='<option value="' . $row["k_id"] . '"';
 				if ($row["k_id"] == $selected && $selected !== null) $response.=' selected';
@@ -266,6 +267,23 @@
 		}
 		return $response;
     }
+
+	function getKRI($id, $con){
+		if($id === null || $id === 'null'){
+			return 'None selected!';
+		}
+
+		$query="SELECT * FROM kri WHERE k_id = '$id'";
+		$result=$con->query($query);
+		if ($result->num_rows > 0) {
+			$row=$result->fetch_assoc();	
+			return ucwords($row['indicator']);
+		}
+
+		return 'Error!';
+    }
+
+
     
     function listRisksNew($type, $selected, $company_id, $con, $null = false){
 		$query="SELECT * FROM as_newrisk WHERE industry = '$type' ORDER BY id";
